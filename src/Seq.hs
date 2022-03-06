@@ -2,14 +2,29 @@
 {-# LANGUAGE GeneralisedNewtypeDeriving #-}
 module Seq
 ( Seq(..)
-, Print(..)
+, Doc(..)
 , char
 , str
 , (<+>)
 , parens
+, brackets
 , bind
 , var
 , lambda
+, space
+, dot
+, comma
+, surround
+, enclose
+, parensIf
+, hsep
+, concatWith
+, atom
+, prec
+, withPrec
+, ($$)
+, assocl
+, assocr
 ) where
 
 class Seq term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
@@ -33,25 +48,29 @@ newtype Var = Var Int
   deriving (Enum, Eq, Ord, Show)
 
 newtype Prec = Prec Int
+  deriving (Eq, Num, Ord)
 
-newtype Print = Print (Prec -> Var -> DString)
+newtype Print = Print { getPrint :: Prec -> Doc }
   deriving (Monoid, Semigroup)
 
 instance Show Print where
-  showsPrec d (Print p) = string (p (Prec d) (Var 0))
+  showsPrec d p = string (getDoc (getPrint p (Prec d)) (Var 0))
+
+newtype Doc = Doc { getDoc :: Var -> DString }
+  deriving (Monoid, Semigroup)
 
 instance Seq Print Print Print where
-  prdR l r = str "inlr" <+> l <+> r
-  sumR1 l = str "inl" <+> l
-  sumR2 r = str "inr" <+> r
-  funR f = lambda (\ a -> lambda (\ b -> f (var a) (var b)))
+  prdR l r = prec 10 (str "inlr" <+> withPrec 11 l <+> withPrec 11 r)
+  sumR1 l = prec 10 (str "inl" <+> withPrec 11 l)
+  sumR2 r = prec 10 (str "inr" <+> withPrec 11 r)
+  funR f = prec 0 (bind (\ a -> bind (\ b -> brackets (var a <> comma <+> var b) <+> dot <+> withPrec 0 (f (atom (var a)) (atom (var b))))))
 
-  prdL1 f = str "exl" <+> parens (bind (f . var))
-  prdL2 f = str "exr" <+> parens (bind (f . var))
-  sumL l r = str "exlr" <+> parens (bind (l . var)) <+> parens (bind (r . var))
-  funL a k = a <+> char '·' <+> k
+  prdL1 f = prec 10 (str "exl" <+> bind (withPrec 0 . f . atom . var))
+  prdL2 f = prec 10 (str "exr" <+> bind (withPrec 0 . f . atom . var))
+  sumL l r = prec 10 (str "exlr" <+> bind (withPrec 0 . l . atom . var) <+> bind (withPrec 0 . r . atom . var))
+  funL = assocr 10 dot
 
-  t .|. c = t <+> str "||" <+> c
+  t .|. c = prec 0 (withPrec 1 t <+> str "||" <+> withPrec 1 c)
 
 newtype DString = DString { string :: ShowS }
 
@@ -61,22 +80,25 @@ instance Semigroup DString where
 instance Monoid DString where
   mempty = DString id
 
-char :: Char -> Print
-char c = Print (\ _ _ -> DString (c:))
+char :: Char -> Doc
+char c = Doc (\ _ -> DString (c:))
 
-str :: String -> Print
+str :: String -> Doc
 str = foldMap char
 
-(<+>) :: Print -> Print -> Print
+(<+>) :: Doc -> Doc -> Doc
 p <+> q = p <> char ' ' <> q
 
-parens :: Print -> Print
-parens p = char '(' <> p <> char ')'
+parens :: Doc -> Doc
+parens = enclose (char '(') (char ')')
 
-bind :: (Var -> Print) -> Print
-bind f = Print $ \ d v -> let Print p = f v in p d (succ v)
+brackets :: Doc -> Doc
+brackets = enclose (char '[') (char ']')
 
-var :: Var -> Print
+bind :: (Var -> Doc) -> Doc
+bind f = Doc $ \ v -> let Doc p = f v in p (succ v)
+
+var :: Var -> Doc
 var (Var i) = str $ alphabet !! r : if q > 0 then show q else ""
   where
   n = length alphabet
@@ -85,5 +107,72 @@ var (Var i) = str $ alphabet !! r : if q > 0 then show q else ""
 alphabet :: String
 alphabet = ['a'..'z']
 
-lambda :: (Var -> Print) -> Print
+lambda :: (Var -> Doc) -> Doc
 lambda f = bind (\ v -> char 'λ' <+> var v <+> char '.' <+> f v)
+
+space :: Doc
+space = char ' '
+
+dot :: Doc
+dot = char '·'
+
+comma :: Doc
+comma = char ','
+
+surround
+  :: Doc -- ^ middle doc
+  -> Doc -- ^ left doc
+  -> Doc -- ^ right doc
+  -> Doc
+surround x l r = enclose l r x
+
+enclose
+  :: Doc -- ^ left doc
+  -> Doc -- ^ right doc
+  -> Doc -- ^ middle doc
+  -> Doc
+enclose l r x = l <> x <> r
+
+parensIf :: Bool -> Doc -> Doc
+parensIf False = id
+parensIf True  = parens
+
+hsep :: [Doc] -> Doc
+hsep = concatWith (<+>)
+
+concatWith :: Foldable t => (Doc -> Doc -> Doc) -> t Doc -> Doc
+concatWith (<>) ps
+  | null ps   = mempty
+  | otherwise = foldr1 (<>) ps
+
+
+
+atom :: Doc -> Print
+atom = Print . const
+
+prec :: Prec -> Doc -> Print
+prec i b = Print (\ i' -> parensIf (i' > i) b)
+
+withPrec :: Prec -> Print -> Doc
+withPrec = flip getPrint
+
+($$) :: Print -> Print -> Print
+($$) = assocl (Prec 10) space
+
+infixl 9 $$
+
+assocl
+  :: Prec  -- ^ precedence
+  -> Doc   -- ^ operator
+  -> Print -- ^ left operand
+  -> Print -- ^ right operand
+  -> Print
+assocl p o l r = prec p (surround o (withPrec p l) (withPrec (p + 1) r))
+
+assocr
+  :: Prec  -- ^ precedence
+  -> Doc   -- ^ operator
+  -> Print -- ^ left operand
+  -> Print -- ^ right operand
+  -> Print
+assocr p o l r = prec p (surround o (withPrec (p + 1) l) (withPrec p r))
