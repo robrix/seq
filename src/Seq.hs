@@ -19,6 +19,9 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   funL :: term -> coterm -> coterm
 
 
+newtype Var = Var Int
+  deriving (Enum, Eq, Ord, Show)
+
 newtype Print = Print DString
   deriving (Monoid, Semigroup)
 
