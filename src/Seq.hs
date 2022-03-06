@@ -2,6 +2,7 @@
 {-# LANGUAGE GeneralisedNewtypeDeriving #-}
 module Seq
 ( Seq(..)
+, Print(..)
 , Doc(..)
 , char
 , str
