@@ -25,7 +25,7 @@ newtype Print = Print DString
 newtype DString = DString { string :: String -> String }
 
 instance Semigroup DString where
-  DString a <> DString b = DString (a . b)
+  a <> b = DString (string a . string b)
 
 instance Monoid DString where
   mempty = DString id
