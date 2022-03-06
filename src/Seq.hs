@@ -1,4 +1,5 @@
 {-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE GeneralisedNewtypeDeriving #-}
 module Seq
 ( Seq(..)
 ) where
@@ -17,16 +18,19 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   funL :: term -> coterm -> coterm
 
 
-newtype Print = Print { print :: String -> String }
+newtype Print = Print DString
+  deriving (Monoid, Semigroup)
 
-instance Semigroup Print where
-  Print a <> Print b = Print (a . b)
+newtype DString = DString { string :: String -> String }
 
-instance Monoid Print where
-  mempty = Print id
+instance Semigroup DString where
+  DString a <> DString b = DString (a . b)
+
+instance Monoid DString where
+  mempty = DString id
 
 char :: Char -> Print
-char c = Print (c:)
+char c = Print (DString (c:))
 
 str :: String -> Print
 str = foldMap char
