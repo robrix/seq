@@ -9,6 +9,9 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   sumR1 :: term -> term
   sumR2 :: term -> term
 
+  -- left rules
+  sumL :: (term -> coterm) -> (term -> coterm) -> coterm
+
 
 newtype Print = Print { print :: String -> String }
 
