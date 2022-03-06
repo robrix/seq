@@ -53,7 +53,7 @@ instance Seq Print Print Print where
 
   t .|. c = t <+> str "||" <+> c
 
-newtype DString = DString { string :: String -> String }
+newtype DString = DString { string :: ShowS }
 
 instance Semigroup DString where
   a <> b = DString (string a . string b)
