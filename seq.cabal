@@ -1,0 +1,29 @@
+cabal-version:      2.4
+name:               seq
+version:            0.0.0.0
+synopsis:           Sequent calculus
+description:        A sequent calculus for no good reason
+
+homepage:           https://github.com/robrix/seq
+bug-reports:        https://github.com/robrix/seq/issues
+
+license:            BSD-3-Clause
+license-file:       LICENSE
+
+author:             Rob Rix
+maintainer:         rob.rix@me.com
+
+copyright:          2022 Rob Rix
+
+category:           Language
+extra-source-files:
+  CHANGELOG.md
+  README.md
+
+library
+  exposed-modules:
+    Seq
+  build-depends:
+    , base ^>=4.16.0.0
+  hs-source-dirs:   src
+  default-language: Haskell2010
