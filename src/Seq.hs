@@ -57,8 +57,8 @@ parens p = char '(' <> p <> char ')'
 bind :: (Var -> Print) -> Print
 bind f = Print $ \ v -> let Print p = f v in p (succ v)
 
-var :: Var -> String
-var (Var i) = alphabet !! r : if q > 0 then show q else ""
+var :: Var -> Print
+var (Var i) = str $ alphabet !! r : if q > 0 then show q else ""
   where
   n = length alphabet
   (q, r) = i `divMod` n
