@@ -8,3 +8,12 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   prdR :: term -> term -> term
   sumR1 :: term -> term
   sumR2 :: term -> term
+
+
+newtype Print = Print { print :: String -> String }
+
+instance Semigroup Print where
+  Print a <> Print b = Print (a . b)
+
+instance Monoid Print where
+  mempty = Print id
