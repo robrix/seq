@@ -17,3 +17,6 @@ instance Semigroup Print where
 
 instance Monoid Print where
   mempty = Print id
+
+char :: Char -> Print
+char c = Print (c:)
