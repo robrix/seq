@@ -39,8 +39,6 @@
 :seti -Wno-type-defaults
 :set -Wno-unused-packages
 
-:load Facet.CLI test/Test.hs
+:load Seq
 
-import Facet.Parser
-import Facet.Print
-import qualified Main as Test
+import Seq
