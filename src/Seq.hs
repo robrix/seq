@@ -35,6 +35,17 @@ newtype Print = Print (Var -> DString)
 instance Show Print where
   showsPrec _ (Print p) = string (p (Var 0))
 
+instance Seq Print Print Print where
+  prdR l r = str "inlr" <+> l <+> r
+  sumR1 l = str "inl" <+> l
+  sumR2 r = str "inr" <+> r
+  funR f = lambda (\ a -> lambda (\ b -> f (var a) (var b)))
+
+  prdL1 f = str "exl" <+> parens (bind (f . var))
+  prdL2 f = str "exr" <+> parens (bind (f . var))
+  sumL l r = str "exlr" <+> parens (bind (l . var)) <+> parens (bind (r . var))
+  funL a k = a <+> char '·' <+> k
+
 newtype DString = DString { string :: String -> String }
 
 instance Semigroup DString where
