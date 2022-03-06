@@ -44,3 +44,6 @@ p <+> q = p <> char ' ' <> q
 
 parens :: Print -> Print
 parens p = char '(' <> p <> char ')'
+
+bind :: (Var -> Print) -> Print
+bind f = Print $ \ v -> let Print p = f v in p (succ v)
