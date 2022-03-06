@@ -23,3 +23,6 @@ char c = Print (c:)
 
 str :: String -> Print
 str = foldMap char
+
+(<+>) :: Print -> Print -> Print
+p <+> q = p <> char ' ' <> q
