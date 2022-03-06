@@ -14,6 +14,7 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   prdL1 :: (term -> coterm) -> coterm
   prdL2 :: (term -> coterm) -> coterm
   sumL :: (term -> coterm) -> (term -> coterm) -> coterm
+  funL :: term -> coterm -> coterm
 
 
 newtype Print = Print { print :: String -> String }
