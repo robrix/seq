@@ -26,3 +26,6 @@ str = foldMap char
 
 (<+>) :: Print -> Print -> Print
 p <+> q = p <> char ' ' <> q
+
+parens :: Print -> Print
+parens p = char '(' <> p <> char ')'
