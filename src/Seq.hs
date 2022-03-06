@@ -9,6 +9,7 @@ module Seq
 , parens
 , bind
 , var
+, lambda
 ) where
 
 class Seq term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
@@ -65,3 +66,6 @@ var (Var i) = str $ alphabet !! r : if q > 0 then show q else ""
 
 alphabet :: String
 alphabet = ['a'..'z']
+
+lambda :: (Var -> Print) -> Print
+lambda f = bind (\ v -> char 'λ' <+> var v <+> char '.' <+> f v)
