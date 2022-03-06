@@ -10,6 +10,8 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   sumR2 :: term -> term
 
   -- left rules
+  prdL1 :: (term -> coterm) -> coterm
+  prdL2 :: (term -> coterm) -> coterm
   sumL :: (term -> coterm) -> (term -> coterm) -> coterm
 
 
