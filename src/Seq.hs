@@ -32,11 +32,13 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
 newtype Var = Var Int
   deriving (Enum, Eq, Ord, Show)
 
-newtype Print = Print (Var -> DString)
+newtype Prec = Prec Int
+
+newtype Print = Print (Prec -> Var -> DString)
   deriving (Monoid, Semigroup)
 
 instance Show Print where
-  showsPrec _ (Print p) = string (p (Var 0))
+  showsPrec d (Print p) = string (p (Prec d) (Var 0))
 
 instance Seq Print Print Print where
   prdR l r = str "inlr" <+> l <+> r
@@ -60,7 +62,7 @@ instance Monoid DString where
   mempty = DString id
 
 char :: Char -> Print
-char c = Print (const (DString (c:)))
+char c = Print (\ _ _ -> DString (c:))
 
 str :: String -> Print
 str = foldMap char
@@ -72,7 +74,7 @@ parens :: Print -> Print
 parens p = char '(' <> p <> char ')'
 
 bind :: (Var -> Print) -> Print
-bind f = Print $ \ v -> let Print p = f v in p (succ v)
+bind f = Print $ \ d v -> let Print p = f v in p d (succ v)
 
 var :: Var -> Print
 var (Var i) = str $ alphabet !! r : if q > 0 then show q else ""
