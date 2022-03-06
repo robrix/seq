@@ -22,7 +22,7 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
 newtype Var = Var Int
   deriving (Enum, Eq, Ord, Show)
 
-newtype Print = Print DString
+newtype Print = Print (Var -> DString)
   deriving (Monoid, Semigroup)
 
 newtype DString = DString { string :: String -> String }
@@ -34,7 +34,7 @@ instance Monoid DString where
   mempty = DString id
 
 char :: Char -> Print
-char c = Print (DString (c:))
+char c = Print (const (DString (c:)))
 
 str :: String -> Print
 str = foldMap char
