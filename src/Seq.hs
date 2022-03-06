@@ -30,6 +30,9 @@ newtype Var = Var Int
 newtype Print = Print (Var -> DString)
   deriving (Monoid, Semigroup)
 
+instance Show Print where
+  showsPrec _ (Print p) = string (p (Var 0))
+
 newtype DString = DString { string :: String -> String }
 
 instance Semigroup DString where
