@@ -3,6 +3,11 @@
 module Seq
 ( Seq(..)
 , Print(..)
+, char
+, str
+, (<+>)
+, parens
+, bind
 ) where
 
 class Seq term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
