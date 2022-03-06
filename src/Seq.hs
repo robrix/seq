@@ -25,6 +25,9 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   sumL :: (term -> coterm) -> (term -> coterm) -> coterm
   funL :: term -> coterm -> coterm
 
+  (.|.) :: term -> coterm -> command
+
+  infix 1 .|.
 
 newtype Var = Var Int
   deriving (Enum, Eq, Ord, Show)
@@ -45,6 +48,8 @@ instance Seq Print Print Print where
   prdL2 f = str "exr" <+> parens (bind (f . var))
   sumL l r = str "exlr" <+> parens (bind (l . var)) <+> parens (bind (r . var))
   funL a k = a <+> char '·' <+> k
+
+  t .|. c = t <+> str "||" <+> c
 
 newtype DString = DString { string :: String -> String }
 
