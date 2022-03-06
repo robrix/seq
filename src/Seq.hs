@@ -20,3 +20,6 @@ instance Monoid Print where
 
 char :: Char -> Print
 char c = Print (c:)
+
+str :: String -> Print
+str = foldMap char
