@@ -71,7 +71,7 @@ instance Seq Print Print Print where
   sumL l r = prec 10 (str "exlr" <+> bind (withPrec 0 . l . atom . var) <+> bind (withPrec 0 . r . atom . var))
   funL = assocr 10 dot
 
-  t .|. c = prec 0 (withPrec 1 t <+> str "||" <+> withPrec 1 c)
+  t .|. c = prec 0 (withPrec 1 t <+> str "║" <+> withPrec 1 c)
 
 newtype DString = DString { string :: ShowS }
 
