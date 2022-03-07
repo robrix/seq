@@ -49,6 +49,7 @@ library
     Seq
     Seq.Doc
     Seq.Print.Untyped
+    Seq.Typed
     Seq.Untyped
   build-depends:
     , base ^>=4.16.0.0
