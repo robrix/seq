@@ -9,8 +9,8 @@ module Seq.Print.Untyped
 , ($$)
 ) where
 
-import Seq
 import Seq.Doc
+import Seq.Untyped
 
 newtype Prec = Prec Int
   deriving (Eq, Num, Ord)
