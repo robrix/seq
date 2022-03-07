@@ -1,10 +1,14 @@
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE RankNTypes #-}
 module Seq.Eval.Typed
-( Eval(..)
+( evalEval
+, Eval(..)
 ) where
 
 import Control.Monad (ap)
+
+evalEval :: Eval a -> a
+evalEval (Eval r) = r id
 
 newtype Eval a = Eval { eval :: forall r . (a -> r) -> r }
   deriving (Functor)
