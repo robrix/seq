@@ -54,8 +54,6 @@ instance Seq Print Print Print where
   t .|. c = prec 0 (withPrec 1 t <+> str "║" <+> withPrec 1 c)
 
 
-
-
 atom :: Doc -> Print
 atom = Print . const
 
