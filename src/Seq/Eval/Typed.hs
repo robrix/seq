@@ -10,3 +10,6 @@ newtype Eval a = Eval { eval :: a }
 instance Applicative Eval where
   pure = Eval
   (<*>) = coerce
+
+instance Monad Eval where
+  Eval m >>= f = f m
