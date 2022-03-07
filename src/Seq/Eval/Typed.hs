@@ -1,2 +1,5 @@
 module Seq.Eval.Typed
-() where
+( Eval(..)
+) where
+
+newtype Eval a = Eval { eval :: a }
