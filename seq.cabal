@@ -47,6 +47,7 @@ library
   import:         common
   exposed-modules:
     Seq
+    Seq.Doc
   build-depends:
     , base ^>=4.16.0.0
   hs-source-dirs:   src
