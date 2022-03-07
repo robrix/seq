@@ -1,2 +1,5 @@
 module Seq.Print.Typed
-() where
+( Prec(..)
+) where
+
+newtype Prec = Prec Int
