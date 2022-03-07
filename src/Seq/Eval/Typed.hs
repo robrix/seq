@@ -2,6 +2,7 @@
 module Seq.Eval.Typed
 ( Eval(..)
 ) where
+
 import Data.Coerce (coerce)
 
 newtype Eval a = Eval { eval :: a }
