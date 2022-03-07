@@ -1,16 +1,17 @@
 {-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE RankNTypes #-}
 module Seq.Eval.Typed
 ( Eval(..)
 ) where
 
-import Data.Coerce (coerce)
+import Control.Monad (ap)
 
-newtype Eval a = Eval { eval :: a }
+newtype Eval a = Eval { eval :: forall r . (a -> r) -> r }
   deriving (Functor)
 
 instance Applicative Eval where
-  pure = Eval
-  (<*>) = coerce
+  pure a = Eval (\ k -> k a)
+  (<*>) = ap
 
 instance Monad Eval where
-  Eval m >>= f = f m
+  Eval m >>= f = Eval (\ k -> m (\ a -> eval (f a) k))
