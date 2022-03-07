@@ -22,6 +22,7 @@ instance Show Print where
   showsPrec d p = string (getDoc (getPrint p (Prec d)) (Var 0))
 
 instance Seq Print Print Print where
+  µR f = prec 0 (char 'µ' <+> bind (\ a -> brackets (var a) <+> dot <+> withPrec 0 (f (atom (var a)))))
   prdR l r = prec 10 (str "inlr" <+> withPrec 11 l <+> withPrec 11 r)
   sumR1 l = prec 10 (str "inl" <+> withPrec 11 l)
   sumR2 r = prec 10 (str "inr" <+> withPrec 11 r)
