@@ -8,6 +8,7 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   prdR :: term a -> term b -> term (a, b)
   sumR1 :: term a -> term (Either a b)
   sumR2 :: term b -> term (Either a b)
+  funR :: (term a -> coterm b -> command) -> term (a -> b)
 
   -- left rules
   prdL1 :: coterm a -> coterm (a, b)
