@@ -15,3 +15,8 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   prdL2 :: coterm b -> coterm (a, b)
   sumL :: coterm a -> coterm b -> coterm (Either a b)
   funL :: term a -> coterm b -> coterm (a -> b)
+
+  -- commands
+  (.|.) :: term a -> coterm a -> command
+
+  infix 1 .|.
