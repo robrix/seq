@@ -48,6 +48,7 @@ library
   exposed-modules:
     Seq
     Seq.Doc
+    Seq.Eval.Typed
     Seq.Print.Typed
     Seq.Print.Untyped
     Seq.Typed
