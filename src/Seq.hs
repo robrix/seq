@@ -36,9 +36,9 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   funR :: (term -> coterm -> command) -> term
 
   -- left rules
-  prdL1 :: (term -> coterm) -> coterm
-  prdL2 :: (term -> coterm) -> coterm
-  sumL :: (term -> coterm) -> (term -> coterm) -> coterm
+  prdL1 :: coterm -> coterm
+  prdL2 :: coterm -> coterm
+  sumL :: coterm -> coterm -> coterm
   funL :: term -> coterm -> coterm
 
   (.|.) :: term -> coterm -> command
@@ -66,9 +66,9 @@ instance Seq Print Print Print where
   sumR2 r = prec 10 (str "inr" <+> withPrec 11 r)
   funR f = prec 0 (char 'λ' <+> bind (\ a -> bind (\ b -> brackets (var a <> comma <+> var b) <+> dot <+> withPrec 0 (f (atom (var a)) (atom (var b))))))
 
-  prdL1 f = prec 10 (str "exl" <+> bind (withPrec 0 . f . atom . var))
-  prdL2 f = prec 10 (str "exr" <+> bind (withPrec 0 . f . atom . var))
-  sumL l r = prec 10 (str "exlr" <+> bind (withPrec 0 . l . atom . var) <+> bind (withPrec 0 . r . atom . var))
+  prdL1 f = prec 10 (str "exl" <+> withPrec 11 f)
+  prdL2 f = prec 10 (str "exr" <+> withPrec 11 f)
+  sumL l r = prec 10 (str "exlr" <+> withPrec 11 l <+> withPrec 11 r)
   funL = assocr 10 dot
 
   t .|. c = prec 0 (withPrec 1 t <+> str "║" <+> withPrec 1 c)
