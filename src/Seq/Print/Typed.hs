@@ -9,4 +9,4 @@ import qualified Seq.Print.Untyped as U
 newtype Prec = Prec Int
 
 newtype Print a = Print { getPrint :: U.Print }
-  deriving (Monoid, Semigroup)
+  deriving (Monoid, Semigroup, Show)
