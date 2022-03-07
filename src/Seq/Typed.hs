@@ -5,6 +5,7 @@ module Seq.Typed
 
 class Seq term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   -- right rules
+  µR :: (coterm a -> command) -> term a
   prdR :: term a -> term b -> term (a, b)
   sumR1 :: term a -> term (Either a b)
   sumR2 :: term b -> term (Either a b)
