@@ -12,3 +12,4 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   -- left rules
   prdL1 :: coterm a -> coterm (a, b)
   prdL2 :: coterm b -> coterm (a, b)
+  sumL :: coterm a -> coterm b -> coterm (Either a b)
