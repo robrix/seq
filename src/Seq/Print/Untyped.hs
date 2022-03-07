@@ -28,6 +28,7 @@ instance Seq Print Print Print where
   sumR2 r = prec 10 (str "inr" <+> withPrec 11 r)
   funR f = prec 0 (char 'λ' <+> bind (\ a -> bind (\ b -> brackets (var a <> comma <+> var b) <+> dot <+> withPrec 0 (f (atom (var a)) (atom (var b))))))
 
+  µL f = prec 0 (str "µ̃" <+> bind (\ a -> brackets (var a) <+> dot <+> withPrec 0 (f (atom (var a)))))
   prdL1 f = prec 10 (str "exl" <+> withPrec 11 f)
   prdL2 f = prec 10 (str "exr" <+> withPrec 11 f)
   sumL l r = prec 10 (str "exlr" <+> withPrec 11 l <+> withPrec 11 r)

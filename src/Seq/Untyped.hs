@@ -12,6 +12,7 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   funR :: (term -> coterm -> command) -> term
 
   -- left rules
+  µL :: (term -> command) -> coterm
   prdL1 :: coterm -> coterm
   prdL2 :: coterm -> coterm
   sumL :: coterm -> coterm -> coterm
