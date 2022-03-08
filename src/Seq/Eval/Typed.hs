@@ -2,6 +2,7 @@
 module Seq.Eval.Typed
 ( evalTerm
 , Term(..)
+, Coterm(..)
 ) where
 
 import Control.Monad (ap)
@@ -18,3 +19,6 @@ instance Applicative (Term r) where
 
 instance Monad (Term r) where
   Term m >>= f = Term (\ k -> m (\ a -> eval (f a) k))
+
+
+newtype Coterm r a = Coterm { coeval :: Term r a -> r }
