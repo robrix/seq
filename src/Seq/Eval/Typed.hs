@@ -2,20 +2,20 @@
 {-# LANGUAGE RankNTypes #-}
 module Seq.Eval.Typed
 ( evalEval
-, Eval(..)
+, Term(..)
 ) where
 
 import Control.Monad (ap)
 
-evalEval :: Eval a -> a
-evalEval (Eval r) = r id
+evalEval :: Term a -> a
+evalEval (Term r) = r id
 
-newtype Eval a = Eval { eval :: forall r . (a -> r) -> r }
+newtype Term a = Term { eval :: forall r . (a -> r) -> r }
   deriving (Functor)
 
-instance Applicative Eval where
-  pure a = Eval (\ k -> k a)
+instance Applicative Term where
+  pure a = Term (\ k -> k a)
   (<*>) = ap
 
-instance Monad Eval where
-  Eval m >>= f = Eval (\ k -> m (\ a -> eval (f a) k))
+instance Monad Term where
+  Term m >>= f = Term (\ k -> m (\ a -> eval (f a) k))
