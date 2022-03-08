@@ -3,6 +3,7 @@ module Seq.Eval.Typed
 ( evalTerm
 , Term(..)
 , Coterm(..)
+, Command(..)
 ) where
 
 import Control.Monad (ap)
@@ -26,3 +27,7 @@ newtype Coterm r a = Coterm { coeval :: Term r a -> r }
 
 instance Contravariant (Coterm r) where
   contramap f (Coterm r) = Coterm (r . fmap f)
+
+
+newtype Command r = Command { runCommand :: r }
+  deriving (Functor)
