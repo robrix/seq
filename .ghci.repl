@@ -39,6 +39,7 @@
 :seti -Wno-type-defaults
 :set -Wno-unused-packages
 
-:load Seq
+:load Seq.Eval.Typed Seq.Print.Typed
 
-import Seq
+import Seq.Eval.Typed
+import Seq.Print.Typed
