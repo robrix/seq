@@ -16,8 +16,6 @@ cores=$(sysctl -n machdep.cpu.core_count || echo 4)
 _flags() {
   # disable optimizations for faster loading
   echo "-O0"
-  # don’t load .ghci files (for ghcide)
-  echo "-ignore-dot-ghci"
 
   # use as many jobs as there are physical cores
   echo "-j$((cores + 1))"
@@ -88,4 +86,4 @@ _flags() {
   echo "-XViewPatterns"
 }
 
-cabal v2-exec env -- -u GHC_ENVIRONMENT ghci +RTS -N$((cores + 1)) -RTS -ghci-script=.ghci.repl $(_flags) -no-ignore-dot-ghci $@
+cabal v2-exec env -- -u GHC_ENVIRONMENT ghci +RTS -N$((cores + 1)) -RTS -ghci-script=.ghci.repl $(_flags) $@
