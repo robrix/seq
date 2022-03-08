@@ -6,6 +6,7 @@ module Seq.Eval.Typed
 ) where
 
 import Control.Monad (ap)
+import Data.Functor.Contravariant (Contravariant(..))
 
 evalTerm :: Term a a -> a
 evalTerm (Term r) = r id
@@ -22,3 +23,6 @@ instance Monad (Term r) where
 
 
 newtype Coterm r a = Coterm { coeval :: Term r a -> r }
+
+instance Contravariant (Coterm r) where
+  contramap f (Coterm r) = Coterm (r . fmap f)
