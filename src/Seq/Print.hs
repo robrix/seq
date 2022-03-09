@@ -27,6 +27,7 @@ instance Seq Print Print (Print ()) where
   withR l r = prec 10 (tupled [withPrec 11 l, withPrec 11 r])
   sumR1 l = prec 10 (str "inl" <+> withPrec 11 l)
   sumR2 r = prec 10 (str "inr" <+> withPrec 11 r)
+  tensorR l r = prec 10 (list [withPrec 11 l, withPrec 11 r])
   notR c = prec 11 (char '¬' <+> withPrec 12 c)
   funR f = prec 0 (char 'λ' <+> bind (\ a -> bind (\ b -> brackets (var a <> comma <+> var b) <+> dot <+> withPrec 0 (f (atom (var a)) (atom (var b))))))
 

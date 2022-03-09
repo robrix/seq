@@ -13,6 +13,7 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   withR :: term r a -> term r b -> term r (a, b)
   sumR1 :: term r a -> term r (Either a b)
   sumR2 :: term r b -> term r (Either a b)
+  tensorR :: term r a -> term r b -> term r (Tensor a b)
   notR :: coterm r a -> term r (Not r a)
   funR :: (term r a -> coterm r b -> command r) -> term r (Fun r a b)
 
