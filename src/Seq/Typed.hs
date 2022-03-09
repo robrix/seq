@@ -1,14 +1,11 @@
 {-# LANGUAGE FunctionalDependencies #-}
 module Seq.Typed
 ( Seq(..)
-, Not(..)
 , fun
 , coapp
 , app
 , Fun(..)
 ) where
-
-import Data.Functor.Contravariant (Contravariant(..))
 
 class Seq term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   -- right rules
@@ -31,19 +28,13 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   infix 1 .|.
 
 
-newtype Not r a = Not { runNot :: a -> r }
-
-instance Contravariant (Not r) where
-  contramap f (Not r) = Not (r . f)
-
-
 fun :: (a -> b) -> Fun r a b
-fun f = Fun (\ kb -> Not (runNot kb . f))
+fun f = Fun (\ kb -> kb . f)
 
 coapp :: (a -> (b -> r) -> r) -> Fun r a b
-coapp f = Fun (\ kb -> Not (\ a -> f a (runNot kb)))
+coapp f = Fun (\ kb a -> f a kb)
 
 app :: Fun r a b -> (a -> (b -> r) -> r)
-app (Fun r) a kb = runNot (r (Not kb)) a
+app (Fun r) a kb = r kb a
 
-newtype Fun r a b = Fun { runFun :: Not r b -> Not r a }
+newtype Fun r a b = Fun { runFun :: (b -> r) -> (a -> r) }
