@@ -46,6 +46,6 @@ instance Seq Term Coterm Command where
   prdL1 = contramap fst
   prdL2 = contramap snd
   sumL p q = Coterm (either (coeval p) (coeval q))
-  funL a b = Coterm (\ f -> eval a (\ a -> app f a (coeval b)))
+  funL a b = Coterm (\ f -> eval a (\ a -> app f (coeval b) a))
 
   t .|. c = Command (eval t (coeval c))

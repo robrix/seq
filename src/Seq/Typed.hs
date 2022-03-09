@@ -26,7 +26,7 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   infix 1 .|.
 
 
-app :: Fun r a b -> (a -> (b -> r) -> r)
-app (Fun r) a kb = r kb a
+app :: Fun r a b -> ((b -> r) -> (a -> r))
+app (Fun r) kb a = r kb a
 
 newtype Fun r a b = Fun { runFun :: (b -> r) -> (a -> r) }
