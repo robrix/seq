@@ -3,6 +3,7 @@ module Seq.Class
 ( Seq(..)
 , (|>)
 , Fun(..)
+, Not(..)
 ) where
 
 class Seq term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
@@ -34,3 +35,5 @@ infixr 9 |>
 
 
 newtype Fun r a b = Fun { app :: (b -> r) -> (a -> r) }
+
+newtype Not r a = Not { runNot :: a -> r }
