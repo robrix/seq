@@ -48,6 +48,7 @@ instance Seq Term Coterm Command where
   withR = liftA2 (,)
   sumR1 = fmap Left
   sumR2 = fmap Right
+  notR = pure . Not . coeval
   funR f = Term (\ k -> k (Fun (\ kb a -> runCommand (f (pure a) (Coterm kb)))))
 
   µL f = Coterm (runCommand . f . pure)
