@@ -44,7 +44,7 @@ instance Monoid DString where
   mempty = DString id
 
 
-class Document d where
+class Monoid d => Document d where
   char :: Char -> d
 
 instance Document Doc where
