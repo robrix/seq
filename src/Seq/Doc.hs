@@ -16,6 +16,7 @@ module Seq.Doc
 , comma
 , surround
 , enclose
+, encloseSep
 , parensIf
 , hsep
 , concatWith
@@ -74,6 +75,9 @@ dot = char '·'
 comma :: Doc
 comma = char ','
 
+line' :: Doc
+line' = char '\n'
+
 surround
   :: Doc -- ^ middle doc
   -> Doc -- ^ left doc
@@ -87,6 +91,14 @@ enclose
   -> Doc -- ^ middle doc
   -> Doc
 enclose l r x = l <> x <> r
+
+encloseSep
+  :: Doc   -- ^ left doc
+  -> Doc   -- ^ right doc
+  -> Doc   -- ^ separator
+  -> [Doc] -- ^ elements
+  -> Doc
+encloseSep l r s ps = enclose l r (concatWith (surround (line' <> s)) ps)
 
 parensIf :: Bool -> Doc -> Doc
 parensIf False = id
