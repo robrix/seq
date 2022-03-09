@@ -20,6 +20,7 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   withL1 :: coterm r a -> coterm r (a, b)
   withL2 :: coterm r b -> coterm r (a, b)
   sumL :: coterm r a -> coterm r b -> coterm r (Either a b)
+  notL :: term r a -> coterm r (Not r a)
   funL :: term r a -> coterm r b -> coterm r (Fun r a b)
 
   -- commands
