@@ -14,6 +14,7 @@ module Seq.Doc
 , space
 , dot
 , comma
+, line'
 , surround
 , enclose
 , encloseSep
