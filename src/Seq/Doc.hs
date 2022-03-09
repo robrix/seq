@@ -62,6 +62,9 @@ lambda f = bind (\ v -> char 'λ' <+> var v <+> char '.' <+> f v)
 class Monoid d => Document d where
   char :: Char -> d
 
+  enclosing :: d -> d -> d -> d
+  enclosing = enclose
+
 instance Document Doc where
   char c = Doc (\ _ -> DString (c:))
 
