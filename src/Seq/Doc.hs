@@ -53,7 +53,7 @@ instance Document Doc where
 str :: Document d => String -> d
 str = foldMap char
 
-(<+>) :: Doc -> Doc -> Doc
+(<+>) :: Document d => d -> d -> d
 p <+> q = p <> char ' ' <> q
 
 parens :: Doc -> Doc
