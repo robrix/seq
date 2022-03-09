@@ -118,11 +118,12 @@ enclose
 enclose l r x = l <> x <> r
 
 encloseSep
-  :: Doc   -- ^ left doc
-  -> Doc   -- ^ right doc
-  -> Doc   -- ^ separator
-  -> [Doc] -- ^ elements
-  -> Doc
+  :: Document d
+  => d   -- ^ left doc
+  -> d   -- ^ right doc
+  -> d   -- ^ separator
+  -> [d] -- ^ elements
+  -> d
 encloseSep l r s ps = enclose l r (concatWith (surround (line' <> s)) ps)
 
 list :: [Doc] -> Doc
