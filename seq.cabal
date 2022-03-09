@@ -50,7 +50,6 @@ library
     Seq.Eval.Typed
     Seq.Print.Typed
     Seq.Typed
-    Seq.Untyped
   build-depends:
     , base ^>=4.16.0.0
   hs-source-dirs:   src
