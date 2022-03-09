@@ -62,6 +62,11 @@ lambda f = bind (\ v -> char 'λ' <+> var v <+> char '.' <+> f v)
 class Monoid d => Document d where
   char :: Char -> d
 
+  group :: d -> d
+  group = id
+  flatAlt :: d -> d -> d
+  flatAlt = const
+
   enclosing :: d -> d -> d -> d
   enclosing = enclose
 
