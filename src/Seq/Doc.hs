@@ -22,6 +22,7 @@ module Seq.Doc
 , surround
 , enclose
 , encloseSep
+, list
 , parensIf
 , hsep
 , concatWith
@@ -116,6 +117,9 @@ encloseSep
   -> [Doc] -- ^ elements
   -> Doc
 encloseSep l r s ps = enclose l r (concatWith (surround (line' <> s)) ps)
+
+list :: [Doc] -> Doc
+list = encloseSep lbracket rbracket (comma <> space)
 
 parensIf :: Bool -> Doc -> Doc
 parensIf False = id
