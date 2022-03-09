@@ -4,6 +4,7 @@ module Seq.Class
 , (|>)
 , Fun(..)
 , Not(..)
+, Tensor(..)
 ) where
 
 class Seq term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
@@ -39,3 +40,5 @@ infixr 9 |>
 newtype Fun r a b = Fun { app :: (b -> r) -> (a -> r) }
 
 newtype Not r a = Not { runNot :: a -> r }
+
+data Tensor a b = Tensor { fst' :: !a, snd' :: !b }
