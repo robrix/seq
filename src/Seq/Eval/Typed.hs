@@ -9,6 +9,7 @@ module Seq.Eval.Typed
 
 import Control.Applicative (liftA2)
 import Control.Monad (ap)
+import Data.Coerce (coerce)
 import Data.Functor.Contravariant (Contravariant(..))
 import Seq.Typed
 
@@ -34,6 +35,9 @@ instance Contravariant (Coterm r) where
 newtype Command r = Command { runCommand :: r }
   deriving (Functor)
 
+instance Applicative Command where
+  pure = Command
+  (<*>) = coerce
 
 instance Seq Term Coterm Command where
   µR f = Term (\ k -> runCommand (f (Coterm k)))
