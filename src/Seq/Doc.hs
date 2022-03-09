@@ -15,6 +15,8 @@ module Seq.Doc
 , dot
 , comma
 , line'
+, lbracket
+, rbracket
 , surround
 , enclose
 , encloseSep
@@ -78,6 +80,12 @@ comma = char ','
 
 line' :: Doc
 line' = char '\n'
+
+lbracket :: Doc
+lbracket = char '['
+
+rbracket :: Doc
+rbracket = char ']'
 
 surround
   :: Doc -- ^ middle doc
