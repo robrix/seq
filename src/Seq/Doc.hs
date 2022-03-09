@@ -138,7 +138,7 @@ parensIf True  = parens
 hsep :: [Doc] -> Doc
 hsep = concatWith (<+>)
 
-concatWith :: Foldable t => (Doc -> Doc -> Doc) -> t Doc -> Doc
+concatWith :: (Foldable t, Monoid d) => (d -> d -> d) -> t d -> d
 concatWith (<>) ps
   | null ps   = mempty
   | otherwise = foldr1 (<>) ps
