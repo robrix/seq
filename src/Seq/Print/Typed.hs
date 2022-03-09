@@ -17,14 +17,14 @@ newtype Print r a = Print { getPrint :: U.Print }
 
 instance Seq Print Print (Print ()) where
   µR f = Print (U.µR (getPrint . f . Print))
-  prdR (Print a) (Print b) = Print (U.prdR a b)
+  withR (Print a) (Print b) = Print (U.withR a b)
   sumR1 (Print a) = Print (U.sumR1 a)
   sumR2 (Print b) = Print (U.sumR2 b)
   funR f = Print (U.funR (\ t c -> getPrint (f (Print t) (Print c))))
 
   µL f = Print (U.µL (getPrint . f . Print))
-  prdL1 (Print a) = Print (U.prdL1 a)
-  prdL2 (Print b) = Print (U.prdL1 b)
+  withL1 (Print a) = Print (U.withL1 a)
+  withL2 (Print b) = Print (U.withL1 b)
   sumL (Print a) (Print b) = Print (U.sumL a b)
   funL (Print t) (Print c) = Print (U.funL t c)
 
