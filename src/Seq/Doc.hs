@@ -65,7 +65,7 @@ brackets = enclose lbracket rbracket
 bind :: (Var -> Doc) -> Doc
 bind f = Doc $ \ v -> let Doc p = f v in p (succ v)
 
-var :: Var -> Doc
+var :: Document d => Var -> d
 var (Var i) = str $ alphabet !! r : if q > 0 then show q else ""
   where
   n = length alphabet
