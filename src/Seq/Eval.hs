@@ -45,7 +45,7 @@ instance Monad Command where
 
 instance Seq Term Coterm Command where
   µR f = Term (runCommand . f . Coterm)
-  withR = liftA2 (,)
+  prdR = liftA2 (,)
   sumR1 = fmap Left
   sumR2 = fmap Right
   notR = pure . Not . coeval
@@ -53,8 +53,8 @@ instance Seq Term Coterm Command where
   funR f = Term (\ k -> k (Fun (\ kb a -> runCommand (f (pure a) (Coterm kb)))))
 
   µL f = Coterm (runCommand . f . pure)
-  withL1 = contramap fst
-  withL2 = contramap snd
+  prdL1 = contramap fst
+  prdL2 = contramap snd
   sumL p q = Coterm (either (coeval p) (coeval q))
   tensorL f = µL (\ t -> f (fst' <$> t) (snd' <$> t))
   notL t = Coterm (eval t . runNot)
