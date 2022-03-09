@@ -132,7 +132,7 @@ list = encloseSep lbracket rbracket (comma <> space)
 tupled :: Document d => [d] -> d
 tupled = encloseSep lparen rparen (comma <> space)
 
-parensIf :: Bool -> Doc -> Doc
+parensIf :: Document d => Bool -> d -> d
 parensIf False = id
 parensIf True  = parens
 
