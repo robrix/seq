@@ -1,5 +1,5 @@
 {-# LANGUAGE FunctionalDependencies #-}
-module Seq.Typed
+module Seq.Class
 ( Seq(..)
 , Fun(..)
 ) where

@@ -10,8 +10,8 @@ module Seq.Print.Typed
 , ($$)
 ) where
 
+import Seq.Class
 import Seq.Doc
-import Seq.Typed
 
 newtype Prec = Prec Int
   deriving (Eq, Num, Ord)

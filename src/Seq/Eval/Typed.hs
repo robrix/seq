@@ -11,7 +11,7 @@ import Control.Applicative (liftA2)
 import Control.Monad (ap)
 import Data.Coerce (coerce)
 import Data.Functor.Contravariant (Contravariant(..))
-import Seq.Typed
+import Seq.Class
 
 newtype Term r a = Term { eval :: (a -> r) -> r }
 
