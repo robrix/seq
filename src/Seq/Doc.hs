@@ -2,15 +2,15 @@
 module Seq.Doc
 ( Var(..)
 , Doc(..)
-, Document(..)
 , DString(..)
+, bind
+, var
+, lambda
+, Document(..)
 , str
 , (<+>)
 , parens
 , brackets
-, bind
-, var
-, lambda
 , space
 , dot
 , comma
@@ -43,6 +43,21 @@ instance Semigroup DString where
 instance Monoid DString where
   mempty = DString id
 
+bind :: (Var -> Doc) -> Doc
+bind f = Doc $ \ v -> let Doc p = f v in p (succ v)
+
+var :: Document d => Var -> d
+var (Var i) = str $ alphabet !! r : if q > 0 then show q else ""
+  where
+  n = length alphabet
+  (q, r) = i `divMod` n
+
+alphabet :: String
+alphabet = ['a'..'z']
+
+lambda :: (Var -> Doc) -> Doc
+lambda f = bind (\ v -> char 'λ' <+> var v <+> char '.' <+> f v)
+
 
 class Monoid d => Document d where
   char :: Char -> d
@@ -61,21 +76,6 @@ parens = enclose lparen rparen
 
 brackets :: Document d => d -> d
 brackets = enclose lbracket rbracket
-
-bind :: (Var -> Doc) -> Doc
-bind f = Doc $ \ v -> let Doc p = f v in p (succ v)
-
-var :: Document d => Var -> d
-var (Var i) = str $ alphabet !! r : if q > 0 then show q else ""
-  where
-  n = length alphabet
-  (q, r) = i `divMod` n
-
-alphabet :: String
-alphabet = ['a'..'z']
-
-lambda :: (Var -> Doc) -> Doc
-lambda f = bind (\ v -> char 'λ' <+> var v <+> char '.' <+> f v)
 
 space :: Document d => d
 space = char ' '
