@@ -77,28 +77,28 @@ alphabet = ['a'..'z']
 lambda :: (Var -> Doc) -> Doc
 lambda f = bind (\ v -> char 'λ' <+> var v <+> char '.' <+> f v)
 
-space :: Doc
+space :: Document d => d
 space = char ' '
 
-dot :: Doc
+dot :: Document d => d
 dot = char '·'
 
-comma :: Doc
+comma :: Document d => d
 comma = char ','
 
-line' :: Doc
+line' :: Document d => d
 line' = char '\n'
 
-lbracket :: Doc
+lbracket :: Document d => d
 lbracket = char '['
 
-rbracket :: Doc
+rbracket :: Document d => d
 rbracket = char ']'
 
-lparen :: Doc
+lparen :: Document d => d
 lparen = char '('
 
-rparen :: Doc
+rparen :: Document d => d
 rparen = char ')'
 
 surround
