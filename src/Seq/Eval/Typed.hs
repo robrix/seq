@@ -42,6 +42,7 @@ instance Applicative Command where
 instance Monad Command where
   a >>= f = coerce f a
 
+
 instance Seq Term Coterm Command where
   µR f = Term (\ k -> runCommand (f (Coterm k)))
   withR = liftA2 (,)
