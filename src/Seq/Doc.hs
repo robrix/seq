@@ -111,7 +111,7 @@ line :: Document d => d
 line = flatAlt hardline space
 
 line' :: Document d => d
-line' = char '\n'
+line' = flatAlt hardline mempty
 
 lbracket :: Document d => d
 lbracket = char '['
