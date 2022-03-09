@@ -51,7 +51,7 @@ str = foldMap char
 p <+> q = p <> char ' ' <> q
 
 parens :: Doc -> Doc
-parens = enclose (char '(') (char ')')
+parens = enclose lparen rparen
 
 brackets :: Doc -> Doc
 brackets = enclose lbracket rbracket
