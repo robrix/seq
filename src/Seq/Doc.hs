@@ -84,8 +84,11 @@ class Monoid d => Document d where
     -> d
   enclosingSep = encloseSep
 
+instance Document DString where
+  char = DString . (:)
+
 instance Document Doc where
-  char c = Doc (\ _ -> DString (c:))
+  char = Doc . const . char
 
 instance Document Bind where
   char = Bind . const . char
