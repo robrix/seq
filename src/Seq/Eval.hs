@@ -49,7 +49,7 @@ instance Seq Term Coterm Command where
   coprdR1 = fmap Left
   coprdR2 = fmap Right
   notR = pure . Not . coeval
-  pairR = liftA2 Tensor
+  pairR = liftA2 Pair
   funR f = Term (\ k -> k (Fun (\ kb a -> runCommand (f (pure a) (Coterm kb)))))
 
   µL f = Coterm (runCommand . f . pure)
