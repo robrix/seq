@@ -1,7 +1,6 @@
 {-# LANGUAGE FunctionalDependencies #-}
 module Seq.Typed
 ( Seq(..)
-, coapp
 , app
 , Fun(..)
 ) where
@@ -26,9 +25,6 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
 
   infix 1 .|.
 
-
-coapp :: ((b -> r) -> (a -> r)) -> Fun r a b
-coapp = Fun
 
 app :: Fun r a b -> (a -> (b -> r) -> r)
 app (Fun r) a kb = r kb a

@@ -40,7 +40,7 @@ instance Seq Term Coterm Command where
   prdR = liftA2 (,)
   sumR1 = fmap Left
   sumR2 = fmap Right
-  funR f = Term (\ k -> k (coapp (\ kb a -> runCommand (f (pure a) (Coterm kb)))))
+  funR f = Term (\ k -> k (Fun (\ kb a -> runCommand (f (pure a) (Coterm kb)))))
 
   µL f = Coterm (runCommand . f . pure)
   prdL1 = contramap fst
