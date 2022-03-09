@@ -4,28 +4,67 @@
 module Seq.Print.Typed
 ( Prec(..)
 , Print(..)
+, atom
+, prec
+, withPrec
+, ($$)
 ) where
 
-import qualified Seq.Print.Untyped as U
-import           Seq.Typed
-import qualified Seq.Untyped as U
+import Seq.Doc
+import Seq.Typed
 
 newtype Prec = Prec Int
+  deriving (Eq, Num, Ord)
 
-newtype Print r a = Print { getPrint :: U.Print }
-  deriving (Monoid, Semigroup, Show)
+newtype Print r a = Print { getPrint :: Prec -> Doc }
+  deriving (Monoid, Semigroup)
+
+instance Show (Print r a) where
+  showsPrec d p = string (getDoc (getPrint p (Prec d)) (Var 0))
 
 instance Seq Print Print (Print ()) where
-  µR f = Print (U.µR (getPrint . f . Print))
-  withR (Print a) (Print b) = Print (U.withR a b)
-  sumR1 (Print a) = Print (U.sumR1 a)
-  sumR2 (Print b) = Print (U.sumR2 b)
-  funR f = Print (U.funR (\ t c -> getPrint (f (Print t) (Print c))))
+  µR f = prec 0 (char 'µ' <+> bind (\ a -> brackets (var a) <+> dot <+> withPrec 0 (f (atom (var a)))))
+  withR l r = prec 10 (str "inlr" <+> withPrec 11 l <+> withPrec 11 r)
+  sumR1 l = prec 10 (str "inl" <+> withPrec 11 l)
+  sumR2 r = prec 10 (str "inr" <+> withPrec 11 r)
+  funR f = prec 0 (char 'λ' <+> bind (\ a -> bind (\ b -> brackets (var a <> comma <+> var b) <+> dot <+> withPrec 0 (f (atom (var a)) (atom (var b))))))
 
-  µL f = Print (U.µL (getPrint . f . Print))
-  withL1 (Print a) = Print (U.withL1 a)
-  withL2 (Print b) = Print (U.withL1 b)
-  sumL (Print a) (Print b) = Print (U.sumL a b)
-  funL (Print t) (Print c) = Print (U.funL t c)
+  µL f = prec 0 (str "µ̃" <+> bind (\ a -> brackets (var a) <+> dot <+> withPrec 0 (f (atom (var a)))))
+  withL1 f = prec 10 (str "exl" <+> withPrec 11 f)
+  withL2 f = prec 10 (str "exr" <+> withPrec 11 f)
+  sumL l r = prec 10 (str "exlr" <+> withPrec 11 l <+> withPrec 11 r)
+  funL = assocr 10 dot
 
-  Print t .|. Print c = Print (t U..|. c)
+  t .|. c = prec 0 (withPrec 1 t <+> str "║" <+> withPrec 1 c)
+
+
+atom :: Doc -> Print r a
+atom = Print . const
+
+prec :: Prec -> Doc -> Print r a
+prec i b = Print (\ i' -> parensIf (i' > i) b)
+
+withPrec :: Prec -> Print r a -> Doc
+withPrec = flip getPrint
+
+($$) :: Print r a -> Print r b -> Print r c
+($$) = assocl (Prec 10) space
+
+infixl 9 $$
+
+
+assocl
+  :: Prec      -- ^ precedence
+  -> Doc       -- ^ operator
+  -> Print r a -- ^ left operand
+  -> Print r b -- ^ right operand
+  -> Print r c
+assocl p o l r = prec p (surround o (withPrec p l) (withPrec (p + 1) r))
+
+assocr
+  :: Prec      -- ^ precedence
+  -> Doc       -- ^ operator
+  -> Print r a -- ^ left operand
+  -> Print r b -- ^ right operand
+  -> Print r c
+assocr p o l r = prec p (surround o (withPrec (p + 1) l) (withPrec p r))
