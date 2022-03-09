@@ -49,7 +49,6 @@ library
     Seq.Doc
     Seq.Eval.Typed
     Seq.Print.Typed
-    Seq.Print.Untyped
     Seq.Typed
     Seq.Untyped
   build-depends:
