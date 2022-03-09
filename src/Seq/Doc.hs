@@ -75,10 +75,10 @@ str = foldMap char
 p <+> q = p <> char ' ' <> q
 
 parens :: Document d => d -> d
-parens = enclose lparen rparen
+parens = enclosing lparen rparen
 
 brackets :: Document d => d -> d
-brackets = enclose lbracket rbracket
+brackets = enclosing lbracket rbracket
 
 space :: Document d => d
 space = char ' '
