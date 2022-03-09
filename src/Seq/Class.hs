@@ -5,6 +5,7 @@ module Seq.Class
 , Fun(..)
 , Not(..)
 , Pair(..)
+, Copair(..)
 ) where
 
 class Seq term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
@@ -44,3 +45,5 @@ newtype Fun r a b = Fun { app :: (b -> r) -> (a -> r) }
 newtype Not r a = Not { runNot :: a -> r }
 
 data Pair a b = Pair { fst' :: !a, snd' :: !b }
+
+newtype Copair r a b = Copair { runCopair :: ((a -> r) -> (b -> r) -> r) -> r }
