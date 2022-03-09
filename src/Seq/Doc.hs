@@ -126,7 +126,7 @@ encloseSep
   -> d
 encloseSep l r s ps = enclose l r (concatWith (surround (line' <> s)) ps)
 
-list :: [Doc] -> Doc
+list :: Document d => [d] -> d
 list = encloseSep lbracket rbracket (comma <> space)
 
 tupled :: [Doc] -> Doc
