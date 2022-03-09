@@ -14,6 +14,7 @@ module Seq.Doc
 , space
 , dot
 , comma
+, hardline
 , line'
 , lparen
 , rparen
@@ -101,6 +102,9 @@ dot = char '·'
 
 comma :: Document d => d
 comma = char ','
+
+hardline :: Document d => d
+hardline = char '\n'
 
 line' :: Document d => d
 line' = char '\n'
