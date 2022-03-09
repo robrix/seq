@@ -138,10 +138,10 @@ encloseSep
 encloseSep l r s ps = enclose l r (concatWith (surround (line' <> s)) ps)
 
 list :: Document d => [d] -> d
-list = encloseSep lbracket rbracket (comma <> space)
+list = enclosingSep lbracket rbracket (comma <> space)
 
 tupled :: Document d => [d] -> d
-tupled = encloseSep lparen rparen (comma <> space)
+tupled = enclosingSep lparen rparen (comma <> space)
 
 parensIf :: Document d => Bool -> d -> d
 parensIf False = id
