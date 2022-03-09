@@ -136,7 +136,7 @@ parensIf :: Document d => Bool -> d -> d
 parensIf False = id
 parensIf True  = parens
 
-hsep :: [Doc] -> Doc
+hsep :: Document d => [d] -> d
 hsep = concatWith (<+>)
 
 concatWith :: (Foldable t, Monoid d) => (d -> d -> d) -> t d -> d
