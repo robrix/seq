@@ -46,7 +46,6 @@ common common
 library
   import:         common
   exposed-modules:
-    Seq
     Seq.Doc
     Seq.Eval.Typed
     Seq.Print.Typed
