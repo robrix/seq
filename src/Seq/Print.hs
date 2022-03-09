@@ -25,8 +25,8 @@ instance Show (Print r a) where
 instance Seq Print Print (Print ()) where
   µR f = prec 0 (char 'µ' <+> bind (\ a -> brackets (var a) <+> dot <+> withPrec 0 (f (atom (var a)))))
   prdR l r = prec 10 (tupled [withPrec 11 l, withPrec 11 r])
-  sumR1 l = prec 10 (str "inl" <+> withPrec 11 l)
-  sumR2 r = prec 10 (str "inr" <+> withPrec 11 r)
+  coprdR1 l = prec 10 (str "inl" <+> withPrec 11 l)
+  coprdR2 r = prec 10 (str "inr" <+> withPrec 11 r)
   tensorR l r = prec 10 (list [withPrec 11 l, withPrec 11 r])
   notR c = prec 11 (char '¬' <+> withPrec 12 c)
   funR f = prec 0 (char 'λ' <+> bind (\ a -> bind (\ b -> brackets (var a <> comma <+> var b) <+> dot <+> withPrec 0 (f (atom (var a)) (atom (var b))))))
@@ -34,7 +34,7 @@ instance Seq Print Print (Print ()) where
   µL f = prec 0 (str "µ̃" <+> bind (\ a -> brackets (var a) <+> dot <+> withPrec 0 (f (atom (var a)))))
   prdL1 f = prec 10 (str "exl" <+> withPrec 11 f)
   prdL2 f = prec 10 (str "exr" <+> withPrec 11 f)
-  sumL l r = prec 10 (str "exlr" <+> withPrec 11 l <+> withPrec 11 r)
+  coprdL l r = prec 10 (str "exlr" <+> withPrec 11 l <+> withPrec 11 r)
   tensorL f = prec 0 (str "µ̃" <> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> withPrec 0 (f (atom (var a)) (atom (var b))))))
   notL t = prec 10 (str "not" <+> brackets (withPrec 11 t))
   funL = assocr 10 dot
