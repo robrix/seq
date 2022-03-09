@@ -2,8 +2,8 @@
 module Seq.Doc
 ( Var(..)
 , Doc(..)
+, Document(..)
 , DString(..)
-, char
 , str
 , (<+>)
 , parens
@@ -43,8 +43,12 @@ instance Semigroup DString where
 instance Monoid DString where
   mempty = DString id
 
-char :: Char -> Doc
-char c = Doc (\ _ -> DString (c:))
+
+class Document d where
+  char :: Char -> d
+
+instance Document Doc where
+  char c = Doc (\ _ -> DString (c:))
 
 str :: String -> Doc
 str = foldMap char
