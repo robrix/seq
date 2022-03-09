@@ -65,6 +65,14 @@ class Monoid d => Document d where
   enclosing :: d -> d -> d -> d
   enclosing = enclose
 
+  enclosingSep
+    :: d   -- ^ left doc
+    -> d   -- ^ right doc
+    -> d   -- ^ separator
+    -> [d] -- ^ elements
+    -> d
+  enclosingSep = encloseSep
+
 instance Document Doc where
   char c = Doc (\ _ -> DString (c:))
 
