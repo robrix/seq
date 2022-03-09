@@ -102,10 +102,11 @@ rparen :: Document d => d
 rparen = char ')'
 
 surround
-  :: Doc -- ^ middle doc
-  -> Doc -- ^ left doc
-  -> Doc -- ^ right doc
-  -> Doc
+  :: Document d
+  => d -- ^ middle doc
+  -> d -- ^ left doc
+  -> d -- ^ right doc
+  -> d
 surround x l r = enclose l r x
 
 enclose
