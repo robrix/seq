@@ -26,6 +26,7 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   infix 1 .|.
 
 
+-- | An infix synonym for 'funL'.
 (|>) :: Seq term coterm command => term r a -> coterm r b -> coterm r (Fun r a b)
 (|>) = funL
 
