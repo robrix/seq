@@ -1,6 +1,7 @@
 {-# LANGUAGE FunctionalDependencies #-}
 module Seq.Class
 ( Seq(..)
+, (|>)
 , Fun(..)
 ) where
 
@@ -23,6 +24,12 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   (.|.) :: term r a -> coterm r a -> command r
 
   infix 1 .|.
+
+
+(|>) :: Seq term coterm command => term r a -> coterm r b -> coterm r (Fun r a b)
+(|>) = funL
+
+infixr 9 |>
 
 
 newtype Fun r a b = Fun { app :: (b -> r) -> (a -> r) }
