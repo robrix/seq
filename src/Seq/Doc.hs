@@ -56,7 +56,7 @@ str = foldMap char
 (<+>) :: Document d => d -> d -> d
 p <+> q = p <> char ' ' <> q
 
-parens :: Doc -> Doc
+parens :: Document d => d -> d
 parens = enclose lparen rparen
 
 brackets :: Doc -> Doc
