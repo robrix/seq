@@ -47,7 +47,7 @@ library
   import:         common
   exposed-modules:
     Seq.Doc
-    Seq.Eval.Typed
+    Seq.Eval
     Seq.Print.Typed
     Seq.Class
   build-depends:

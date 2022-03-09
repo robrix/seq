@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE RankNTypes #-}
-module Seq.Eval.Typed
+module Seq.Eval
 ( Term(..)
 , Coterm(..)
 , Command(..)
