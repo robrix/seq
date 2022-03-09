@@ -110,7 +110,7 @@ surround
 surround x l r = enclose l r x
 
 enclose
-  :: Document d
+  :: Semigroup d
   => d -- ^ left doc
   -> d -- ^ right doc
   -> d -- ^ middle doc
