@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-module Seq.Print.Typed
+module Seq.Print
 ( Prec(..)
 , Print(..)
 , atom
