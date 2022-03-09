@@ -1,6 +1,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Seq.Doc
 ( Var(..)
+, Bind(..)
 , Doc(..)
 , DString(..)
 , bind
@@ -33,6 +34,9 @@ module Seq.Doc
 
 newtype Var = Var Int
   deriving (Enum, Eq, Ord, Show)
+
+newtype Bind = Bind { getBind :: Var -> Doc }
+  deriving (Monoid, Semigroup)
 
 newtype Doc = Doc { getDoc :: Var -> DString }
   deriving (Monoid, Semigroup)
@@ -82,6 +86,9 @@ class Monoid d => Document d where
 
 instance Document Doc where
   char c = Doc (\ _ -> DString (c:))
+
+instance Document Bind where
+  char = Bind . const . char
 
 str :: Document d => String -> d
 str = foldMap char
