@@ -2,8 +2,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE RankNTypes #-}
 module Seq.Eval.Typed
-( term
-, evalTerm
+( evalTerm
 , Term(..)
 , coeval
 , coterm
@@ -19,9 +18,6 @@ import Seq.Typed
 evalTerm :: Term a a -> a
 evalTerm (Term r) = r id
 
-term :: ((a -> r) -> r) -> Term r a
-term f = Term f
-
 newtype Term r a = Term { eval :: (a -> r) -> r }
 
 instance Functor (Term r) where
@@ -32,7 +28,7 @@ instance Applicative (Term r) where
   (<*>) = ap
 
 instance Monad (Term r) where
-  m >>= f = term (\ k -> eval m (\ a -> eval (f a) k))
+  m >>= f = Term (\ k -> eval m (\ a -> eval (f a) k))
 
 
 coeval :: Coterm r a -> (a -> r)
@@ -52,11 +48,11 @@ newtype Command r = Command { runCommand :: r }
 
 
 instance Seq Term Coterm Command where
-  µR f = term (\ k -> runCommand (f (coterm k)))
+  µR f = Term (\ k -> runCommand (f (coterm k)))
   prdR = liftA2 (,)
   sumR1 = fmap Left
   sumR2 = fmap Right
-  funR f = term (\ k -> k (coapp (\ a kb -> runCommand (f (pure a) (coterm kb)))))
+  funR f = Term (\ k -> k (coapp (\ a kb -> runCommand (f (pure a) (coterm kb)))))
 
   µL f = coterm (runCommand . f . pure)
   prdL1 = contramap fst
