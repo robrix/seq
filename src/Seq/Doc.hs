@@ -15,6 +15,8 @@ module Seq.Doc
 , dot
 , comma
 , line'
+, lparen
+, rparen
 , lbracket
 , rbracket
 , surround
@@ -86,6 +88,12 @@ lbracket = char '['
 
 rbracket :: Doc
 rbracket = char ']'
+
+lparen :: Doc
+lparen = char '('
+
+rparen :: Doc
+rparen = char ')'
 
 surround
   :: Doc -- ^ middle doc
