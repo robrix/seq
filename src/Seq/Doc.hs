@@ -109,10 +109,11 @@ surround
 surround x l r = enclose l r x
 
 enclose
-  :: Doc -- ^ left doc
-  -> Doc -- ^ right doc
-  -> Doc -- ^ middle doc
-  -> Doc
+  :: Document d
+  => d -- ^ left doc
+  -> d -- ^ right doc
+  -> d -- ^ middle doc
+  -> d
 enclose l r x = l <> x <> r
 
 encloseSep
