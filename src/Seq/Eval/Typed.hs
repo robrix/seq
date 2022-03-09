@@ -2,8 +2,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE RankNTypes #-}
 module Seq.Eval.Typed
-( evalTerm
-, Term(..)
+( Term(..)
 , Coterm(..)
 , Command(..)
 ) where
@@ -12,9 +11,6 @@ import Control.Applicative (liftA2)
 import Control.Monad (ap)
 import Data.Functor.Contravariant (Contravariant(..))
 import Seq.Typed
-
-evalTerm :: Term a a -> a
-evalTerm (Term r) = r id
 
 newtype Term r a = Term { eval :: (a -> r) -> r }
 
