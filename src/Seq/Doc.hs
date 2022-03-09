@@ -4,9 +4,9 @@ module Seq.Doc
 , Bind(..)
 , Doc(..)
 , DString(..)
-, bind
 , var
 , lambda
+, Binding(..)
 , Document(..)
 , str
 , (<+>)
@@ -49,9 +49,6 @@ instance Semigroup DString where
 instance Monoid DString where
   mempty = DString id
 
-bind :: (Var -> Doc) -> Doc
-bind f = Doc $ \ v -> let Doc p = f v in p (succ v)
-
 var :: Document d => Var -> d
 var (Var i) = str $ alphabet !! r : if q > 0 then show q else ""
   where
@@ -61,8 +58,18 @@ var (Var i) = str $ alphabet !! r : if q > 0 then show q else ""
 alphabet :: String
 alphabet = ['a'..'z']
 
-lambda :: (Var -> Doc) -> Doc
+lambda :: Binding d => (Var -> d) -> d
 lambda f = bind (\ v -> char 'λ' <+> var v <+> char '.' <+> f v)
+
+
+class Document d => Binding d where
+  bind :: (Var -> d) -> d
+
+instance Binding Bind where
+  bind f = Bind $ \ v -> let Bind p = f v in p (succ v)
+
+instance Binding Doc where
+  bind f = Doc $ \ v -> let Doc p = f v in p (succ v)
 
 
 class Monoid d => Document d where
