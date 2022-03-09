@@ -52,7 +52,7 @@ parens :: Doc -> Doc
 parens = enclose (char '(') (char ')')
 
 brackets :: Doc -> Doc
-brackets = enclose (char '[') (char ']')
+brackets = enclose lbracket rbracket
 
 bind :: (Var -> Doc) -> Doc
 bind f = Doc $ \ v -> let Doc p = f v in p (succ v)
