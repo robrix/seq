@@ -3,7 +3,6 @@
 {-# LANGUAGE RankNTypes #-}
 module Seq.Eval.Typed
 ( term
-, eval
 , evalTerm
 , Term(..)
 , coeval
@@ -17,22 +16,19 @@ import Control.Monad (ap)
 import Data.Functor.Contravariant (Contravariant(..))
 import Seq.Typed
 
-eval :: Term r a -> ((a -> r) -> r)
-eval (Term r) f = runNot r (Not f)
-
 evalTerm :: Term a a -> a
-evalTerm (Term r) = runNot r (Not id)
+evalTerm (Term r) = r id
 
 term :: ((a -> r) -> r) -> Term r a
-term f = Term (Not (\ k -> f (runNot k)))
+term f = Term f
 
-newtype Term r a = Term (Not r (Not r a))
+newtype Term r a = Term { eval :: (a -> r) -> r }
 
 instance Functor (Term r) where
-  fmap f (Term r) = Term (Not (runNot r . contramap f))
+  fmap f (Term r) = Term (r . (. f))
 
 instance Applicative (Term r) where
-  pure a = Term (Not (\ k -> runNot k a))
+  pure a = Term (\ k -> k a)
   (<*>) = ap
 
 instance Monad (Term r) where
