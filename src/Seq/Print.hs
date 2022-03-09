@@ -16,11 +16,11 @@ import Seq.Doc
 newtype Prec = Prec Int
   deriving (Eq, Num, Ord)
 
-newtype Print r a = Print { getPrint :: Prec -> Doc }
+newtype Print r a = Print { getPrint :: Prec -> Bind }
   deriving (Monoid, Semigroup)
 
 instance Show (Print r a) where
-  showsPrec d p = string (getDoc (getPrint p (Prec d)) (Var 0))
+  showsPrec d p = string (getDoc (getBind (getPrint p (Prec d)) (Var 0)))
 
 instance Seq Print Print (Print ()) where
   µR f = prec 0 (char 'µ' <+> bind (\ a -> brackets (var a) <+> dot <+> withPrec 0 (f (atom (var a)))))
@@ -38,13 +38,13 @@ instance Seq Print Print (Print ()) where
   t .|. c = prec 0 (withPrec 1 t <+> str "║" <+> withPrec 1 c)
 
 
-atom :: Doc -> Print r a
+atom :: Bind -> Print r a
 atom = Print . const
 
-prec :: Prec -> Doc -> Print r a
+prec :: Prec -> Bind -> Print r a
 prec i b = Print (\ i' -> parensIf (i' > i) b)
 
-withPrec :: Prec -> Print r a -> Doc
+withPrec :: Prec -> Print r a -> Bind
 withPrec = flip getPrint
 
 ($$) :: Print r a -> Print r b -> Print r c
@@ -55,7 +55,7 @@ infixl 9 $$
 
 assocl
   :: Prec      -- ^ precedence
-  -> Doc       -- ^ operator
+  -> Bind       -- ^ operator
   -> Print r a -- ^ left operand
   -> Print r b -- ^ right operand
   -> Print r c
@@ -63,7 +63,7 @@ assocl p o l r = prec p (surround o (withPrec p l) (withPrec (p + 1) r))
 
 assocr
   :: Prec      -- ^ precedence
-  -> Doc       -- ^ operator
+  -> Bind       -- ^ operator
   -> Print r a -- ^ left operand
   -> Print r b -- ^ right operand
   -> Print r c

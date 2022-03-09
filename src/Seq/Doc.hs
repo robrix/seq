@@ -38,7 +38,7 @@ newtype Var = Var Int
 newtype Bind = Bind { getBind :: Var -> Doc }
   deriving (Monoid, Semigroup)
 
-newtype Doc = Doc { getDoc :: Var -> DString }
+newtype Doc = Doc { getDoc :: DString }
   deriving (Monoid, Semigroup)
 
 newtype DString = DString { string :: ShowS }
@@ -68,9 +68,6 @@ class Document d => Binding d where
 instance Binding Bind where
   bind f = Bind $ \ v -> let Bind p = f v in p (succ v)
 
-instance Binding Doc where
-  bind f = Doc $ \ v -> let Doc p = f v in p (succ v)
-
 
 class Monoid d => Document d where
   char :: Char -> d
@@ -95,7 +92,7 @@ instance Document DString where
   char = DString . (:)
 
 instance Document Doc where
-  char = Doc . const . char
+  char = Doc . char
 
 instance Document Bind where
   char = Bind . const . char
