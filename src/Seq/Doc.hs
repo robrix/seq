@@ -102,7 +102,7 @@ rparen :: Document d => d
 rparen = char ')'
 
 surround
-  :: Document d
+  :: Semigroup d
   => d -- ^ middle doc
   -> d -- ^ left doc
   -> d -- ^ right doc
