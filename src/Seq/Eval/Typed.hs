@@ -32,15 +32,15 @@ instance Monad (Term r) where
 
 
 coeval :: Coterm r a -> (a -> r)
-coeval (Coterm r) = runNot r
+coeval (Coterm r) = r
 
 coterm :: (a -> r) -> Coterm r a
-coterm f = Coterm (Not f)
+coterm = Coterm
 
-newtype Coterm r a = Coterm (Not r a)
+newtype Coterm r a = Coterm (a -> r)
 
 instance Contravariant (Coterm r) where
-  contramap f (Coterm r) = Coterm (contramap f r)
+  contramap f (Coterm r) = Coterm (r . f)
 
 
 newtype Command r = Command { runCommand :: r }
