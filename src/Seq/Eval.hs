@@ -44,7 +44,7 @@ instance Monad Command where
 
 
 instance Seq Term Coterm Command where
-  µR f = Term (\ k -> runCommand (f (Coterm k)))
+  µR f = Term (runCommand . f . Coterm)
   withR = liftA2 (,)
   sumR1 = fmap Left
   sumR2 = fmap Right
