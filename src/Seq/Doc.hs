@@ -59,7 +59,7 @@ p <+> q = p <> char ' ' <> q
 parens :: Document d => d -> d
 parens = enclose lparen rparen
 
-brackets :: Doc -> Doc
+brackets :: Document d => d -> d
 brackets = enclose lbracket rbracket
 
 bind :: (Var -> Doc) -> Doc
