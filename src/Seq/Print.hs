@@ -35,6 +35,7 @@ instance Seq Print Print (Print ()) where
   withL1 f = prec 10 (str "exl" <+> withPrec 11 f)
   withL2 f = prec 10 (str "exr" <+> withPrec 11 f)
   sumL l r = prec 10 (str "exlr" <+> withPrec 11 l <+> withPrec 11 r)
+  tensorL f = prec 0 (str "µ̃" <> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> withPrec 0 (f (atom (var a)) (atom (var b))))))
   notL t = prec 10 (str "not" <+> brackets (withPrec 11 t))
   funL = assocr 10 dot
 

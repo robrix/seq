@@ -56,6 +56,7 @@ instance Seq Term Coterm Command where
   withL1 = contramap fst
   withL2 = contramap snd
   sumL p q = Coterm (either (coeval p) (coeval q))
+  tensorL f = µL (\ t -> f (fst' <$> t) (snd' <$> t))
   notL t = Coterm (eval t . runNot)
   funL a b = Coterm (\ f -> eval a (app f (coeval b)))
 
