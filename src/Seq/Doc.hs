@@ -50,7 +50,7 @@ class Monoid d => Document d where
 instance Document Doc where
   char c = Doc (\ _ -> DString (c:))
 
-str :: String -> Doc
+str :: Document d => String -> d
 str = foldMap char
 
 (<+>) :: Doc -> Doc -> Doc
