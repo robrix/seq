@@ -4,7 +4,6 @@
 module Seq.Eval.Typed
 ( evalTerm
 , Term(..)
-, coeval
 , coterm
 , Coterm(..)
 , Command(..)
@@ -31,13 +30,10 @@ instance Monad (Term r) where
   m >>= f = Term (\ k -> eval m (\ a -> eval (f a) k))
 
 
-coeval :: Coterm r a -> (a -> r)
-coeval (Coterm r) = r
-
 coterm :: (a -> r) -> Coterm r a
 coterm = Coterm
 
-newtype Coterm r a = Coterm (a -> r)
+newtype Coterm r a = Coterm { coeval :: a -> r }
 
 instance Contravariant (Coterm r) where
   contramap f (Coterm r) = Coterm (r . f)
