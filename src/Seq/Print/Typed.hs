@@ -12,7 +12,7 @@ import qualified Seq.Untyped as U
 
 newtype Prec = Prec Int
 
-newtype Print a = Print { getPrint :: U.Print }
+newtype Print r a = Print { getPrint :: U.Print }
   deriving (Monoid, Semigroup, Show)
 
 instance Seq Print Print (Print ()) where
