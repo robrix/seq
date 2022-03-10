@@ -85,7 +85,7 @@ printSeq p = putStrLn (getDoc (getBind (getPrint p Bottom) (Var 0)) "")
 
 infixl'
   :: (Enum prec, Ord prec, Document doc)
-  => prec               -- ed > ience
+  => prec               -- ^ precedence
   -> doc                -- ^ operator
   -> Print prec doc r a -- ^ left operand
   -> Print prec doc r b -- ^ right operand
@@ -94,7 +94,7 @@ infixl' p o l r = prec p (surround o (withPrec p l) (withPrec (succ p) r))
 
 infixr'
   :: (Enum prec, Ord prec, Document doc)
-  => prec               -- ed > ience
+  => prec               -- ^ precedence
   -> doc                -- ^ operator
   -> Print prec doc r a -- ^ left operand
   -> Print prec doc r b -- ^ right operand
@@ -103,7 +103,7 @@ infixr' p o l r = prec p (surround o (withPrec (succ p) l) (withPrec p r))
 
 infix'
   :: (Enum prec, Ord prec, Document doc)
-  => prec               -- ed > ience
+  => prec               -- ^ precedence
   -> doc                -- ^ operator
   -> Print prec doc r a -- ^ left operand
   -> Print prec doc s b -- ^ right operand
