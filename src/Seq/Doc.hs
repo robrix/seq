@@ -3,7 +3,6 @@ module Seq.Doc
 ( Var(..)
 , Bind(..)
 , Doc(..)
-, DString(..)
 , var
 , Binding(..)
 , Document(..)
@@ -40,16 +39,13 @@ newtype Var = Var Int
 newtype Bind doc = Bind { getBind :: Var -> doc }
   deriving (Monoid, Semigroup)
 
-newtype Doc = Doc { getDoc :: DString }
-  deriving (Monoid, Semigroup)
+newtype Doc = Doc { getDoc :: ShowS }
 
-newtype DString = DString { string :: ShowS }
+instance Semigroup Doc where
+  a <> b = Doc (getDoc a . getDoc b)
 
-instance Semigroup DString where
-  a <> b = DString (string a . string b)
-
-instance Monoid DString where
-  mempty = DString id
+instance Monoid Doc where
+  mempty = Doc id
 
 var :: Document d => Var -> d
 var (Var i) = str $ alphabet !! r : if q > 0 then show q else ""
@@ -92,11 +88,8 @@ class Monoid d => Document d where
     -> d
   enclosingSep = encloseSep
 
-instance Document DString where
-  char = DString . (:)
-
 instance Document Doc where
-  char = Doc . char
+  char = Doc . (:)
 
 instance Document doc => Document (Bind doc) where
   char = Bind . const . char

@@ -29,7 +29,7 @@ newtype Print prec doc r a = Print { getPrint :: prec -> doc }
   deriving (Monoid, Semigroup)
 
 instance Show (Print Level (Bind Doc) r a) where
-  showsPrec _ p = string (getDoc (getBind (getPrint p Bottom) (Var 0)))
+  showsPrec _ p = getDoc (getBind (getPrint p Bottom) (Var 0))
 
 instance (Document doc, Bounded prec) => Document (Print prec doc r a) where
   char = Print . const . char
@@ -80,7 +80,7 @@ localPrec f p = Print (getPrint p . f)
 infixl 9 $$
 
 printSeq :: Print Level (Bind Doc) r a -> IO ()
-printSeq p = putStrLn (string (getDoc (getBind (getPrint p Bottom) (Var 0))) "")
+printSeq p = putStrLn (getDoc (getBind (getPrint p Bottom) (Var 0)) "")
 
 
 infixl'
