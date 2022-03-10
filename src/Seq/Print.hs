@@ -3,6 +3,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 module Seq.Print
 ( Level(..)
+, Prec(..)
 , Print(..)
 , atom
 , prec
@@ -24,6 +25,8 @@ data Level
   | Prefix
   | Top
   deriving (Bounded, Enum, Eq, Ord, Show)
+
+newtype Prec prec doc = Prec { getPrec :: prec -> doc }
 
 newtype Print prec doc r a = Print { getPrint :: prec -> doc }
   deriving (Monoid, Semigroup)
