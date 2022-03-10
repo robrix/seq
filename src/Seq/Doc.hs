@@ -186,6 +186,7 @@ concatWith (<>) ps
 -- Precedence
 
 newtype Prec prec doc = Prec { getPrec :: prec -> doc }
+  deriving (Monoid, Semigroup)
 
 instance (Bounded prec, Show doc) => Show (Prec prec doc) where
   showsPrec d p = showsPrec d (getPrec p minBound)
