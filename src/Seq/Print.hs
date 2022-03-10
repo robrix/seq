@@ -36,6 +36,7 @@ instance Seq Print Print (Print ()) where
   prdL2 f = prec 10 (str "exr" <+> withPrec 11 f)
   coprdL l r = prec 10 (str "exlr" <+> withPrec 11 l <+> withPrec 11 r)
   pairL f = prec 0 (str "µ̃" <> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> withPrec 0 (f (atom (var a)) (atom (var b))))))
+  copairL a b = atom (list [withPrec 0 a, withPrec 0 b])
   notL t = prec 10 (str "not" <+> brackets (withPrec 11 t))
   funL = assocr 10 dot
 

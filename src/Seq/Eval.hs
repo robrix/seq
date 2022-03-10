@@ -57,6 +57,7 @@ instance Seq Term Coterm Command where
   prdL2 = contramap snd
   coprdL p q = Coterm (either (coeval p) (coeval q))
   pairL f = µL (\ t -> f (fst' <$> t) (snd' <$> t))
+  copairL a b = Coterm (\ c -> copair c (coeval a) (coeval b))
   notL t = Coterm (eval t . runNot)
   funL a b = Coterm (\ f -> eval a (app f (coeval b)))
 

@@ -24,6 +24,7 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   prdL2 :: coterm r b -> coterm r (a, b)
   coprdL :: coterm r a -> coterm r b -> coterm r (Either a b)
   pairL :: (term r a -> term r b -> command r) -> coterm r (Pair a b)
+  copairL :: coterm r a -> coterm r b -> coterm r (Copair r a b)
   notL :: term r a -> coterm r (Not r a)
   funL :: term r a -> coterm r b -> coterm r (Fun r a b)
 
