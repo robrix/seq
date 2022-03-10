@@ -14,6 +14,7 @@ module Seq.Doc
 , space
 , dot
 , comma
+, pipe
 , hardline
 , line
 , line'
@@ -113,6 +114,9 @@ dot = char '·'
 
 comma :: Document d => d
 comma = char ','
+
+pipe :: Document d => d
+pipe = char '|'
 
 hardline :: Document d => d
 hardline = char '\n'
