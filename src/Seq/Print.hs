@@ -65,7 +65,7 @@ infixl 9 $$
 
 assocl
   :: Prec      -- ^ precedence
-  -> Bind       -- ^ operator
+  -> Bind      -- ^ operator
   -> Print r a -- ^ left operand
   -> Print r b -- ^ right operand
   -> Print r c
@@ -73,7 +73,7 @@ assocl p o l r = prec p (surround o (withPrec p l) (withPrec (succ p) r))
 
 assocr
   :: Prec      -- ^ precedence
-  -> Bind       -- ^ operator
+  -> Bind      -- ^ operator
   -> Print r a -- ^ left operand
   -> Print r b -- ^ right operand
   -> Print r c
