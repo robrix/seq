@@ -25,14 +25,14 @@ data Level
   | Top
   deriving (Bounded, Enum, Eq, Ord, Show)
 
-newtype Print prec doc r a = Print { getPrint :: prec -> doc }
-  deriving (Monoid, Semigroup)
+newtype Print level doc r a = Print { getPrint :: Prec level doc }
+  deriving (Monoid, Semigroup, Precedence doc level)
 
 instance Show (Print Level (Bind Doc) r a) where
-  showsPrec _ p = getDoc (getBind (getPrint p Bottom) (Var 0))
+  showsPrec _ p = getDoc (getBind (getPrec (getPrint p) Bottom) (Var 0))
 
 instance (Document doc, Bounded level, Ord level) => Document (Print level doc r a) where
-  char = Print . const . char
+  char = Print . Prec . const . char
   enclosing l r = enclose l r . localPrec (const minBound)
   enclosingSep l r s = encloseSep l r s . map (localPrec (const minBound))
 
@@ -59,19 +59,13 @@ instance Seq (Print Level (Bind Doc)) (Print Level (Bind Doc)) (Print Level (Bin
   (.|.) = infix' Binder (surround pipe space space)
 
 
-instance (Document doc, Ord level) => Precedence doc level (Print level doc r a) where
-  atom = Print . const
-  prec i b = Print (\ i' -> parensIf (i' > i) b)
-  withPrec = flip getPrint
-  localPrec f p = Print (getPrint p . f)
-
 ($$) :: Document doc => Print Level doc r a -> Print Level doc r b -> Print Level doc r c
 ($$) = infixl' Apply space
 
 infixl 9 $$
 
 printSeq :: Print Level (Bind Doc) r a -> IO ()
-printSeq p = putStrLn (getDoc (getBind (getPrint p Bottom) (Var 0)) "")
+printSeq p = putStrLn (getDoc (getBind (getPrec (getPrint p) Bottom) (Var 0)) "")
 
 
 infixl'
