@@ -9,6 +9,7 @@ module Seq.Class
 , Copair(..)
   -- * Library
 , identity
+, constant
 ) where
 
 class Seq term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
@@ -63,3 +64,6 @@ newtype Copair r a b = Copair { copair :: (a -> r) -> (b -> r) -> r }
 
 identity :: Seq t c d => t r (Fun r a a)
 identity = funR (.|.)
+
+constant :: Seq t c d => t r (Fun r a (Fun r b a))
+constant = funR $ \ a k -> funR (\ _ k -> a .|. k) .|. k
