@@ -46,4 +46,4 @@ newtype Not r a = Not { runNot :: a -> r }
 
 data Pair a b = Pair { fst' :: !a, snd' :: !b }
 
-newtype Copair r a b = Copair { runCopair :: ((a -> r) -> (b -> r) -> r) -> r }
+newtype Copair r a b = Copair { copair :: (a -> r) -> (b -> r) -> r }
