@@ -7,6 +7,8 @@ module Seq.Class
 , Not(..)
 , Pair(..)
 , Copair(..)
+  -- * Library
+, identity
 ) where
 
 class Seq term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
@@ -55,3 +57,9 @@ newtype Not r a = Not { runNot :: a -> r }
 data Pair a b = Pair { fst' :: !a, snd' :: !b }
 
 newtype Copair r a b = Copair { copair :: (a -> r) -> (b -> r) -> r }
+
+
+-- Library
+
+identity :: Seq t c d => t r (Fun r a a)
+identity = funR (.|.)
