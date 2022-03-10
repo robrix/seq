@@ -40,6 +40,7 @@ instance Seq Print Print (Print ()) where
   copairL a b = atom (list [withPrec 0 a, withPrec 0 b])
   notL t = prec 10 (str "not" <+> brackets (withPrec 11 t))
   funL = assocr 10 dot
+  cofunL f = prec 10 (str "coapp" <+> bind (\ a -> bind (\ b -> brackets (var a <> comma <+> var b) <+> dot <+> withPrec 0 (f (atom (var a)) (atom (var b))))))
 
   t .|. c = prec 0 (withPrec 1 t <+> str "║" <+> withPrec 1 c)
 

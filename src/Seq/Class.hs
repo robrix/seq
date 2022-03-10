@@ -29,6 +29,7 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   copairL :: coterm r a -> coterm r b -> coterm r (Copair r a b)
   notL :: term r a -> coterm r (Not r a)
   funL :: term r a -> coterm r b -> coterm r (Fun r a b)
+  cofunL :: (term r a -> coterm r b -> command r) -> coterm r (Cofun r a b)
 
   -- commands
   (.|.) :: term r a -> coterm r a -> command r

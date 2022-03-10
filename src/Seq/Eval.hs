@@ -61,5 +61,6 @@ instance Seq Term Coterm Command where
   copairL a b = Coterm (\ c -> copair c (coeval a) (coeval b))
   notL t = Coterm (eval t . runNot)
   funL a b = Coterm (\ f -> eval a (app f (coeval b)))
+  cofunL f = Coterm (\ (b :>- a) -> runCommand (f (pure a) (Coterm b)))
 
   t .|. c = Command (eval t (coeval c))
