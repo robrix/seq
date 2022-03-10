@@ -14,7 +14,7 @@ import Seq.Class
 import Seq.Doc
 
 newtype Prec = Prec Int
-  deriving (Eq, Num, Ord)
+  deriving (Bounded, Enum, Eq, Num, Ord)
 
 newtype Print r a = Print { getPrint :: Prec -> Bind }
   deriving (Monoid, Semigroup)
