@@ -1,3 +1,5 @@
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Seq.Doc
 ( Var(..)
@@ -31,6 +33,8 @@ module Seq.Doc
 , concatWith
   -- * Precedence
 , Prec(..)
+, Precedence(..)
+, resetPrec
 ) where
 
 newtype Var = Var Int
@@ -185,8 +189,24 @@ concatWith (<>) ps
 
 -- Precedence
 
-newtype Prec prec doc = Prec { getPrec :: prec -> doc }
+newtype Prec level doc = Prec { getPrec :: level -> doc }
   deriving (Monoid, Semigroup)
 
-instance (Bounded prec, Show doc) => Show (Prec prec doc) where
+instance (Bounded level, Show doc) => Show (Prec level doc) where
   showsPrec d p = showsPrec d (getPrec p minBound)
+
+
+class Document doc => Precedence doc level p | p -> doc level where
+  atom :: doc -> p
+  prec :: level -> doc -> p
+  withPrec :: level -> p -> doc
+  localPrec :: (level -> level) -> p -> p
+
+instance (Document doc, Ord level) => Precedence doc level (Prec level doc) where
+  atom = Prec . const
+  prec i b = Prec (\ i' -> parensIf (i' > i) b)
+  withPrec = flip getPrec
+  localPrec f p = Prec (getPrec p . f)
+
+resetPrec :: (Precedence doc level p, Bounded level) => p -> doc
+resetPrec = withPrec minBound
