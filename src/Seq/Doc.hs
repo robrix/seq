@@ -35,7 +35,7 @@ module Seq.Doc
 newtype Var = Var Int
   deriving (Enum, Eq, Ord, Show)
 
-newtype Bind = Bind { getBind :: Var -> Doc }
+newtype Bind doc = Bind { getBind :: Var -> doc }
   deriving (Monoid, Semigroup)
 
 newtype Doc = Doc { getDoc :: DString }
@@ -62,7 +62,7 @@ alphabet = ['a'..'z']
 class Document d => Binding d where
   bind :: (Var -> d) -> d
 
-instance Binding Bind where
+instance Document doc => Binding (Bind doc) where
   bind f = Bind $ \ v -> let Bind p = f v in p (succ v)
 
 
@@ -96,7 +96,7 @@ instance Document DString where
 instance Document Doc where
   char = Doc . char
 
-instance Document Bind where
+instance Document doc => Document (Bind doc) where
   char = Bind . const . char
 
 str :: Document d => String -> d

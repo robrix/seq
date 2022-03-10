@@ -34,7 +34,7 @@ newtype Print prec doc r a = Print { getPrint :: prec -> doc }
 instance (Bounded prec, Show doc) => Show (Prec prec doc) where
   showsPrec d p = showsPrec d (getPrec p minBound)
 
-instance Show (Print Level Bind r a) where
+instance Show (Print Level (Bind Doc) r a) where
   showsPrec _ p = string (getDoc (getBind (getPrint p Bottom) (Var 0)))
 
 instance (Document doc, Bounded prec) => Document (Print prec doc r a) where
@@ -42,7 +42,7 @@ instance (Document doc, Bounded prec) => Document (Print prec doc r a) where
   enclosing l r = enclose l r . localPrec (const minBound)
   enclosingSep l r s = encloseSep l r s . map (localPrec (const minBound))
 
-instance Seq (Print Level Bind) (Print Level Bind) (Print Level Bind ()) where
+instance Seq (Print Level (Bind Doc)) (Print Level (Bind Doc)) (Print Level (Bind Doc) ()) where
   µR f = prec Binder (char 'µ' <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
   prdR l r = atom (tupled [resetPrec l, resetPrec r])
   coprdR1 l = str "inl" $$ l
@@ -85,7 +85,7 @@ localPrec f p = Print (getPrint p . f)
 
 infixl 9 $$
 
-printSeq :: Print Level Bind r a -> IO ()
+printSeq :: Print Level (Bind Doc) r a -> IO ()
 printSeq p = putStrLn (string (getDoc (getBind (getPrint p Bottom) (Var 0))) "")
 
 
