@@ -33,8 +33,9 @@ newtype Print prec r a = Print { getPrint :: prec -> Bind }
 instance Show (Print Prec r a) where
   showsPrec _ p = string (getDoc (getBind (getPrint p Bottom) (Var 0)))
 
-instance Document (Print prec r a) where
+instance Bounded prec => Document (Print prec r a) where
   char = Print . const . char
+  enclosing l r = enclose l r . localPrec (const minBound)
 
 instance Seq (Print Prec) (Print Prec) (Print Prec ()) where
   µR f = prec Mu (char 'µ' <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
