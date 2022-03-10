@@ -18,31 +18,12 @@ import Seq.Doc
 
 data Prec
   = Bottom
-  | Command
-  | Mu
-  | Fun
+  | Binder
   | Cofun
   | Apply
   | Prefix
   | Top
   deriving (Bounded, Enum, Eq, Ord, Show)
-
-class PartialOrd o where
-  comparePartial :: o -> o -> Ordering
-
-(<=?) :: PartialOrd o => o -> o -> Bool
-o1 <=? o2 = o1 `comparePartial` o2 == EQ
-
-infix 4 <=?
-
-instance PartialOrd Prec where
-  comparePartial Command Mu  = EQ
-  comparePartial Command Fun = EQ
-  comparePartial Mu Command  = EQ
-  comparePartial Mu Fun      = EQ
-  comparePartial Fun Command = EQ
-  comparePartial Fun Mu      = EQ
-  comparePartial o1 o2       = compare o1 o2
 
 newtype Print prec doc r a = Print { getPrint :: prec -> doc }
   deriving (Monoid, Semigroup)
@@ -56,33 +37,33 @@ instance (Document doc, Bounded prec) => Document (Print prec doc r a) where
   enclosingSep l r s = encloseSep l r s . map (localPrec (const minBound))
 
 instance Seq (Print Prec Bind) (Print Prec Bind) (Print Prec Bind ()) where
-  µR f = prec Mu (char 'µ' <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
+  µR f = prec Binder (char 'µ' <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
   prdR l r = atom (tupled [resetPrec l, resetPrec r])
   coprdR1 l = str "inl" $$ l
   coprdR2 r = str "inr" $$ r
   pairR l r = atom (list [resetPrec l, resetPrec r])
   notR c = infixl' Prefix space (char '¬') c
-  funR f = prec Fun (char 'λ' <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
+  funR f = prec Binder (char 'λ' <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
   cofunR = flip (infix' Cofun (char '⤚'))
 
-  µL f = prec Mu (str "µ̃" <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
+  µL f = prec Binder (str "µ̃" <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
   prdL1 f = str "exl" $$ f
   prdL2 f = str "exr" $$ f
   coprdL l r = str "exlr" $$ l $$ r
-  pairL f = prec Mu (str "µ̃" <> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
+  pairL f = prec Binder (str "µ̃" <> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
   copairL a b = atom (list [resetPrec a, resetPrec b])
   notL t = str "not" $$ brackets t
   funL = infixr' Apply dot
   cofunL f = prec Apply (str "coapp" <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
 
-  (.|.) = infix' Command (surround pipe space space)
+  (.|.) = infix' Binder (surround pipe space space)
 
 
 atom :: doc -> Print prec doc r a
 atom = Print . const
 
-prec :: (Document doc, PartialOrd prec) => prec -> doc -> Print prec doc r a
-prec i b = Print (\ i' -> parensIf (i <=? i') b)
+prec :: (Document doc, Ord prec) => prec -> doc -> Print prec doc r a
+prec i b = Print (\ i' -> parensIf (i' > i) b)
 
 withPrec :: prec -> Print prec doc r a -> doc
 withPrec = flip getPrint
@@ -103,8 +84,8 @@ printSeq p = putStrLn (string (getDoc (getBind (getPrint p Bottom) (Var 0))) "")
 
 
 infixl'
-  :: (Enum prec, PartialOrd prec, Document doc)
-  => prec               -- ^ precedence
+  :: (Enum prec, Ord prec, Document doc)
+  => prec               -- ed > ience
   -> doc                -- ^ operator
   -> Print prec doc r a -- ^ left operand
   -> Print prec doc r b -- ^ right operand
@@ -112,8 +93,8 @@ infixl'
 infixl' p o l r = prec p (surround o (withPrec p l) (withPrec (succ p) r))
 
 infixr'
-  :: (Enum prec, PartialOrd prec, Document doc)
-  => prec               -- ^ precedence
+  :: (Enum prec, Ord prec, Document doc)
+  => prec               -- ed > ience
   -> doc                -- ^ operator
   -> Print prec doc r a -- ^ left operand
   -> Print prec doc r b -- ^ right operand
@@ -121,8 +102,8 @@ infixr'
 infixr' p o l r = prec p (surround o (withPrec (succ p) l) (withPrec p r))
 
 infix'
-  :: (Enum prec, PartialOrd prec, Document doc)
-  => prec               -- ^ precedence
+  :: (Enum prec, Ord prec, Document doc)
+  => prec               -- ed > ience
   -> doc                -- ^ operator
   -> Print prec doc r a -- ^ left operand
   -> Print prec doc s b -- ^ right operand
