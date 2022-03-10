@@ -5,7 +5,6 @@ module Seq.Doc
 , Doc(..)
 , DString(..)
 , var
-, lambda
 , Binding(..)
 , Document(..)
 , str
@@ -57,9 +56,6 @@ var (Var i) = str $ alphabet !! r : if q > 0 then show q else ""
 
 alphabet :: String
 alphabet = ['a'..'z']
-
-lambda :: Binding d => (Var -> d) -> d
-lambda f = bind (\ v -> char 'λ' <+> var v <+> char '.' <+> f v)
 
 
 class Document d => Binding d where
