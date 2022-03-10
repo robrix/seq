@@ -22,6 +22,9 @@ newtype Print r a = Print { getPrint :: Prec -> Bind }
 instance Show (Print r a) where
   showsPrec d p = string (getDoc (getBind (getPrint p (Prec d)) (Var 0)))
 
+instance Document (Print r a) where
+  char = Print . const . char
+
 instance Seq Print Print (Print ()) where
   µR f = prec 0 (char 'µ' <+> bind (\ a -> brackets (var a) <+> dot <+> withPrec 0 (f (atom (var a)))))
   prdR l r = prec 10 (tupled [withPrec 11 l, withPrec 11 r])
