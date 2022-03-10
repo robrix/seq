@@ -43,7 +43,7 @@ instance Seq (Print Prec) (Print Prec) (Print Prec ()) where
   pairL f = prec mu (str "µ̃" <> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> withPrec 0 (f (atom (var a)) (atom (var b))))))
   copairL a b = atom (list [resetPrec a, resetPrec b])
   notL t = str "not" $$ brackets t
-  funL = assocr ap dot
+  funL = infixr' ap dot
   cofunL f = prec ap (str "coapp" <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
 
   t .|. c = prec cmd (withPrec 1 t <+> str "║" <+> withPrec 1 c)
@@ -62,7 +62,7 @@ resetPrec :: Enum prec => Print prec r a -> Bind
 resetPrec = withPrec (toEnum 0)
 
 ($$) :: Print Prec r a -> Print Prec r b -> Print Prec r c
-($$) = assocl ap space
+($$) = infixl' ap space
 
 infixl 9 $$
 
@@ -74,20 +74,20 @@ lambda = Prec 0
 mu = Prec 0
 
 
-assocl
+infixl'
   :: (Enum prec, Ord prec)
   => prec           -- ^ precedence
   -> Bind           -- ^ operator
   -> Print prec r a -- ^ left operand
   -> Print prec r b -- ^ right operand
   -> Print prec r c
-assocl p o l r = prec p (surround o (withPrec p l) (withPrec (succ p) r))
+infixl' p o l r = prec p (surround o (withPrec p l) (withPrec (succ p) r))
 
-assocr
+infixr'
   :: (Enum prec, Ord prec)
   => prec      -- ^ precedence
   -> Bind      -- ^ operator
   -> Print prec r a -- ^ left operand
   -> Print prec r b -- ^ right operand
   -> Print prec r c
-assocr p o l r = prec p (surround o (withPrec (succ p) l) (withPrec p r))
+infixr' p o l r = prec p (surround o (withPrec (succ p) l) (withPrec p r))
