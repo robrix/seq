@@ -32,7 +32,7 @@ instance Seq (Print Prec) (Print Prec) (Print Prec ()) where
   coprdR1 l = str "inl" $$ l
   coprdR2 r = str "inr" $$ r
   pairR l r = atom (list [resetPrec l, resetPrec r])
-  notR c = prec 11 (char '¬' <+> withPrec 12 c)
+  notR c = infixl' prefix space (char '¬') c
   funR f = prec lambda (char 'λ' <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
   cofunR = flip (infix' cofun (char '⤚'))
 
@@ -67,12 +67,13 @@ resetPrec = withPrec (toEnum 0)
 infixl 9 $$
 
 
-ap, cmd, cofun, lambda, mu :: Prec
+ap, cmd, cofun, lambda, mu, prefix :: Prec
 ap = Prec 10
 cmd = Prec 0
 cofun = Prec 1
 lambda = Prec 0
 mu = Prec 0
+prefix = Prec 11
 
 
 infixl'
