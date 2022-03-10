@@ -40,7 +40,7 @@ instance Seq (Print Prec) (Print Prec) (Print Prec ()) where
   prdL1 f = str "exl" $$ f
   prdL2 f = str "exr" $$ f
   coprdL l r = str "exlr" $$ l $$ r
-  pairL f = prec mu (str "µ̃" <> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> withPrec 0 (f (atom (var a)) (atom (var b))))))
+  pairL f = prec mu (str "µ̃" <> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
   copairL a b = atom (list [resetPrec a, resetPrec b])
   notL t = str "not" $$ brackets t
   funL = infixr' ap dot
