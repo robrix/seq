@@ -8,6 +8,7 @@ module Seq.Print
 , prec
 , withPrec
 , resetPrec
+, localPrec
 , ($$)
 , printSeq
 ) where
@@ -69,6 +70,9 @@ withPrec = flip getPrint
 
 resetPrec :: Bounded prec => Print prec r a -> Bind
 resetPrec = withPrec minBound
+
+localPrec :: (prec -> prec) -> Print prec r a -> Print prec r a
+localPrec f p = Print (getPrint p . f)
 
 ($$) :: Print Prec r a -> Print Prec r b -> Print Prec r c
 ($$) = infixl' Apply space
