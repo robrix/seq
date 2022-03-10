@@ -47,7 +47,7 @@ instance Seq (Print Prec) (Print Prec) (Print Prec ()) where
   funL = infixr' ap dot
   cofunL f = prec ap (str "coapp" <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
 
-  (.|.) = infix' cmd pipe
+  (.|.) = infix' cmd (surround pipe space space)
 
 
 atom :: Bind -> Print prec r a
