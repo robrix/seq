@@ -69,7 +69,7 @@ assocl
   -> Print r a -- ^ left operand
   -> Print r b -- ^ right operand
   -> Print r c
-assocl p o l r = prec p (surround o (withPrec p l) (withPrec (p + 1) r))
+assocl p o l r = prec p (surround o (withPrec p l) (withPrec (succ p) r))
 
 assocr
   :: Prec      -- ^ precedence
@@ -77,4 +77,4 @@ assocr
   -> Print r a -- ^ left operand
   -> Print r b -- ^ right operand
   -> Print r c
-assocr p o l r = prec p (surround o (withPrec (p + 1) l) (withPrec p r))
+assocr p o l r = prec p (surround o (withPrec (succ p) l) (withPrec p r))
