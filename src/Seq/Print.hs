@@ -27,10 +27,10 @@ instance Document (Print r a) where
 
 instance Seq Print Print (Print ()) where
   µR f = prec 0 (char 'µ' <+> bind (\ a -> brackets (var a) <+> dot <+> withPrec 0 (f (atom (var a)))))
-  prdR l r = prec 10 (tupled [withPrec 11 l, withPrec 11 r])
+  prdR l r = atom (tupled [withPrec 11 l, withPrec 11 r])
   coprdR1 l = prec 10 (str "inl" <+> withPrec 11 l)
   coprdR2 r = prec 10 (str "inr" <+> withPrec 11 r)
-  pairR l r = prec 10 (list [withPrec 11 l, withPrec 11 r])
+  pairR l r = atom (list [withPrec 11 l, withPrec 11 r])
   notR c = prec 11 (char '¬' <+> withPrec 12 c)
   funR f = prec 0 (char 'λ' <+> bind (\ a -> bind (\ b -> brackets (var a <> comma <+> var b) <+> dot <+> withPrec 0 (f (atom (var a)) (atom (var b))))))
   cofunR a b = prec 1 (withPrec 2 b <+> char '⤚' <+> withPrec 2 a)
