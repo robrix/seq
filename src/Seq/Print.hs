@@ -12,42 +12,49 @@ module Seq.Print
 , printSeq
 ) where
 
-import Seq.Class
+import Seq.Class hiding (Fun(..))
 import Seq.Doc
 
-newtype Prec = Prec Int
-  deriving (Bounded, Enum, Eq, Num, Ord)
+data Prec
+  = None
+  | Command
+  | Mu
+  | Fun
+  | Cofun
+  | Apply
+  | Prefix
+  deriving (Enum, Eq, Ord, Show)
 
 newtype Print prec r a = Print { getPrint :: prec -> Bind }
   deriving (Monoid, Semigroup)
 
 instance Show (Print Prec r a) where
-  showsPrec d p = string (getDoc (getBind (getPrint p (Prec d)) (Var 0)))
+  showsPrec _ p = string (getDoc (getBind (getPrint p None) (Var 0)))
 
 instance Document (Print prec r a) where
   char = Print . const . char
 
 instance Seq (Print Prec) (Print Prec) (Print Prec ()) where
-  µR f = prec mu (char 'µ' <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
+  µR f = prec Mu (char 'µ' <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
   prdR l r = atom (tupled [resetPrec l, resetPrec r])
   coprdR1 l = str "inl" $$ l
   coprdR2 r = str "inr" $$ r
   pairR l r = atom (list [resetPrec l, resetPrec r])
-  notR c = infixl' prefix space (char '¬') c
-  funR f = prec lambda (char 'λ' <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
-  cofunR = flip (infix' cofun (char '⤚'))
+  notR c = infixl' Prefix space (char '¬') c
+  funR f = prec Fun (char 'λ' <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
+  cofunR = flip (infix' Cofun (char '⤚'))
 
-  µL f = prec mu (str "µ̃" <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
+  µL f = prec Mu (str "µ̃" <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
   prdL1 f = str "exl" $$ f
   prdL2 f = str "exr" $$ f
   coprdL l r = str "exlr" $$ l $$ r
-  pairL f = prec mu (str "µ̃" <> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
+  pairL f = prec Mu (str "µ̃" <> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
   copairL a b = atom (list [resetPrec a, resetPrec b])
   notL t = str "not" $$ brackets t
-  funL = infixr' ap dot
-  cofunL f = prec ap (str "coapp" <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
+  funL = infixr' Apply dot
+  cofunL f = prec Apply (str "coapp" <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
 
-  (.|.) = infix' cmd (surround pipe space space)
+  (.|.) = infix' Command (surround pipe space space)
 
 
 atom :: Bind -> Print prec r a
@@ -63,20 +70,12 @@ resetPrec :: Enum prec => Print prec r a -> Bind
 resetPrec = withPrec (toEnum 0)
 
 ($$) :: Print Prec r a -> Print Prec r b -> Print Prec r c
-($$) = infixl' ap space
+($$) = infixl' Apply space
 
 infixl 9 $$
 
 printSeq :: Print Prec r a -> IO ()
-printSeq p = putStrLn (string (getDoc (getBind (getPrint p 0) (Var 0))) "")
-
-ap, cmd, cofun, lambda, mu, prefix :: Prec
-ap = Prec 10
-cmd = Prec 0
-cofun = Prec 1
-lambda = Prec 0
-mu = Prec 0
-prefix = Prec 11
+printSeq p = putStrLn (string (getDoc (getBind (getPrint p None) (Var 0))) "")
 
 
 infixl'
