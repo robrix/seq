@@ -27,18 +27,18 @@ data Prec
   | Top
   deriving (Bounded, Enum, Eq, Ord, Show)
 
-newtype Print prec r a = Print { getPrint :: prec -> Bind }
+newtype Print prec doc r a = Print { getPrint :: prec -> doc }
   deriving (Monoid, Semigroup)
 
-instance Show (Print Prec r a) where
+instance Show (Print Prec Bind r a) where
   showsPrec _ p = string (getDoc (getBind (getPrint p Bottom) (Var 0)))
 
-instance Bounded prec => Document (Print prec r a) where
+instance (Document doc, Bounded prec) => Document (Print prec doc r a) where
   char = Print . const . char
   enclosing l r = enclose l r . localPrec (const minBound)
   enclosingSep l r s = encloseSep l r s . map (localPrec (const minBound))
 
-instance Seq (Print Prec) (Print Prec) (Print Prec ()) where
+instance Seq (Print Prec Bind) (Print Prec Bind) (Print Prec Bind ()) where
   µR f = prec Mu (char 'µ' <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
   prdR l r = atom (tupled [resetPrec l, resetPrec r])
   coprdR1 l = str "inl" $$ l
@@ -61,53 +61,53 @@ instance Seq (Print Prec) (Print Prec) (Print Prec ()) where
   (.|.) = infix' Command (surround pipe space space)
 
 
-atom :: Bind -> Print prec r a
+atom :: doc -> Print prec doc r a
 atom = Print . const
 
-prec :: Ord prec => prec -> Bind -> Print prec r a
+prec :: (Document doc, Ord prec) => prec -> doc -> Print prec doc r a
 prec i b = Print (\ i' -> parensIf (i' > i) b)
 
-withPrec :: prec -> Print prec r a -> Bind
+withPrec :: prec -> Print prec doc r a -> doc
 withPrec = flip getPrint
 
-resetPrec :: Bounded prec => Print prec r a -> Bind
+resetPrec :: Bounded prec => Print prec doc r a -> doc
 resetPrec = withPrec minBound
 
-localPrec :: (prec -> prec) -> Print prec r a -> Print prec r a
+localPrec :: (prec -> prec) -> Print prec doc r a -> Print prec doc r a
 localPrec f p = Print (getPrint p . f)
 
-($$) :: Print Prec r a -> Print Prec r b -> Print Prec r c
+($$) :: Document doc => Print Prec doc r a -> Print Prec doc r b -> Print Prec doc r c
 ($$) = infixl' Apply space
 
 infixl 9 $$
 
-printSeq :: Print Prec r a -> IO ()
+printSeq :: Print Prec Bind r a -> IO ()
 printSeq p = putStrLn (string (getDoc (getBind (getPrint p Bottom) (Var 0))) "")
 
 
 infixl'
-  :: (Enum prec, Ord prec)
-  => prec           -- ^ precedence
-  -> Bind           -- ^ operator
-  -> Print prec r a -- ^ left operand
-  -> Print prec r b -- ^ right operand
-  -> Print prec r c
+  :: (Enum prec, Ord prec, Document doc)
+  => prec               -- ^ precedence
+  -> doc                -- ^ operator
+  -> Print prec doc r a -- ^ left operand
+  -> Print prec doc r b -- ^ right operand
+  -> Print prec doc r c
 infixl' p o l r = prec p (surround o (withPrec p l) (withPrec (succ p) r))
 
 infixr'
-  :: (Enum prec, Ord prec)
-  => prec           -- ^ precedence
-  -> Bind           -- ^ operator
-  -> Print prec r a -- ^ left operand
-  -> Print prec r b -- ^ right operand
-  -> Print prec r c
+  :: (Enum prec, Ord prec, Document doc)
+  => prec               -- ^ precedence
+  -> doc                -- ^ operator
+  -> Print prec doc r a -- ^ left operand
+  -> Print prec doc r b -- ^ right operand
+  -> Print prec doc r c
 infixr' p o l r = prec p (surround o (withPrec (succ p) l) (withPrec p r))
 
 infix'
-  :: (Enum prec, Ord prec)
-  => prec           -- ^ precedence
-  -> Bind           -- ^ operator
-  -> Print prec r a -- ^ left operand
-  -> Print prec s b -- ^ right operand
-  -> Print prec t c
+  :: (Enum prec, Ord prec, Document doc)
+  => prec               -- ^ precedence
+  -> doc                -- ^ operator
+  -> Print prec doc r a -- ^ left operand
+  -> Print prec doc s b -- ^ right operand
+  -> Print prec doc t c
 infix' p o l r = prec p (surround o (withPrec (succ p) l) (withPrec (succ p) r))
