@@ -24,7 +24,7 @@ data Prec
   | Apply
   | Prefix
   | Top
-  deriving (Enum, Eq, Ord, Show)
+  deriving (Bounded, Enum, Eq, Ord, Show)
 
 newtype Print prec r a = Print { getPrint :: prec -> Bind }
   deriving (Monoid, Semigroup)
@@ -67,8 +67,8 @@ prec i b = Print (\ i' -> parensIf (i' > i) b)
 withPrec :: prec -> Print prec r a -> Bind
 withPrec = flip getPrint
 
-resetPrec :: Enum prec => Print prec r a -> Bind
-resetPrec = withPrec (toEnum 0)
+resetPrec :: Bounded prec => Print prec r a -> Bind
+resetPrec = withPrec minBound
 
 ($$) :: Print Prec r a -> Print Prec r b -> Print Prec r c
 ($$) = infixl' Apply space
