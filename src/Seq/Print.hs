@@ -16,7 +16,7 @@ import Seq.Class hiding (Fun(..))
 import Seq.Doc
 
 data Prec
-  = None
+  = Bottom
   | Command
   | Mu
   | Fun
@@ -29,7 +29,7 @@ newtype Print prec r a = Print { getPrint :: prec -> Bind }
   deriving (Monoid, Semigroup)
 
 instance Show (Print Prec r a) where
-  showsPrec _ p = string (getDoc (getBind (getPrint p None) (Var 0)))
+  showsPrec _ p = string (getDoc (getBind (getPrint p Bottom) (Var 0)))
 
 instance Document (Print prec r a) where
   char = Print . const . char
@@ -75,7 +75,7 @@ resetPrec = withPrec (toEnum 0)
 infixl 9 $$
 
 printSeq :: Print Prec r a -> IO ()
-printSeq p = putStrLn (string (getDoc (getBind (getPrint p None) (Var 0))) "")
+printSeq p = putStrLn (string (getDoc (getBind (getPrint p Bottom) (Var 0))) "")
 
 
 infixl'
