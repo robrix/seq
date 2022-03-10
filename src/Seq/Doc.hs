@@ -30,6 +30,8 @@ module Seq.Doc
 , parensIf
 , hsep
 , concatWith
+  -- * Precedence
+, Prec(..)
 ) where
 
 newtype Var = Var Int
@@ -186,3 +188,11 @@ concatWith :: (Foldable t, Monoid d) => (d -> d -> d) -> t d -> d
 concatWith (<>) ps
   | null ps   = mempty
   | otherwise = foldr1 (<>) ps
+
+
+-- Precedence
+
+newtype Prec prec doc = Prec { getPrec :: prec -> doc }
+
+instance (Bounded prec, Show doc) => Show (Prec prec doc) where
+  showsPrec d p = showsPrec d (getPrec p minBound)
