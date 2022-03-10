@@ -71,6 +71,7 @@ class Monoid d => Document d where
 
   group :: d -> d
   group = id
+
   flatAlt :: d -> d -> d
   flatAlt = const
 
