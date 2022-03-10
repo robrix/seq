@@ -27,6 +27,23 @@ data Prec
   | Top
   deriving (Bounded, Enum, Eq, Ord, Show)
 
+class PartialOrd o where
+  comparePartial :: o -> o -> Ordering
+
+(<=?) :: PartialOrd o => o -> o -> Bool
+o1 <=? o2 = o1 `comparePartial` o2 == EQ
+
+infix 4 <=?
+
+instance PartialOrd Prec where
+  comparePartial Command Mu  = EQ
+  comparePartial Command Fun = EQ
+  comparePartial Mu Command  = EQ
+  comparePartial Mu Fun      = EQ
+  comparePartial Fun Command = EQ
+  comparePartial Fun Mu      = EQ
+  comparePartial o1 o2       = compare o1 o2
+
 newtype Print prec doc r a = Print { getPrint :: prec -> doc }
   deriving (Monoid, Semigroup)
 
@@ -64,8 +81,8 @@ instance Seq (Print Prec Bind) (Print Prec Bind) (Print Prec Bind ()) where
 atom :: doc -> Print prec doc r a
 atom = Print . const
 
-prec :: (Document doc, Ord prec) => prec -> doc -> Print prec doc r a
-prec i b = Print (\ i' -> parensIf (i' > i) b)
+prec :: (Document doc, PartialOrd prec) => prec -> doc -> Print prec doc r a
+prec i b = Print (\ i' -> parensIf (i <=? i') b)
 
 withPrec :: prec -> Print prec doc r a -> doc
 withPrec = flip getPrint
@@ -86,7 +103,7 @@ printSeq p = putStrLn (string (getDoc (getBind (getPrint p Bottom) (Var 0))) "")
 
 
 infixl'
-  :: (Enum prec, Ord prec, Document doc)
+  :: (Enum prec, PartialOrd prec, Document doc)
   => prec               -- ^ precedence
   -> doc                -- ^ operator
   -> Print prec doc r a -- ^ left operand
@@ -95,7 +112,7 @@ infixl'
 infixl' p o l r = prec p (surround o (withPrec p l) (withPrec (succ p) r))
 
 infixr'
-  :: (Enum prec, Ord prec, Document doc)
+  :: (Enum prec, PartialOrd prec, Document doc)
   => prec               -- ^ precedence
   -> doc                -- ^ operator
   -> Print prec doc r a -- ^ left operand
@@ -104,7 +121,7 @@ infixr'
 infixr' p o l r = prec p (surround o (withPrec (succ p) l) (withPrec p r))
 
 infix'
-  :: (Enum prec, Ord prec, Document doc)
+  :: (Enum prec, PartialOrd prec, Document doc)
   => prec               -- ^ precedence
   -> doc                -- ^ operator
   -> Print prec doc r a -- ^ left operand
