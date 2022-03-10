@@ -9,6 +9,7 @@ module Seq.Print
 , withPrec
 , resetPrec
 , ($$)
+, printSeq
 ) where
 
 import Seq.Class
@@ -66,6 +67,8 @@ resetPrec = withPrec (toEnum 0)
 
 infixl 9 $$
 
+printSeq :: Print Prec r a -> IO ()
+printSeq p = putStrLn (string (getDoc (getBind (getPrint p 0) (Var 0))) "")
 
 ap, cmd, cofun, lambda, mu, prefix :: Prec
 ap = Prec 10
