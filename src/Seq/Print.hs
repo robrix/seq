@@ -25,18 +25,18 @@ data Level
   | Top
   deriving (Bounded, Enum, Eq, Ord, Show)
 
-newtype Print level doc r a = Print { getPrint :: Prec level doc }
-  deriving (Monoid, Semigroup, Precedence doc level)
+newtype Print r a = Print { getPrint :: Prec Level (Bind Doc) }
+  deriving (Monoid, Semigroup, Precedence (Bind Doc) Level)
 
-instance Show (Print Level (Bind Doc) r a) where
+instance Show (Print r a) where
   showsPrec _ p = getDoc (getBind (getPrec (getPrint p) Bottom) (Var 0))
 
-instance (Document doc, Bounded level, Ord level) => Document (Print level doc r a) where
+instance Document (Print r a) where
   char = Print . Prec . const . char
   enclosing l r = enclose l r . localPrec (const minBound)
   enclosingSep l r s = encloseSep l r s . map (localPrec (const minBound))
 
-instance Seq (Print Level (Bind Doc)) (Print Level (Bind Doc)) (Print Level (Bind Doc) ()) where
+instance Seq Print Print (Print ()) where
   µR f = prec Binder (char 'µ' <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
   prdR l r = atom (tupled [resetPrec l, resetPrec r])
   coprdR1 l = str "inl" $$ l
@@ -59,38 +59,35 @@ instance Seq (Print Level (Bind Doc)) (Print Level (Bind Doc)) (Print Level (Bin
   (.|.) = infix' Binder (surround pipe space space)
 
 
-($$) :: Document doc => Print Level doc r a -> Print Level doc r b -> Print Level doc r c
+($$) :: Print r a -> Print r b -> Print r c
 ($$) = infixl' Apply space
 
 infixl 9 $$
 
-printSeq :: Print Level (Bind Doc) r a -> IO ()
+printSeq :: Print r a -> IO ()
 printSeq p = putStrLn (getDoc (getBind (getPrec (getPrint p) Bottom) (Var 0)) "")
 
 
 infixl'
-  :: (Enum level, Ord level, Document doc)
-  => level               -- ^ precedence
-  -> doc                -- ^ operator
-  -> Print level doc r a -- ^ left operand
-  -> Print level doc r b -- ^ right operand
-  -> Print level doc r c
+  :: Level     -- ^ precedence
+  -> Bind Doc  -- ^ operator
+  -> Print r a -- ^ left operand
+  -> Print r b -- ^ right operand
+  -> Print r c
 infixl' p o l r = prec p (surround o (withPrec p l) (withPrec (succ p) r))
 
 infixr'
-  :: (Enum level, Ord level, Document doc)
-  => level               -- ^ precedence
-  -> doc                -- ^ operator
-  -> Print level doc r a -- ^ left operand
-  -> Print level doc r b -- ^ right operand
-  -> Print level doc r c
+  :: Level     -- ^ precedence
+  -> Bind Doc  -- ^ operator
+  -> Print r a -- ^ left operand
+  -> Print r b -- ^ right operand
+  -> Print r c
 infixr' p o l r = prec p (surround o (withPrec (succ p) l) (withPrec p r))
 
 infix'
-  :: (Enum level, Ord level, Document doc)
-  => level               -- ^ precedence
-  -> doc                -- ^ operator
-  -> Print level doc r a -- ^ left operand
-  -> Print level doc s b -- ^ right operand
-  -> Print level doc t c
+  :: Level     -- ^ precedence
+  -> Bind Doc  -- ^ operator
+  -> Print r a -- ^ left operand
+  -> Print s b -- ^ right operand
+  -> Print t c
 infix' p o l r = prec p (surround o (withPrec (succ p) l) (withPrec (succ p) r))
