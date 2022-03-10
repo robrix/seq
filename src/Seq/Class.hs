@@ -44,7 +44,7 @@ infixr 9 |>
 
 newtype Fun r a b = Fun { app :: (b -> r) -> (a -> r) }
 
-data Cofun r a b = (:>-) { coreturn :: a -> r, coconst :: b }
+data Cofun r b a = (:>-) { coreturn :: a -> r, coconst :: b }
 
 infix 1 :>-
 
