@@ -86,8 +86,8 @@ infixl' p o l r = prec p (surround o (withPrec p l) (withPrec (succ p) r))
 
 infixr'
   :: (Enum prec, Ord prec)
-  => prec      -- ^ precedence
-  -> Bind      -- ^ operator
+  => prec           -- ^ precedence
+  -> Bind           -- ^ operator
   -> Print prec r a -- ^ left operand
   -> Print prec r b -- ^ right operand
   -> Print prec r c
