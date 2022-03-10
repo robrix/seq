@@ -3,6 +3,7 @@ module Seq.Class
 ( Seq(..)
 , (|>)
 , Fun(..)
+, Cofun(..)
 , Not(..)
 , Pair(..)
 , Copair(..)
@@ -42,6 +43,10 @@ infixr 9 |>
 
 
 newtype Fun r a b = Fun { app :: (b -> r) -> (a -> r) }
+
+data Cofun r a b = (:>-) { coreturn :: a -> r, coconst :: b }
+
+infix 1 :>-
 
 newtype Not r a = Not { runNot :: a -> r }
 
