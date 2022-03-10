@@ -23,6 +23,7 @@ data Prec
   | Cofun
   | Apply
   | Prefix
+  | Top
   deriving (Enum, Eq, Ord, Show)
 
 newtype Print prec r a = Print { getPrint :: prec -> Bind }
