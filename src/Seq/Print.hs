@@ -2,7 +2,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 module Seq.Print
-( Prec(..)
+( Level(..)
 , Print(..)
 , atom
 , prec
@@ -16,7 +16,7 @@ module Seq.Print
 import Seq.Class hiding (Fun(..))
 import Seq.Doc
 
-data Prec
+data Level
   = Bottom
   | Binder
   | Cofun
@@ -28,7 +28,7 @@ data Prec
 newtype Print prec doc r a = Print { getPrint :: prec -> doc }
   deriving (Monoid, Semigroup)
 
-instance Show (Print Prec Bind r a) where
+instance Show (Print Level Bind r a) where
   showsPrec _ p = string (getDoc (getBind (getPrint p Bottom) (Var 0)))
 
 instance (Document doc, Bounded prec) => Document (Print prec doc r a) where
@@ -36,7 +36,7 @@ instance (Document doc, Bounded prec) => Document (Print prec doc r a) where
   enclosing l r = enclose l r . localPrec (const minBound)
   enclosingSep l r s = encloseSep l r s . map (localPrec (const minBound))
 
-instance Seq (Print Prec Bind) (Print Prec Bind) (Print Prec Bind ()) where
+instance Seq (Print Level Bind) (Print Level Bind) (Print Level Bind ()) where
   µR f = prec Binder (char 'µ' <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
   prdR l r = atom (tupled [resetPrec l, resetPrec r])
   coprdR1 l = str "inl" $$ l
@@ -74,12 +74,12 @@ resetPrec = withPrec minBound
 localPrec :: (prec -> prec) -> Print prec doc r a -> Print prec doc r a
 localPrec f p = Print (getPrint p . f)
 
-($$) :: Document doc => Print Prec doc r a -> Print Prec doc r b -> Print Prec doc r c
+($$) :: Document doc => Print Level doc r a -> Print Level doc r b -> Print Level doc r c
 ($$) = infixl' Apply space
 
 infixl 9 $$
 
-printSeq :: Print Prec Bind r a -> IO ()
+printSeq :: Print Level Bind r a -> IO ()
 printSeq p = putStrLn (string (getDoc (getBind (getPrint p Bottom) (Var 0))) "")
 
 
