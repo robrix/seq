@@ -75,7 +75,11 @@ class Monoid d => Document d where
   flatAlt :: d -> d -> d
   flatAlt = const
 
-  enclosing :: d -> d -> d -> d
+  enclosing
+    :: d -- ^ left
+    -> d -- ^ right
+    -> d -- ^ separator
+    -> d
   enclosing = enclose
 
   enclosingSep
