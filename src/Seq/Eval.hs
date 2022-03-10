@@ -51,6 +51,7 @@ instance Seq Term Coterm Command where
   notR = pure . Not . coeval
   pairR = liftA2 Pair
   funR f = pure (Fun (\ kb a -> runCommand (f (pure a) (Coterm kb))))
+  cofunR a b = (coeval b :>-) <$> a
 
   µL f = Coterm (runCommand . f . pure)
   prdL1 = contramap fst

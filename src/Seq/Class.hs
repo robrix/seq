@@ -18,6 +18,7 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   pairR :: term r a -> term r b -> term r (Pair a b)
   notR :: coterm r a -> term r (Not r a)
   funR :: (term r a -> coterm r b -> command r) -> term r (Fun r a b)
+  cofunR :: term r a -> coterm r b -> term r (Cofun r a b)
 
   -- left rules
   µL :: (term r a -> command r) -> coterm r a

@@ -30,6 +30,7 @@ instance Seq Print Print (Print ()) where
   pairR l r = prec 10 (list [withPrec 11 l, withPrec 11 r])
   notR c = prec 11 (char '¬' <+> withPrec 12 c)
   funR f = prec 0 (char 'λ' <+> bind (\ a -> bind (\ b -> brackets (var a <> comma <+> var b) <+> dot <+> withPrec 0 (f (atom (var a)) (atom (var b))))))
+  cofunR a b = prec 1 (withPrec 2 b <+> char '⤚' <+> withPrec 2 a)
 
   µL f = prec 0 (str "µ̃" <+> bind (\ a -> brackets (var a) <+> dot <+> withPrec 0 (f (atom (var a)))))
   prdL1 f = prec 10 (str "exl" <+> withPrec 11 f)
