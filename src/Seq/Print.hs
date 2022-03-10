@@ -31,6 +31,9 @@ newtype Prec prec doc = Prec { getPrec :: prec -> doc }
 newtype Print prec doc r a = Print { getPrint :: prec -> doc }
   deriving (Monoid, Semigroup)
 
+instance (Bounded prec, Show doc) => Show (Prec prec doc) where
+  showsPrec d p = showsPrec d (getPrec p minBound)
+
 instance Show (Print Level Bind r a) where
   showsPrec _ p = string (getDoc (getBind (getPrint p Bottom) (Var 0)))
 
