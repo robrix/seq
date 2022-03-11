@@ -85,7 +85,7 @@ instance Show Doc where
   showsPrec _ d = getDoc d (const id) mempty
 
 instance Semigroup Doc where
-  a <> b = Doc (getDoc a . getDoc b)
+  a <> b = Doc (getDoc b . getDoc a)
 
 instance Monoid Doc where
   mempty = Doc id
