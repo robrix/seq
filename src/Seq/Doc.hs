@@ -7,6 +7,7 @@ module Seq.Doc
 , Doc(..)
 , var
 , Binding(..)
+, Indent(..)
 , Document(..)
 , str
 , (<+>)
@@ -66,6 +67,15 @@ class Document d => Binding d where
 
 instance Document doc => Binding (Bind doc) where
   bind f = Bind $ \ v -> let Bind p = f v in p (succ v)
+
+
+newtype Indent = Indent { getIndent :: Int }
+
+instance Semigroup Indent where
+  Indent i1 <> Indent i2 = Indent (i1 + i2)
+
+instance Monoid Indent where
+  mempty = Indent 0
 
 
 class Monoid d => Document d where
