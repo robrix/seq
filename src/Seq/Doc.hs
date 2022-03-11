@@ -2,13 +2,13 @@
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Seq.Doc
-( Doc(..)
+( Document(..)
+, Doc(..)
 , Var(..)
 , Bind(..)
 , var
 , Binding(..)
 , Indent(..)
-, Document(..)
 , str
 , (<+>)
 , parens
@@ -37,6 +37,34 @@ module Seq.Doc
 , Precedence(..)
 , resetPrec
 ) where
+
+class Monoid d => Document d where
+  char :: Char -> d
+
+  group :: d -> d
+  group = id
+
+  flatAlt :: d -> d -> d
+  flatAlt = const
+
+  indent :: Indent -> d -> d
+  indent _ = id
+
+  enclosing
+    :: d -- ^ left
+    -> d -- ^ right
+    -> d -- ^ separator
+    -> d
+  enclosing = enclose
+
+  enclosingSep
+    :: d   -- ^ left doc
+    -> d   -- ^ right doc
+    -> d   -- ^ separator
+    -> [d] -- ^ elements
+    -> d
+  enclosingSep = encloseSep
+
 
 newtype Doc = Doc { getDoc :: ShowS }
 
@@ -81,33 +109,6 @@ instance Semigroup Indent where
 instance Monoid Indent where
   mempty = Indent 0
 
-
-class Monoid d => Document d where
-  char :: Char -> d
-
-  group :: d -> d
-  group = id
-
-  flatAlt :: d -> d -> d
-  flatAlt = const
-
-  indent :: Indent -> d -> d
-  indent _ = id
-
-  enclosing
-    :: d -- ^ left
-    -> d -- ^ right
-    -> d -- ^ separator
-    -> d
-  enclosing = enclose
-
-  enclosingSep
-    :: d   -- ^ left doc
-    -> d   -- ^ right doc
-    -> d   -- ^ separator
-    -> [d] -- ^ elements
-    -> d
-  enclosingSep = encloseSep
 
 instance Document Doc where
   char = Doc . (:)
