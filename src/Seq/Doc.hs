@@ -87,6 +87,9 @@ class Monoid d => Document d where
     -> d
   enclosingSep = encloseSep
 
+  withIndentation :: (Indent -> d) -> d
+  withColumn :: (Column -> d) -> d
+
 
 runDoc :: (Column -> Indent -> ShowS) -> Column -> Indent -> Doc -> ShowS
 runDoc k c i d = getDoc d k c i
@@ -100,7 +103,7 @@ instance Show Doc where
   showsPrec _ d = runDoc (const (const id)) (Column 0) mempty d
 
 instance Semigroup Doc where
-  Doc a <> Doc b = Doc (a . b)
+  Doc a <> Doc b = Doc (\ k -> a (b k))
 
 instance Monoid Doc where
   mempty = Doc id
@@ -111,6 +114,8 @@ instance Document Doc where
   nest (Indent 0) d = d
   nest i d          = Doc (\ k c i' -> runDoc (\ c _ -> k c i') c (Indent (getIndent i + getIndent i')) d)
   hardline = Doc (\ k _ (Indent i) s -> k (Column i) (Indent i) (s <> ('\n':replicate i ' ')))
+  withIndentation f = Doc (\ k c i -> runDoc k c i (f i))
+  withColumn f = Doc (\ k c i -> runDoc k c i (f c))
 
 
 -- Variable binding
@@ -139,6 +144,8 @@ instance Document doc => Binding (Bind doc) where
 
 instance Document doc => Document (Bind doc) where
   char = Bind . const . char
+  withIndentation f = Bind (\ v -> withIndentation (\ i -> getBind (f i) v))
+  withColumn f = Bind (\ v -> withColumn (\ i -> getBind (f i) v))
 
 
 -- Indentation

@@ -36,6 +36,9 @@ instance Document (Print r a) where
   enclosing l r = enclose l r . localPrec (const minBound)
   enclosingSep l r s = encloseSep l r s . map (localPrec (const minBound))
 
+  withIndentation f = Print (Prec (\ d -> withIndentation (withPrec d . f)))
+  withColumn f = Print (Prec (\ d -> withColumn (withPrec d . f)))
+
 instance Seq Print Print (Print ()) where
   µR f = prec Binder (char 'µ' <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
   prdR l r = atom (tupled [resetPrec l, resetPrec r])
