@@ -32,6 +32,7 @@ module Seq.Doc
 , vsep
 , concatWith
 , spaces
+, align
   -- * Constants
 , dot
 , middot
@@ -241,6 +242,9 @@ spaces :: Document d => Int -> d
 spaces i
   | i <= 0    = mempty
   | otherwise = mtimesDefault i space
+
+align :: Document d => d -> d
+align d = withColumn (\ c -> withIndentation (\ i -> nest (Indent (getColumn c - getIndent i)) d))
 
 
 -- Constants
