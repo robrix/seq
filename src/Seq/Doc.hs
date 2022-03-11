@@ -29,6 +29,7 @@ module Seq.Doc
 , concatWith
   -- * Constants
 , dot
+, middot
 , comma
 , pipe
   -- ** Whitespace
@@ -206,8 +207,9 @@ concatWith (<>) ps
 
 -- Constants
 
-dot, comma, pipe :: Document d => d
-dot = char '·'
+dot, middot, comma, pipe :: Document d => d
+dot = char '.'
+middot = char '·'
 comma = char ','
 pipe = char '|'
 
