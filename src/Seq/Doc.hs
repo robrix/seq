@@ -14,6 +14,7 @@ module Seq.Doc
 , Binding(..)
   -- * Indentation
 , Indent(..)
+, Column(..)
   -- * Combinators
 , str
 , (<+>)
@@ -148,6 +149,8 @@ instance Semigroup Indent where
 
 instance Monoid Indent where
   mempty = Indent 0
+
+newtype Column = Column { getColumn :: Int }
 
 
 -- Combinators
