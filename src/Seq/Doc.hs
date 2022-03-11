@@ -77,6 +77,9 @@ instance Semigroup Doc where
 instance Monoid Doc where
   mempty = Doc id
 
+instance Document Doc where
+  char = Doc . (:)
+
 
 newtype Var = Var Int
   deriving (Enum, Eq, Ord, Show)
@@ -100,6 +103,8 @@ class Document d => Binding d where
 instance Document doc => Binding (Bind doc) where
   bind f = Bind $ \ v -> let Bind p = f v in p (succ v)
 
+instance Document doc => Document (Bind doc) where
+  char = Bind . const . char
 
 newtype Indent = Indent { getIndent :: Int }
 
@@ -109,12 +114,6 @@ instance Semigroup Indent where
 instance Monoid Indent where
   mempty = Indent 0
 
-
-instance Document Doc where
-  char = Doc . (:)
-
-instance Document doc => Document (Bind doc) where
-  char = Bind . const . char
 
 str :: Document d => String -> d
 str = foldMap char
