@@ -100,7 +100,7 @@ instance Monoid Doc where
 instance Document Doc where
   char c = Doc (\ k i s -> k i (c:s))
   indent i d = Doc (\ k i' -> getDoc d k (i <> i'))
-  hardline = withIndentation (\ (Indent i) -> stimes i space <> char '\n')
+  hardline = withIndentation (\ (Indent i) -> char '\n' <> stimes i space)
 
 
 -- Variable binding
