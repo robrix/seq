@@ -154,7 +154,7 @@ str :: Document d => String -> d
 str = foldMap char
 
 (<+>) :: Document d => d -> d -> d
-p <+> q = p <> char ' ' <> q
+p <+> q = p <> space <> q
 
 infixr 6 <+>
 
