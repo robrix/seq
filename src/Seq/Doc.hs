@@ -33,6 +33,7 @@ module Seq.Doc
 , concatWith
 , spaces
 , align
+, hang
   -- * Constants
 , dot
 , middot
@@ -245,6 +246,9 @@ spaces i
 
 align :: Document d => d -> d
 align d = withColumn (\ c -> withIndentation (\ i -> nest (Indent (getColumn c - getIndent i)) d))
+
+hang :: Document d => Indent -> d -> d
+hang i d = align (nest i d)
 
 
 -- Constants
