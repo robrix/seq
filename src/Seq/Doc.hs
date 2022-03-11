@@ -189,43 +189,29 @@ concatWith (<>) ps
 
 -- Constants
 
-dot :: Document d => d
+dot, comma, pipe :: Document d => d
 dot = char '·'
-
-comma :: Document d => d
 comma = char ','
-
-pipe :: Document d => d
 pipe = char '|'
 
 
 -- Whitespace
 
-space :: Document d => d
+space, hardline, line, line' :: Document d => d
 space = char ' '
-
-hardline :: Document d => d
 hardline = char '\n'
-
-line :: Document d => d
 line = flatAlt hardline space
-
-line' :: Document d => d
 line' = flatAlt hardline mempty
 
 
 -- Bracketing
 
-lparen :: Document d => d
+lparen, rparen :: Document d => d
 lparen = char '('
-
-rparen :: Document d => d
 rparen = char ')'
 
-lbracket :: Document d => d
+lbracket, rbracket :: Document d => d
 lbracket = char '['
-
-rbracket :: Document d => d
 rbracket = char ']'
 
 
