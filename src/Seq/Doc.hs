@@ -125,6 +125,9 @@ instance Document Doc where
 
 newtype DString = DString { getDString :: ShowS }
 
+instance Semigroup DString where
+  DString s1 <> DString s2 = DString (s1 <> s2)
+
 
 -- Variable binding
 
