@@ -26,10 +26,11 @@ module Seq.Doc
 , hsep
 , concatWith
   -- * Constants
-, space
 , dot
 , comma
 , pipe
+  -- ** Whitespace
+, space
 , hardline
 , line
 , line'
@@ -188,9 +189,6 @@ concatWith (<>) ps
 
 -- Constants
 
-space :: Document d => d
-space = char ' '
-
 dot :: Document d => d
 dot = char '·'
 
@@ -199,6 +197,12 @@ comma = char ','
 
 pipe :: Document d => d
 pipe = char '|'
+
+
+-- Whitespace
+
+space :: Document d => d
+space = char ' '
 
 hardline :: Document d => d
 hardline = char '\n'
