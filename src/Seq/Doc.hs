@@ -150,6 +150,7 @@ instance Document doc => Document (Bind doc) where
 -- Indentation
 
 newtype Indent = Indent { getIndent :: Int }
+  deriving (Eq, Ord, Show)
 
 instance Semigroup Indent where
   Indent i1 <> Indent i2 = Indent (i1 + i2)
@@ -158,6 +159,7 @@ instance Monoid Indent where
   mempty = Indent 0
 
 newtype Column = Column { getColumn :: Int }
+  deriving (Eq, Ord, Show)
 
 instance Semigroup Column where
   Column i1 <> Column i2 = Column (i1 + i2)
