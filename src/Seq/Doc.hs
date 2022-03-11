@@ -45,6 +45,8 @@ module Seq.Doc
 , resetPrec
 ) where
 
+import Data.Semigroup (stimes)
+
 -- Documents
 
 class Monoid d => Document d where
@@ -81,6 +83,9 @@ class Monoid d => Document d where
 putDoc :: Doc -> IO ()
 putDoc = putStrLn . show
 
+withIndentation :: (Indent -> Doc) -> Doc
+withIndentation f = Doc (\ k i -> getDoc (f i) k i)
+
 newtype Doc = Doc { getDoc :: (Indent -> ShowS) -> (Indent -> ShowS) }
 
 instance Show Doc where
@@ -95,6 +100,7 @@ instance Monoid Doc where
 instance Document Doc where
   char c = Doc (\ k i s -> k i (c:s))
   indent i d = Doc (\ k i' -> getDoc d k (i <> i'))
+  hardline = withIndentation (\ (Indent i) -> stimes i space <> char '\n')
 
 
 -- Variable binding
