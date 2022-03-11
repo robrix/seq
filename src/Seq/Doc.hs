@@ -94,29 +94,23 @@ runDoc k c i d = getDoc d k c i
 putDoc :: Doc -> IO ()
 putDoc = putStrLn . show
 
-withIndentation :: (Indent -> Doc) -> Doc
-withIndentation f = Doc (\ k c i -> runDoc k c i (f i))
-
 newtype Doc = Doc { getDoc :: (Column -> Indent -> ShowS) -> (Column -> Indent -> ShowS) }
 
 instance Show Doc where
   showsPrec _ d = runDoc (const (const id)) (Column 0) mempty d
 
 instance Semigroup Doc where
-  a <> b = Doc (getDoc b . getDoc a)
+  Doc a <> Doc b = Doc (a . b)
 
 instance Monoid Doc where
   mempty = Doc id
 
 instance Document Doc where
-  char c = Doc (\ k col i s ->
-    let col' '\n' = Column 0
-        col' _    = Column (getColumn col + 1)
-    in k (col' c) i (c:s))
-  indent i d = Doc (\ k c i' -> runDoc (\ c _ -> k c i') c (i <> Indent (getColumn c)) (spaces (getIndent i) <> d))
+  char c = Doc (\ k col i s -> k (col <> Column 1) i (s <> [c]))
+  indent i d = Doc (\ k c i' -> runDoc (\ c _ -> k c i') (c <> Column (getIndent i)) (i <> Indent (getColumn c)) (spaces (getIndent i) <> d))
   nest (Indent 0) d = d
-  nest i d          = Doc (\ k c i' -> runDoc (\ c _ -> k c i') c (i <> Indent (getColumn c)) d)
-  hardline = withIndentation (\ (Indent i) -> char '\n' <> spaces i)
+  nest i d          = Doc (\ k c i' -> runDoc (\ c _ -> k c i') c (Indent (getIndent i + getIndent i')) d)
+  hardline = Doc (\ k _ (Indent i) s -> k (Column i) (Indent i) (s <> ('\n':replicate i ' ')))
 
 
 -- Variable binding
