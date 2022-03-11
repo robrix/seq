@@ -8,6 +8,7 @@ module Seq.Doc
 , putDoc
 , Doc(..)
   -- * Efficient strings
+, dchar
 , dstring
 , DString(..)
   -- * Variable binding
@@ -123,6 +124,9 @@ instance Document Doc where
 
 
 -- Efficient strings
+
+dchar :: Char -> DString
+dchar c = DString (c:)
 
 dstring :: String -> DString
 dstring s = DString (s <>)
