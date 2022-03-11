@@ -7,6 +7,8 @@ module Seq.Doc
 , runDoc
 , putDoc
 , Doc(..)
+  -- * Efficient strings
+, DString(..)
   -- * Variable binding
 , Var(..)
 , Bind(..)
@@ -117,6 +119,11 @@ instance Document Doc where
   hardline = Doc (\ k _ (Indent i) s -> k (Column i) (Indent i) (s <> ('\n':replicate i ' ')))
   withIndentation f = Doc (\ k c i -> runDoc k c i (f i))
   withColumn f = Doc (\ k c i -> runDoc k c i (f c))
+
+
+-- Efficient strings
+
+newtype DString = DString { getDString :: ShowS }
 
 
 -- Variable binding
