@@ -17,6 +17,15 @@ module Seq.Doc
 , (<+>)
 , parens
 , brackets
+, surround
+, enclose
+, encloseSep
+, list
+, tupled
+, parensIf
+, hsep
+, concatWith
+  -- * Constants
 , space
 , dot
 , comma
@@ -28,14 +37,6 @@ module Seq.Doc
 , rparen
 , lbracket
 , rbracket
-, surround
-, enclose
-, encloseSep
-, list
-, tupled
-, parensIf
-, hsep
-, concatWith
   -- * Precedence
 , Prec(..)
 , Precedence(..)
@@ -140,39 +141,6 @@ parens = enclosing lparen rparen
 brackets :: Document d => d -> d
 brackets = enclosing lbracket rbracket
 
-space :: Document d => d
-space = char ' '
-
-dot :: Document d => d
-dot = char '·'
-
-comma :: Document d => d
-comma = char ','
-
-pipe :: Document d => d
-pipe = char '|'
-
-hardline :: Document d => d
-hardline = char '\n'
-
-line :: Document d => d
-line = flatAlt hardline space
-
-line' :: Document d => d
-line' = flatAlt hardline mempty
-
-lbracket :: Document d => d
-lbracket = char '['
-
-rbracket :: Document d => d
-rbracket = char ']'
-
-lparen :: Document d => d
-lparen = char '('
-
-rparen :: Document d => d
-rparen = char ')'
-
 surround
   :: Semigroup d
   => d -- ^ middle doc
@@ -215,6 +183,42 @@ concatWith :: (Foldable t, Monoid d) => (d -> d -> d) -> t d -> d
 concatWith (<>) ps
   | null ps   = mempty
   | otherwise = foldr1 (<>) ps
+
+
+-- Constants
+
+space :: Document d => d
+space = char ' '
+
+dot :: Document d => d
+dot = char '·'
+
+comma :: Document d => d
+comma = char ','
+
+pipe :: Document d => d
+pipe = char '|'
+
+hardline :: Document d => d
+hardline = char '\n'
+
+line :: Document d => d
+line = flatAlt hardline space
+
+line' :: Document d => d
+line' = flatAlt hardline mempty
+
+lbracket :: Document d => d
+lbracket = char '['
+
+rbracket :: Document d => d
+rbracket = char ']'
+
+lparen :: Document d => d
+lparen = char '('
+
+rparen :: Document d => d
+rparen = char ')'
 
 
 -- Precedence
