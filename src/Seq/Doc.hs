@@ -2,13 +2,17 @@
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Seq.Doc
-( Document(..)
+( -- * Documents
+  Document(..)
 , Doc(..)
+  -- * Variable binding
 , Var(..)
 , Bind(..)
 , var
 , Binding(..)
+  -- * Indentation
 , Indent(..)
+  -- * Combinators
 , str
 , (<+>)
 , parens
@@ -37,6 +41,8 @@ module Seq.Doc
 , Precedence(..)
 , resetPrec
 ) where
+
+-- Documents
 
 class Monoid d => Document d where
   char :: Char -> d
@@ -81,6 +87,8 @@ instance Document Doc where
   char = Doc . (:)
 
 
+-- Variable binding
+
 newtype Var = Var Int
   deriving (Enum, Eq, Ord, Show)
 
@@ -107,6 +115,8 @@ instance Document doc => Document (Bind doc) where
   char = Bind . const . char
 
 
+-- Indentation
+
 newtype Indent = Indent { getIndent :: Int }
 
 instance Semigroup Indent where
@@ -115,6 +125,8 @@ instance Semigroup Indent where
 instance Monoid Indent where
   mempty = Indent 0
 
+
+-- Combinators
 
 str :: Document d => String -> d
 str = foldMap char
