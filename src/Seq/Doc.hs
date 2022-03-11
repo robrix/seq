@@ -180,7 +180,7 @@ encloseSep
   -> d   -- ^ separator
   -> [d] -- ^ elements
   -> d
-encloseSep l r s ps = enclose l r (concatWith (surround (line' <> s)) ps)
+encloseSep l r s = enclose l r . sepBy s
 
 sepBy :: Document d => d -> [d] -> d
 sepBy sep ds = concatWith (surround (line' <> sep)) ds
