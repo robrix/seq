@@ -183,7 +183,7 @@ encloseSep
 encloseSep l r s = enclose l r . sepBy s
 
 sepBy :: Document d => d -> [d] -> d
-sepBy sep ds = concatWith (surround (line' <> sep)) ds
+sepBy sep = concatWith (surround (line' <> sep))
 
 list :: Document d => [d] -> d
 list = enclosingSep lbracket rbracket (comma <> space)
