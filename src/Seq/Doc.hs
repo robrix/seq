@@ -28,6 +28,7 @@ module Seq.Doc
 , tupled
 , parensIf
 , hsep
+, vsep
 , concatWith
   -- * Constants
 , dot
@@ -208,8 +209,9 @@ parensIf :: Document d => Bool -> d -> d
 parensIf False = id
 parensIf True  = parens
 
-hsep :: Document d => [d] -> d
+hsep, vsep :: Document d => [d] -> d
 hsep = concatWith (<+>)
+vsep = concatWith (</>)
 
 concatWith :: (Foldable t, Monoid d) => (d -> d -> d) -> t d -> d
 concatWith (<>) ps
