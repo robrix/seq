@@ -106,6 +106,7 @@ instance Document doc => Binding (Bind doc) where
 instance Document doc => Document (Bind doc) where
   char = Bind . const . char
 
+
 newtype Indent = Indent { getIndent :: Int }
 
 instance Semigroup Indent where
