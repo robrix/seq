@@ -86,19 +86,19 @@ class Monoid d => Document d where
   enclosingSep = encloseSep
 
 
-runDoc :: (Indent -> ShowS) -> Indent -> Doc -> ShowS
-runDoc k i d = getDoc d k i
+runDoc :: (Column -> Indent -> ShowS) -> Column -> Indent -> Doc -> ShowS
+runDoc k c i d = getDoc d k c i
 
 putDoc :: Doc -> IO ()
 putDoc = putStrLn . show
 
 withIndentation :: (Indent -> Doc) -> Doc
-withIndentation f = Doc (\ k i -> runDoc k i (f i))
+withIndentation f = Doc (\ k c i -> runDoc k c i (f i))
 
-newtype Doc = Doc { getDoc :: (Indent -> ShowS) -> (Indent -> ShowS) }
+newtype Doc = Doc { getDoc :: (Column -> Indent -> ShowS) -> (Column -> Indent -> ShowS) }
 
 instance Show Doc where
-  showsPrec _ d = getDoc d (const id) mempty
+  showsPrec _ d = runDoc (const (const id)) (Column 0) mempty d
 
 instance Semigroup Doc where
   a <> b = Doc (getDoc b . getDoc a)
@@ -107,8 +107,8 @@ instance Monoid Doc where
   mempty = Doc id
 
 instance Document Doc where
-  char c = Doc (\ k i s -> k i (c:s))
-  indent i d = Doc (\ k i' -> runDoc (\ _ -> k i') (i <> i') d)
+  char c = Doc (\ k col i s -> k col i (c:s))
+  indent i d = Doc (\ k c i' -> runDoc (\ c _ -> k c i') c (i <> i') d)
   hardline = withIndentation (\ (Indent i) -> char '\n' <> mtimesDefault i space)
 
 
