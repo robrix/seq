@@ -32,7 +32,6 @@ module Seq.Doc
 , pipe
   -- ** Whitespace
 , space
-, hardline
 , line
 , line'
   -- ** Bracketing
@@ -59,6 +58,9 @@ class Monoid d => Document d where
 
   indent :: Indent -> d -> d
   indent _ = id
+
+  hardline :: d
+  hardline = char '\n'
 
   enclosing
     :: d -- ^ left
@@ -202,9 +204,8 @@ pipe = char '|'
 
 -- Whitespace
 
-space, hardline, line, line' :: Document d => d
+space, line, line' :: Document d => d
 space = char ' '
-hardline = char '\n'
 line = flatAlt hardline space
 line' = flatAlt hardline mempty
 
