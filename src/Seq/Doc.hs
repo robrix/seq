@@ -87,6 +87,9 @@ class Monoid d => Document d where
   flatAlt :: d -> d -> d
   flatAlt = const
 
+  indent :: Indent -> d -> d
+  indent _ = id
+
   enclosing
     :: d -- ^ left
     -> d -- ^ right
