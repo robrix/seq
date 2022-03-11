@@ -160,7 +160,7 @@ p <+> q = p <> space <> q
 infixr 6 <+>
 
 (</>) :: Document d => d -> d -> d
-p </> q = p <> line' <> q
+p </> q = p <> line <> q
 
 infixr 5 </>
 
