@@ -34,6 +34,7 @@ module Seq.Doc
 , spaces
 , align
 , hang
+, indent
   -- * Constants
 , dot
 , middot
@@ -67,8 +68,7 @@ class Monoid d => Document d where
   flatAlt :: d -> d -> d
   flatAlt = const
 
-  indent, nest :: Indent -> d -> d
-  indent _ = id
+  nest :: Indent -> d -> d
   nest _ = id
 
   hardline :: d
@@ -112,7 +112,6 @@ instance Monoid Doc where
 
 instance Document Doc where
   char c = Doc (\ k col i s -> k (col <> Column 1) i (s <> [c]))
-  indent i d = Doc (\ k c i' -> runDoc (\ c _ -> k c i') (c <> Column (getIndent i)) (i <> Indent (getColumn c)) (spaces (getIndent i) <> d))
   nest (Indent 0) d = d
   nest i d          = Doc (\ k c i' -> runDoc (\ c _ -> k c i') c (Indent (getIndent i + getIndent i')) d)
   hardline = Doc (\ k _ (Indent i) s -> k (Column i) (Indent i) (s <> ('\n':replicate i ' ')))
@@ -249,6 +248,9 @@ align d = withColumn (\ c -> withIndentation (\ i -> nest (Indent (getColumn c -
 
 hang :: Document d => Indent -> d -> d
 hang i d = align (nest i d)
+
+indent :: Document d => Indent -> d -> d
+indent i d = hang i (spaces (getIndent i) <> d)
 
 
 -- Constants
