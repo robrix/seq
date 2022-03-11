@@ -46,7 +46,7 @@ module Seq.Doc
 , resetPrec
 ) where
 
-import Data.Semigroup (stimes)
+import Data.Semigroup (mtimesDefault)
 
 -- Documents
 
@@ -101,7 +101,7 @@ instance Monoid Doc where
 instance Document Doc where
   char c = Doc (\ k i s -> k i (c:s))
   indent i d = Doc (\ k i' -> getDoc d k (i <> i'))
-  hardline = withIndentation (\ (Indent i) -> char '\n' <> stimes i space)
+  hardline = withIndentation (\ (Indent i) -> char '\n' <> mtimesDefault i space)
 
 
 -- Variable binding
