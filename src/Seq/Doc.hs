@@ -17,6 +17,7 @@ module Seq.Doc
   -- * Combinators
 , str
 , (<+>)
+, (</>)
 , parens
 , brackets
 , surround
@@ -157,6 +158,11 @@ str = foldMap char
 p <+> q = p <> space <> q
 
 infixr 6 <+>
+
+(</>) :: Document d => d -> d -> d
+p </> q = p <> line' <> q
+
+infixr 5 </>
 
 parens :: Document d => d -> d
 parens = enclosing lparen rparen
