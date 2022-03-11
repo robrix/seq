@@ -65,7 +65,7 @@ instance Seq Print Print (Print ()) where
 infixl 9 $$
 
 printSeq :: Print r a -> IO ()
-printSeq p = putStrLn (getDoc (getBind (getPrec (getPrint p) Bottom) (Var 0)) "")
+printSeq = putStrLn . show
 
 
 infixl'
