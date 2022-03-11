@@ -75,10 +75,10 @@ class Monoid d => Document d where
   enclosingSep = encloseSep
 
 
-newtype Doc = Doc { getDoc :: ShowS }
+newtype Doc = Doc { getDoc :: (Indent -> ShowS) -> (Indent -> ShowS) }
 
 instance Show Doc where
-  showsPrec _ = getDoc
+  showsPrec _ d = getDoc d (const id) mempty
 
 instance Semigroup Doc where
   a <> b = Doc (getDoc a . getDoc b)
@@ -87,7 +87,7 @@ instance Monoid Doc where
   mempty = Doc id
 
 instance Document Doc where
-  char = Doc . (:)
+  char c = Doc (\ k i s -> k i (c:s))
 
 
 -- Variable binding
