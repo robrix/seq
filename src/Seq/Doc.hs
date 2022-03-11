@@ -113,10 +113,10 @@ instance Document Doc where
     let col' '\n' = Column 0
         col' _    = Column (getColumn col + 1)
     in k (col' c) i (c:s))
-  indent i d = Doc (\ k c i' -> runDoc (\ c _ -> k c i') c (i <> Indent (getColumn c)) (mtimesDefault (getIndent i) space <> d))
+  indent i d = Doc (\ k c i' -> runDoc (\ c _ -> k c i') c (i <> Indent (getColumn c)) (spaces (getIndent i) <> d))
   nest (Indent 0) d = d
   nest i d          = Doc (\ k c i' -> runDoc (\ c _ -> k c i') c (i <> Indent (getColumn c)) d)
-  hardline = withIndentation (\ (Indent i) -> char '\n' <> mtimesDefault i space)
+  hardline = withIndentation (\ (Indent i) -> char '\n' <> spaces i)
 
 
 -- Variable binding
