@@ -33,6 +33,7 @@ module Seq.Doc
 , hardline
 , line
 , line'
+  -- ** Bracketing
 , lparen
 , rparen
 , lbracket
@@ -208,17 +209,20 @@ line = flatAlt hardline space
 line' :: Document d => d
 line' = flatAlt hardline mempty
 
-lbracket :: Document d => d
-lbracket = char '['
 
-rbracket :: Document d => d
-rbracket = char ']'
+-- Bracketing
 
 lparen :: Document d => d
 lparen = char '('
 
 rparen :: Document d => d
 rparen = char ')'
+
+lbracket :: Document d => d
+lbracket = char '['
+
+rbracket :: Document d => d
+rbracket = char ']'
 
 
 -- Precedence
