@@ -159,6 +159,12 @@ instance Monoid Indent where
 
 newtype Column = Column { getColumn :: Int }
 
+instance Semigroup Column where
+  Column i1 <> Column i2 = Column (i1 + i2)
+
+instance Monoid Column where
+  mempty = Column 0
+
 
 -- Combinators
 
