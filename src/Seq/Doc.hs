@@ -111,7 +111,7 @@ instance Document Doc where
     let col' '\n' = Column 0
         col' _    = Column (getColumn col + 1)
     in k (col' c) i (c:s))
-  indent i d = Doc (\ k c i' -> runDoc (\ c _ -> k c i') c (i <> i') d)
+  indent i d = Doc (\ k c i' -> runDoc (\ c _ -> k c i') c (i <> Indent (getColumn c)) (mtimesDefault (getIndent i) space <> d))
   hardline = withIndentation (\ (Indent i) -> char '\n' <> mtimesDefault i space)
 
 
