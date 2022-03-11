@@ -109,7 +109,7 @@ instance Monoid Doc where
 instance Document Doc where
   char c = Doc (\ k col i s -> case c of
     '\n' -> k (Column 0) i (c:s)
-    _    -> k col i (c:s))
+    _    -> k (Column (getColumn col + 1)) i (c:s))
   indent i d = Doc (\ k c i' -> runDoc (\ c _ -> k c i') c (i <> i') d)
   hardline = withIndentation (\ (Indent i) -> char '\n' <> mtimesDefault i space)
 
