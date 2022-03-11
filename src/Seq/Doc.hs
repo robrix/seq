@@ -21,6 +21,7 @@ module Seq.Doc
 , surround
 , enclose
 , encloseSep
+, sepBy
 , list
 , tupled
 , parensIf
@@ -180,6 +181,9 @@ encloseSep
   -> [d] -- ^ elements
   -> d
 encloseSep l r s ps = enclose l r (concatWith (surround (line' <> s)) ps)
+
+sepBy :: Document d => d -> [d] -> d
+sepBy sep ds = concatWith (surround (line' <> sep)) ds
 
 list :: Document d => [d] -> d
 list = enclosingSep lbracket rbracket (comma <> space)
