@@ -156,6 +156,8 @@ str = foldMap char
 (<+>) :: Document d => d -> d -> d
 p <+> q = p <> char ' ' <> q
 
+infixr 6 <+>
+
 parens :: Document d => d -> d
 parens = enclosing lparen rparen
 
