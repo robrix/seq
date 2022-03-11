@@ -97,16 +97,16 @@ class Monoid d => Document d where
   withColumn :: (Column -> d) -> d
 
 
-runDoc :: (Column -> Indent -> ShowS) -> Column -> Indent -> Doc -> ShowS
+runDoc :: (Column -> Indent -> DString) -> Column -> Indent -> Doc -> DString
 runDoc k c i d = getDoc d k c i
 
 putDoc :: Doc -> IO ()
 putDoc = putStrLn . show
 
-newtype Doc = Doc { getDoc :: (Column -> Indent -> ShowS) -> (Column -> Indent -> ShowS) }
+newtype Doc = Doc { getDoc :: (Column -> Indent -> DString) -> (Column -> Indent -> DString) }
 
 instance Show Doc where
-  showsPrec _ d = runDoc (const (const id)) (Column 0) mempty d
+  showsPrec _ d = getDString (runDoc (const (const mempty)) (Column 0) mempty d)
 
 instance Semigroup Doc where
   Doc a <> Doc b = Doc (\ k -> a (b k))
@@ -115,10 +115,10 @@ instance Monoid Doc where
   mempty = Doc id
 
 instance Document Doc where
-  char c = Doc (\ k col i s -> k (col <> Column 1) i (s <> [c]))
+  char c = Doc (\ k col i -> dchar c <> k (col <> Column 1) i)
   nest (Indent 0) d = d
   nest i d          = Doc (\ k c i' -> runDoc (\ c _ -> k c i') c (Indent (getIndent i + getIndent i')) d)
-  hardline = Doc (\ k _ (Indent i) s -> k (Column i) (Indent i) (s <> ('\n':replicate i ' ')))
+  hardline = Doc (\ k _ (Indent i) -> dstring ('\n':replicate i ' ') <> k (Column i) (Indent i))
   withIndentation f = Doc (\ k c i -> runDoc k c i (f i))
   withColumn f = Doc (\ k c i -> runDoc k c i (f c))
 
