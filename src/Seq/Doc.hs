@@ -64,8 +64,9 @@ class Monoid d => Document d where
   flatAlt :: d -> d -> d
   flatAlt = const
 
-  indent :: Indent -> d -> d
+  indent, nest :: Indent -> d -> d
   indent _ = id
+  nest _ = id
 
   hardline :: d
   hardline = char '\n'
@@ -112,6 +113,8 @@ instance Document Doc where
         col' _    = Column (getColumn col + 1)
     in k (col' c) i (c:s))
   indent i d = Doc (\ k c i' -> runDoc (\ c _ -> k c i') c (i <> Indent (getColumn c)) (mtimesDefault (getIndent i) space <> d))
+  nest (Indent 0) d = d
+  nest i d          = Doc (\ k c i' -> runDoc (\ c _ -> k c i') c (i <> Indent (getColumn c)) d)
   hardline = withIndentation (\ (Indent i) -> char '\n' <> mtimesDefault i space)
 
 
