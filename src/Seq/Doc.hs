@@ -4,6 +4,7 @@
 module Seq.Doc
 ( -- * Documents
   Document(..)
+, putDoc
 , Doc(..)
   -- * Variable binding
 , Var(..)
@@ -74,6 +75,9 @@ class Monoid d => Document d where
     -> d
   enclosingSep = encloseSep
 
+
+putDoc :: Doc -> IO ()
+putDoc = putStrLn . show
 
 newtype Doc = Doc { getDoc :: (Indent -> ShowS) -> (Indent -> ShowS) }
 
