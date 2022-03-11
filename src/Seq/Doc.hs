@@ -2,9 +2,9 @@
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Seq.Doc
-( Var(..)
+( Doc(..)
+, Var(..)
 , Bind(..)
-, Doc(..)
 , var
 , Binding(..)
 , Indent(..)
@@ -38,12 +38,6 @@ module Seq.Doc
 , resetPrec
 ) where
 
-newtype Var = Var Int
-  deriving (Enum, Eq, Ord, Show)
-
-newtype Bind doc = Bind { getBind :: Var -> doc }
-  deriving (Monoid, Semigroup)
-
 newtype Doc = Doc { getDoc :: ShowS }
 
 instance Show Doc where
@@ -54,6 +48,13 @@ instance Semigroup Doc where
 
 instance Monoid Doc where
   mempty = Doc id
+
+
+newtype Var = Var Int
+  deriving (Enum, Eq, Ord, Show)
+
+newtype Bind doc = Bind { getBind :: Var -> doc }
+  deriving (Monoid, Semigroup)
 
 var :: Document d => Var -> d
 var (Var i) = str $ alphabet !! r : if q > 0 then show q else ""
