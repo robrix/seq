@@ -29,7 +29,7 @@ newtype Print r a = Print { getPrint :: Prec Level (Bind Doc) }
   deriving (Monoid, Semigroup, Precedence (Bind Doc) Level)
 
 instance Show (Print r a) where
-  showsPrec _ p = getDoc (getBind (getPrec (getPrint p) Bottom) (Var 0))
+  showsPrec d p = showsPrec d (getBind (getPrec (getPrint p) Bottom) (Var 0))
 
 instance Document (Print r a) where
   char = Print . Prec . const . char

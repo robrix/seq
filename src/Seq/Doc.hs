@@ -46,6 +46,9 @@ newtype Bind doc = Bind { getBind :: Var -> doc }
 
 newtype Doc = Doc { getDoc :: ShowS }
 
+instance Show Doc where
+  showsPrec _ = getDoc
+
 instance Semigroup Doc where
   a <> b = Doc (getDoc a . getDoc b)
 
