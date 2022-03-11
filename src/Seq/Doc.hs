@@ -90,7 +90,7 @@ putDoc :: Doc -> IO ()
 putDoc = putStrLn . show
 
 withIndentation :: (Indent -> Doc) -> Doc
-withIndentation f = Doc (\ k i -> getDoc (f i) k i)
+withIndentation f = Doc (\ k i -> runDoc k i (f i))
 
 newtype Doc = Doc { getDoc :: (Indent -> ShowS) -> (Indent -> ShowS) }
 
@@ -105,7 +105,7 @@ instance Monoid Doc where
 
 instance Document Doc where
   char c = Doc (\ k i s -> k i (c:s))
-  indent i d = Doc (\ k i' -> getDoc d (\ _ -> k i') (i <> i'))
+  indent i d = Doc (\ k i' -> runDoc (\ _ -> k i') (i <> i') d)
   hardline = withIndentation (\ (Indent i) -> char '\n' <> mtimesDefault i space)
 
 
