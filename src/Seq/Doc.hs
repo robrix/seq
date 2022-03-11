@@ -31,6 +31,7 @@ module Seq.Doc
 , hsep
 , vsep
 , concatWith
+, spaces
   -- * Constants
 , dot
 , middot
@@ -226,6 +227,11 @@ concatWith :: (Foldable t, Monoid d) => (d -> d -> d) -> t d -> d
 concatWith (<>) ps
   | null ps   = mempty
   | otherwise = foldr1 (<>) ps
+
+spaces :: Document d => Int -> d
+spaces i
+  | i <= 0    = mempty
+  | otherwise = mtimesDefault i space
 
 
 -- Constants
