@@ -50,6 +50,7 @@ instance Seq Term Coterm Command where
   coprdR2 = fmap Right
   notR = pure . Not . coeval
   pairR = liftA2 Pair
+  copairR (Term r) = Term (\ k -> r (\ e -> k (Copair (\ f g -> either f g e))))
   funR f = pure (Fun (\ kb a -> runCommand (f (pure a) (Coterm kb))))
   cofunR a b = (coeval b :>-) <$> a
 

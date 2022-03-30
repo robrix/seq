@@ -45,6 +45,7 @@ instance Seq Print Print (Print ()) where
   coprdR1 l = str "inl" $$ l
   coprdR2 r = str "inr" $$ r
   pairR l r = atom (list [resetPrec l, resetPrec r])
+  copairR e = atom (brackets (resetPrec e))
   notR c = infixl' Prefix space (char '¬') c
   funR f = prec Binder (char 'λ' <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
   cofunR = flip (infix' Cofun (char '⤚'))
