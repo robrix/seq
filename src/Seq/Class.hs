@@ -14,7 +14,8 @@ module Seq.Class
 , Conj(..)
 ) where
 
-import Fresnel.Lens
+import           Fresnel.Lens
+import qualified Fresnel.Tuple as Tuple
 
 class Seq term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   -- right rules
@@ -79,3 +80,7 @@ constant = funR $ \ a k -> funR (\ _ k -> a .|. k) .|. k
 class Conj c where
   fst_ :: Lens (c a b) (c a' b ) a a'
   snd_ :: Lens (c a b) (c a  b') b b'
+
+instance Conj (,) where
+  fst_ = Tuple.fst_
+  snd_ = Tuple.snd_
