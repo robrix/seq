@@ -52,4 +52,5 @@ library
     Seq.Class
   build-depends:
     , base ^>=4.16.0.0
+    , fresnel
   hs-source-dirs:   src

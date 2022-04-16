@@ -10,7 +10,11 @@ module Seq.Class
   -- * Library
 , identity
 , constant
+  -- * Abstractions
+, Conj(..)
 ) where
+
+import Fresnel.Lens
 
 class Seq term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   -- right rules
@@ -68,3 +72,10 @@ identity = funR (.|.)
 
 constant :: Seq t c d => t r (Fun r a (Fun r b a))
 constant = funR $ \ a k -> funR (\ _ k -> a .|. k) .|. k
+
+
+-- Abstractions
+
+class Conj c where
+  fst_ :: Lens (c a b) (c a' b ) a a'
+  snd_ :: Lens (c a b) (c a  b') b b'
