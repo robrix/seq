@@ -12,6 +12,8 @@ module Seq.Class
   -- * Library
 , identity
 , constant
+  -- * Focus
+, Focus(..)
 ) where
 
 class Term term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
@@ -69,3 +71,8 @@ identity = funR (.|.)
 
 constant :: (Term t c d, Command t c d) => t r (Fun r a (Fun r b a))
 constant = funR $ \ a k -> funR (\ _ k -> a .|. k) .|. k
+
+
+-- Focus
+
+newtype Focus f a = Focus { focus :: f a }
