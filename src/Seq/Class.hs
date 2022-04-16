@@ -12,6 +12,8 @@ module Seq.Class
   -- * Library
 , identity
 , constant
+  -- * Proofs
+, funE
 ) where
 
 class Term term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
@@ -69,3 +71,9 @@ identity = funR (.|.)
 
 constant :: (Term t c d, Command t c d) => t r (Fun r a (Fun r b a))
 constant = funR $ \ a k -> funR (\ _ k -> a .|. k) .|. k
+
+
+-- Proofs
+
+funE :: (Term term coterm command, Coterm term coterm command, Command term coterm command) => term r (Fun r a b) -> term r a -> term r b
+funE f a = µR (\ k -> f .|. a |> k)
