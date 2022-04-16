@@ -39,7 +39,7 @@ instance Document (Print r a) where
   withIndentation f = Print (Prec (\ d -> withIndentation (withPrec d . f)))
   withColumn f = Print (Prec (\ d -> withColumn (withPrec d . f)))
 
-instance Seq Print Print (Print ()) where
+instance Term Print Print (Print ()) where
   µR f = prec Binder (char 'µ' <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
   prdR l r = atom (tupled [resetPrec l, resetPrec r])
   coprdR1 l = str "inl" $$ l
@@ -50,6 +50,7 @@ instance Seq Print Print (Print ()) where
   funR f = prec Binder (char 'λ' <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
   cofunR = flip (infix' Cofun (char '⤚'))
 
+instance Coterm Print Print (Print ()) where
   µL f = prec Binder (str "µ̃" <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
   prdL1 f = str "exl" $$ f
   prdL2 f = str "exr" $$ f
@@ -60,6 +61,7 @@ instance Seq Print Print (Print ()) where
   funL = infixr' Apply dot
   cofunL f = prec Apply (str "coapp" <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
 
+instance Command Print Print (Print ()) where
   (.|.) = infix' Binder (surround pipe space space)
 
 

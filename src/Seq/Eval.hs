@@ -7,11 +7,12 @@ module Seq.Eval
 , Command(..)
 ) where
 
-import Control.Applicative (liftA2)
-import Control.Monad (ap)
-import Data.Coerce (coerce)
-import Data.Functor.Contravariant (Contravariant(..))
-import Seq.Class
+import           Control.Applicative (liftA2)
+import           Control.Monad (ap)
+import           Data.Coerce (coerce)
+import           Data.Functor.Contravariant (Contravariant(..))
+import           Seq.Class hiding (Command, Coterm, Term)
+import qualified Seq.Class as SQ
 
 newtype Term r a = Term { eval :: (a -> r) -> r }
 
@@ -43,7 +44,7 @@ instance Monad Command where
   a >>= f = coerce f a
 
 
-instance Seq Term Coterm Command where
+instance SQ.Term Term Coterm Command where
   µR f = Term (runCommand . f . Coterm)
   prdR = liftA2 (,)
   coprdR1 = fmap Left
@@ -54,6 +55,7 @@ instance Seq Term Coterm Command where
   funR f = pure (Fun (\ kb a -> runCommand (f (pure a) (Coterm kb))))
   cofunR a b = (coeval b :>-) <$> a
 
+instance SQ.Coterm Term Coterm Command where
   µL f = Coterm (runCommand . f . pure)
   prdL1 = contramap fst
   prdL2 = contramap snd
@@ -64,4 +66,5 @@ instance Seq Term Coterm Command where
   funL a b = Coterm (\ f -> eval a (app f (coeval b)))
   cofunL f = Coterm (\ (b :>- a) -> runCommand (f (pure a) (Coterm b)))
 
+instance SQ.Command Term Coterm Command where
   t .|. c = Command (eval t (coeval c))
