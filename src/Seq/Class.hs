@@ -18,7 +18,7 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   prdR :: term r a -> term r b -> term r (a, b)
   coprdR1 :: term r a -> term r (Either a b)
   coprdR2 :: term r b -> term r (Either a b)
-  pairR :: term r a -> term r b -> term r (Pair a b)
+  pairR :: term r a -> term r b -> term r (Pair r a b)
   copairR :: term r (Either a b) -> term r (Copair r a b)
   notR :: coterm r a -> term r (Not r a)
   funR :: (term r a -> coterm r b -> command r) -> term r (Fun r a b)
@@ -29,7 +29,7 @@ class Seq term coterm command | term -> coterm command, coterm -> term command, 
   prdL1 :: coterm r a -> coterm r (a, b)
   prdL2 :: coterm r b -> coterm r (a, b)
   coprdL :: coterm r a -> coterm r b -> coterm r (Either a b)
-  pairL :: (term r a -> term r b -> command r) -> coterm r (Pair a b)
+  pairL :: (term r a -> term r b -> command r) -> coterm r (Pair r a b)
   copairL :: coterm r a -> coterm r b -> coterm r (Copair r a b)
   notL :: term r a -> coterm r (Not r a)
   funL :: term r a -> coterm r b -> coterm r (Fun r a b)
@@ -56,7 +56,7 @@ infix 1 :>-
 
 newtype Not r a = Not { runNot :: a -> r }
 
-data Pair a b = Pair { fst' :: !a, snd' :: !b }
+newtype Pair r a b = Pair { pair :: (a -> b -> r) -> r }
 
 newtype Copair r a b = Copair { copair :: (a -> r) -> (b -> r) -> r }
 
