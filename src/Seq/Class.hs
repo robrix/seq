@@ -1,4 +1,3 @@
-{-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE FunctionalDependencies #-}
 module Seq.Class
 ( Term(..)
@@ -77,4 +76,3 @@ constant = funR $ \ a k -> funR (\ _ k -> a .|. k) .|. k
 -- Focus
 
 newtype Focus f a = Focus { focus :: f a }
-  deriving (Functor)
