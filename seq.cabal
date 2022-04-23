@@ -48,6 +48,7 @@ library
   exposed-modules:
     Seq.Doc
     Seq.Eval
+    Seq.Pattern
     Seq.Print
     Seq.Class
   build-depends:
