@@ -94,16 +94,16 @@ infixl'
   :: Level     -- ^ precedence
   -> Bind Doc  -- ^ operator
   -> Print r a -- ^ left operand
-  -> Print r b -- ^ right operand
-  -> Print r c
+  -> Print s b -- ^ right operand
+  -> Print t c
 infixl' p o l r = prec p (surround o (withPrec p l) (withPrec (succ p) r))
 
 infixr'
   :: Level     -- ^ precedence
   -> Bind Doc  -- ^ operator
   -> Print r a -- ^ left operand
-  -> Print r b -- ^ right operand
-  -> Print r c
+  -> Print s b -- ^ right operand
+  -> Print t c
 infixr' p o l r = prec p (surround o (withPrec (succ p) l) (withPrec p r))
 
 infix'
