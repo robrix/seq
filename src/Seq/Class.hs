@@ -11,6 +11,7 @@ module Seq.Class
 , Negate(..)
 , Cofun(..)
 , Zero(..)
+, One(..)
   -- ** Negative
 , Prd(..)
 , Copair(..)
@@ -64,6 +65,10 @@ class Cofun term coterm command | term -> coterm command, coterm -> term command
 
 class Zero coterm where
   zeroL :: coterm r T.Zero
+
+class One term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
+  oneR :: term r T.One
+  oneL :: command r -> coterm r T.One
 
 
 -- Negative
