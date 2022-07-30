@@ -43,8 +43,11 @@ instance Monad Command where
   a >>= f = coerce f a
 
 
-instance SQ.Term Term Coterm Command where
+instance Mu Term Coterm Command where
   µR f = Term (runCommand . f . Coterm)
+  µL f = Coterm (runCommand . f . pure)
+
+instance SQ.Term Term Coterm Command where
   prdR l r = Term (\ k -> k (Prd (\ k' -> k' (eval l) (eval r))))
   coprdR1 = fmap InL
   coprdR2 = fmap InR
@@ -55,7 +58,6 @@ instance SQ.Term Term Coterm Command where
   cofunR a b = (coeval b :>-) <$> a
 
 instance SQ.Coterm Term Coterm Command where
-  µL f = Coterm (runCommand . f . pure)
   prdL1 k = Coterm (\ p -> πL p (coeval k))
   prdL2 k = Coterm (\ p -> πR p (coeval k))
   coprdL p q = Coterm (exlr (coeval p) (coeval q))

@@ -3,6 +3,7 @@
 {-# LANGUAGE LambdaCase #-}
 module Seq.Class
 ( Seq
+, Mu(..)
 , Term(..)
 , Coterm(..)
 , Command(..)
@@ -28,8 +29,11 @@ module Seq.Class
 
 type Seq term coterm command = (Term term coterm command, Coterm term coterm command, Command term coterm command)
 
-class Term term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
+class Mu term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   µR :: (coterm r a -> command r) -> term r a
+  µL :: (term r a -> command r) -> coterm r a
+
+class Term term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   prdR :: term r a -> term r b -> term r (Prd r a b)
   coprdR1 :: term r a -> term r (Coprd a b)
   coprdR2 :: term r b -> term r (Coprd a b)
@@ -40,7 +44,6 @@ class Term term coterm command | term -> coterm command, coterm -> term command,
   cofunR :: term r a -> coterm r b -> term r (Cofun r a b)
 
 class Coterm term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
-  µL :: (term r a -> command r) -> coterm r a
   prdL1 :: coterm r a -> coterm r (Prd r a b)
   prdL2 :: coterm r b -> coterm r (Prd r a b)
   coprdL :: coterm r a -> coterm r b -> coterm r (Coprd a b)
@@ -110,5 +113,5 @@ constant = funR $ \ a k -> funR (\ _ k -> a .|. k) .|. k
 
 -- Proofs
 
-funE :: Seq term coterm command => term r (Fun r a b) -> term r a -> term r b
+funE :: (Mu term coterm command, Coterm term coterm command, Command term coterm command) => term r (Fun r a b) -> term r a -> term r b
 funE f a = µR (\ k -> f .|. a |> k)

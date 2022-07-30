@@ -39,8 +39,11 @@ instance Document (Print r a) where
   withIndentation f = Print (Prec (\ d -> withIndentation (withPrec d . f)))
   withColumn f = Print (Prec (\ d -> withColumn (withPrec d . f)))
 
-instance Term Print Print (Print ()) where
+instance Mu Print Print (Print ()) where
   µR f = prec Binder (char 'µ' <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
+  µL f = prec Binder (str "µ̃" <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
+
+instance Term Print Print (Print ()) where
   prdR l r = atom (tupled [resetPrec l, resetPrec r])
   coprdR1 l = str "inl" $$ l
   coprdR2 r = str "inr" $$ r
@@ -51,7 +54,6 @@ instance Term Print Print (Print ()) where
   cofunR = flip (infix' Cofun (char '⤚'))
 
 instance Coterm Print Print (Print ()) where
-  µL f = prec Binder (str "µ̃" <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
   prdL1 f = str "exl" $$ f
   prdL2 f = str "exr" $$ f
   coprdL l r = str "exlr" $$ l $$ r
