@@ -39,14 +39,18 @@ instance Document (Print r a) where
   withIndentation f = Print (Prec (\ d -> withIndentation (withPrec d . f)))
   withColumn f = Print (Prec (\ d -> withColumn (withPrec d . f)))
 
+
+-- Rules
+
 instance Mu Print Print (Print ()) where
   µR f = prec Binder (char 'µ' <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
   µL f = prec Binder (str "µ̃" <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
 
-instance Prd Print Print (Print ()) where
-  prdR l r = atom (tupled [resetPrec l, resetPrec r])
-  prdL1 f = str "exl" $$ f
-  prdL2 f = str "exr" $$ f
+instance Command Print Print (Print ()) where
+  (.|.) = infix' Binder (surround pipe space space)
+
+
+-- Positive
 
 instance Coprd Print Print (Print ()) where
   coprdR1 l = str "inl" $$ l
@@ -57,6 +61,22 @@ instance Pair Print Print (Print ()) where
   pairR l r = atom (list [resetPrec l, resetPrec r])
   pairL f = prec Binder (str "µ̃" <> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
 
+instance Negate Print Print (Print ()) where
+  negateR c = infixl' Prefix space (char '¬') c
+  negateL f = prec Binder (str "negate" <> brackets (bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a))))))
+
+instance Cofun Print Print (Print ()) where
+  cofunR = flip (infix' Cofun (char '⤚'))
+  cofunL f = prec Apply (str "coapp" <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
+
+
+-- Negative
+
+instance Prd Print Print (Print ()) where
+  prdR l r = atom (tupled [resetPrec l, resetPrec r])
+  prdL1 f = str "exl" $$ f
+  prdL2 f = str "exr" $$ f
+
 instance Copair Print Print (Print ()) where
   copairR = either (atom . brackets . resetPrec) (atom . brackets . resetPrec)
   copairL a b = atom (list [resetPrec a, resetPrec b])
@@ -65,20 +85,9 @@ instance Not Print Print (Print ()) where
   notR f = infixl' Prefix space (char '¬') (prec Binder (bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a))))))
   notL t = str "not" $$ brackets t
 
-instance Negate Print Print (Print ()) where
-  negateR c = infixl' Prefix space (char '¬') c
-  negateL f = prec Binder (str "negate" <> brackets (bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a))))))
-
 instance Fun Print Print (Print ()) where
   funR f = prec Binder (char 'λ' <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
   funL = infixr' Apply dot
-
-instance Cofun Print Print (Print ()) where
-  cofunR = flip (infix' Cofun (char '⤚'))
-  cofunL f = prec Apply (str "coapp" <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
-
-instance Command Print Print (Print ()) where
-  (.|.) = infix' Binder (surround pipe space space)
 
 
 ($$) :: Print r a -> Print s b -> Print t c

@@ -2,16 +2,19 @@
 {-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE LambdaCase #-}
 module Seq.Class
-( Mu(..)
-, Prd(..)
+( -- * Rules
+  Mu(..)
+, Command(..)
+  -- ** Positive
 , Coprd(..)
 , Pair(..)
+, Negate(..)
+, Cofun(..)
+  -- ** Negative
+, Prd(..)
 , Copair(..)
 , Not(..)
-, Negate(..)
 , Fun(..)
-, Cofun(..)
-, Command(..)
 , (|>)
   -- * Library
 , identity
@@ -23,14 +26,21 @@ module Seq.Class
 import qualified Data.Kind as K
 import qualified Seq.Types as T
 
+-- Rules
+
 class Mu term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   µR :: (coterm r a -> command r) -> term r a
   µL :: (term r a -> command r) -> coterm r a
 
-class Prd term coterm (command :: K.Type -> K.Type) | term -> coterm command, coterm -> term command, command -> term coterm where
-  prdR :: term r a -> term r b -> term r (T.Prd r a b)
-  prdL1 :: coterm r a -> coterm r (T.Prd r a b)
-  prdL2 :: coterm r b -> coterm r (T.Prd r a b)
+class Command term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
+  (.|.) :: term r a -> coterm r a -> command r
+
+  infix 1 .|.
+
+  -- FIXME: let?
+
+
+-- Positive
 
 class Coprd term coterm (command :: K.Type -> K.Type) | term -> coterm command, coterm -> term command, command -> term coterm where
   coprdR1 :: term r a -> term r (T.Coprd a b)
@@ -41,6 +51,22 @@ class Pair term coterm command | term -> coterm command, coterm -> term command,
   pairR :: term r a -> term r b -> term r (T.Pair a b)
   pairL :: (term r a -> term r b -> command r) -> coterm r (T.Pair a b)
 
+class Negate term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
+  negateR :: coterm r a -> term r (T.Not r a)
+  negateL :: (coterm r a -> command r) -> coterm r (T.Not r a)
+
+class Cofun term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
+  cofunR :: term r a -> coterm r b -> term r (T.Cofun r a b)
+  cofunL :: (term r a -> coterm r b -> command r) -> coterm r (T.Cofun r a b)
+
+
+-- Negative
+
+class Prd term coterm (command :: K.Type -> K.Type) | term -> coterm command, coterm -> term command, command -> term coterm where
+  prdR :: term r a -> term r b -> term r (T.Prd r a b)
+  prdL1 :: coterm r a -> coterm r (T.Prd r a b)
+  prdL2 :: coterm r b -> coterm r (T.Prd r a b)
+
 class Copair term coterm (command :: K.Type -> K.Type) | term -> coterm command, coterm -> term command, command -> term coterm where
   copairR :: Either (term r a) (term r b) -> term r (T.Copair r a b)
   copairL :: coterm r a -> coterm r b -> coterm r (T.Copair r a b)
@@ -49,24 +75,9 @@ class Not term coterm command | term -> coterm command, coterm -> term command, 
   notR :: (term r a -> command r) -> term r (T.Not r a)
   notL :: term r a -> coterm r (T.Not r a)
 
-class Negate term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
-  negateR :: coterm r a -> term r (T.Not r a)
-  negateL :: (coterm r a -> command r) -> coterm r (T.Not r a)
-
 class Fun term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   funR :: (term r a -> coterm r b -> command r) -> term r (T.Fun r a b)
   funL :: term r a -> coterm r b -> coterm r (T.Fun r a b)
-
-class Cofun term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
-  cofunR :: term r a -> coterm r b -> term r (T.Cofun r a b)
-  cofunL :: (term r a -> coterm r b -> command r) -> coterm r (T.Cofun r a b)
-
-class Command term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
-  (.|.) :: term r a -> coterm r a -> command r
-
-  infix 1 .|.
-
-  -- FIXME: let?
 
 
 -- | An infix synonym for 'funL'.
