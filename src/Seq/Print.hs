@@ -62,7 +62,7 @@ instance Copair Print Print (Print ()) where
   copairL a b = atom (list [resetPrec a, resetPrec b])
 
 instance Not Print Print (Print ()) where
-  notR c = infixl' Prefix space (char '¬') c
+  notR f = infixl' Prefix space (char '¬') (prec Binder (bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a))))))
   notL t = str "not" $$ brackets t
 
 instance Negate Print Print (Print ()) where

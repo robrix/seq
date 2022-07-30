@@ -67,7 +67,7 @@ instance Copair Term Coterm Command where
   copairL a b = Coterm (\ c -> T.copair c (coeval a) (coeval b))
 
 instance Not Term Coterm Command where
-  notR = pure . T.Not . coeval
+  notR f = pure (T.Not (runCommand . f . pure))
   notL t = Coterm (eval t . T.runNot)
 
 instance Negate Term Coterm Command where

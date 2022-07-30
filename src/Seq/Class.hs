@@ -46,7 +46,7 @@ class Copair term coterm (command :: K.Type -> K.Type) | term -> coterm command,
   copairL :: coterm r a -> coterm r b -> coterm r (T.Copair r a b)
 
 class Not term coterm (command :: K.Type -> K.Type) | term -> coterm command, coterm -> term command, command -> term coterm where
-  notR :: coterm r a -> term r (T.Not r a)
+  notR :: (term r a -> command r) -> term r (T.Not r a)
   notL :: term r a -> coterm r (T.Not r a)
 
 class Negate term coterm (command :: K.Type -> K.Type) | term -> coterm command, coterm -> term command, command -> term coterm where
