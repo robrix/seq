@@ -10,6 +10,8 @@ module Seq.Class
 , Cofun(..)
 , Not(..)
 , Prd(..)
+, πL
+, πR
 , Pair(..)
 , Copair(..)
   -- * Library
@@ -65,6 +67,12 @@ infix 1 :>-
 newtype Not r a = Not { runNot :: a -> r }
 
 newtype Prd r a b = Prd { prd :: (((a -> r) -> r) -> ((b -> r) -> r) -> r) -> r }
+
+πL :: Prd r a b -> (a -> r) -> r
+πL (Prd r) k = r (\ ka _ -> ka k)
+
+πR :: Prd r a b -> (b -> r) -> r
+πR (Prd r) k = r (\ _ kb -> kb k)
 
 newtype Pair r a b = Pair { pair :: (a -> b -> r) -> r }
 
