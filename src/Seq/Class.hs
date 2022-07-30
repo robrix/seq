@@ -6,6 +6,7 @@ module Seq.Class
 , Prd(..)
 , Coprd(..)
 , Pair(..)
+, Copair(..)
 , Term(..)
 , Coterm(..)
 , Command(..)
@@ -38,14 +39,16 @@ class Pair term coterm command | term -> coterm command, coterm -> term command,
   pairR :: term r a -> term r b -> term r (T.Pair a b)
   pairL :: (term r a -> term r b -> command r) -> coterm r (T.Pair a b)
 
-class Term term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
+class Copair term coterm (command :: K.Type -> K.Type) | term -> coterm command, coterm -> term command, command -> term coterm where
   copairR :: Either (term r a) (term r b) -> term r (T.Copair r a b)
+  copairL :: coterm r a -> coterm r b -> coterm r (T.Copair r a b)
+
+class Term term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   notR :: coterm r a -> term r (T.Not r a)
   funR :: (term r a -> coterm r b -> command r) -> term r (T.Fun r a b)
   cofunR :: term r a -> coterm r b -> term r (T.Cofun r a b)
 
 class Coterm term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
-  copairL :: coterm r a -> coterm r b -> coterm r (T.Copair r a b)
   notL :: term r a -> coterm r (T.Not r a)
   funL :: term r a -> coterm r b -> coterm r (T.Fun r a b)
   cofunL :: (term r a -> coterm r b -> command r) -> coterm r (T.Cofun r a b)

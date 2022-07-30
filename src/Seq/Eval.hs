@@ -62,14 +62,16 @@ instance Pair Term Coterm Command where
   pairR (Term a) (Term b)  = Term (\ k -> a (\ a -> b (\ b -> k (T.Pair a b))))
   pairL f = Coterm (\ c -> runCommand (f (pure (T.pair1 c)) (pure (T.pair2 c))))
 
+instance Copair Term Coterm Command where
+  copairR = either (\ a -> Term (\ k -> k (T.inL (eval a)))) (\ b -> Term (\ k -> k (T.inR (eval b))))
+  copairL a b = Coterm (\ c -> T.copair c (coeval a) (coeval b))
+
 instance SQ.Term Term Coterm Command where
   notR = pure . T.Not . coeval
-  copairR = either (\ a -> Term (\ k -> k (T.inL (eval a)))) (\ b -> Term (\ k -> k (T.inR (eval b))))
   funR f = pure (T.Fun (\ kb a -> runCommand (f (pure a) (Coterm kb))))
   cofunR a b = (coeval b T.:>-) <$> a
 
 instance SQ.Coterm Term Coterm Command where
-  copairL a b = Coterm (\ c -> T.copair c (coeval a) (coeval b))
   notL t = Coterm (eval t . T.runNot)
   funL a b = Coterm (\ f -> eval a (T.app f (coeval b)))
   cofunL f = Coterm (\ (b T.:>- a) -> runCommand (f (pure a) (Coterm b)))
