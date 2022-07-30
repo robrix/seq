@@ -46,11 +46,11 @@ common common
 library
   import:         common
   exposed-modules:
+    Seq.Class
     Seq.Doc
     Seq.Eval
     Seq.Pattern
     Seq.Print
-    Seq.Class
     Seq.Types
   build-depends:
     , base ^>=4.16.0.0
