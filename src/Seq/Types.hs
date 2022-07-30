@@ -1,5 +1,4 @@
 {-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE RankNTypes #-}
 module Seq.Types
 ( Fun(..)
 , Cofun(..)
