@@ -63,6 +63,8 @@ class Command term coterm command | term -> coterm command, coterm -> term comma
 
   infix 1 .|.
 
+  -- FIXME: let?
+
 
 -- | An infix synonym for 'funL'.
 (|>) :: Fun term coterm command => term r a -> coterm r b -> coterm r (T.Fun r a b)
