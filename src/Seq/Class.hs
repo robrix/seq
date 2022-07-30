@@ -12,6 +12,7 @@ module Seq.Class
 , Prd(..)
 , πL
 , πR
+, Coprd(..)
 , Pair(..)
 , Copair(..)
 , inL
@@ -75,6 +76,10 @@ newtype Prd r a b = Prd { prd :: (((a -> r) -> r) -> ((b -> r) -> r) -> r) -> r 
 
 πR :: Prd r a b -> (b -> r) -> r
 πR (Prd r) k = r (\ _ kb -> kb k)
+
+data Coprd a b
+  = InL !a
+  | InR !b
 
 data Pair a b = Pair { pair1 :: !a, pair2 :: !b }
 
