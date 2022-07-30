@@ -96,6 +96,9 @@ instance Bottom Print Print (Print ()) where
   bottomR b = prec Binder (char 'µ' <> brackets mempty <+> dot <+> resetPrec b)
   bottomL = brackets mempty
 
+instance Top Print where
+  topR = char 'µ' <> parens mempty
+
 
 ($$) :: Print r a -> Print s b -> Print t c
 ($$) = infixl' Apply space
