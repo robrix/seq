@@ -9,6 +9,7 @@ module Seq.Class
 , Fun(..)
 , Cofun(..)
 , Not(..)
+, Prd(..)
 , Pair(..)
 , Copair(..)
   -- * Library
@@ -62,6 +63,8 @@ data Cofun r b a = (:>-) { coreturn :: a -> r, coconst :: b }
 infix 1 :>-
 
 newtype Not r a = Not { runNot :: a -> r }
+
+newtype Prd r a b = Prd { prd :: (((a -> r) -> r) -> ((b -> r) -> r) -> r) -> r }
 
 newtype Pair r a b = Pair { pair :: (a -> b -> r) -> r }
 
