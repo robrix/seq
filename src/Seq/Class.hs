@@ -14,6 +14,8 @@ module Seq.Class
 , πR
 , Pair(..)
 , Copair(..)
+, inL
+, inR
   -- * Library
 , identity
 , constant
@@ -77,6 +79,12 @@ newtype Prd r a b = Prd { prd :: (((a -> r) -> r) -> ((b -> r) -> r) -> r) -> r 
 data Pair a b = Pair { pair1 :: !a, pair2 :: !b }
 
 newtype Copair r a b = Copair { copair :: (a -> r) -> (b -> r) -> r }
+
+inL :: ((a -> r) -> r) -> Copair r a b
+inL a = Copair (\ f _ -> a f)
+
+inR :: ((b -> r) -> r) -> Copair r a b
+inR b = Copair (\ _ g -> b g)
 
 
 -- Library
