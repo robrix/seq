@@ -16,6 +16,7 @@ module Seq.Class
 , Copair(..)
 , Not(..)
 , Fun(..)
+, Bottom(..)
 , (|>)
   -- * Library
 , identity
@@ -82,6 +83,10 @@ class Not term coterm command | term -> coterm command, coterm -> term command, 
 class Fun term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   funR :: (term r a -> coterm r b -> command r) -> term r (T.Fun r a b)
   funL :: term r a -> coterm r b -> coterm r (T.Fun r a b)
+
+class Bottom term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
+  bottomR :: command r -> term r (T.Bottom r)
+  bottomL :: coterm r (T.Bottom r)
 
 
 -- | An infix synonym for 'funL'.
