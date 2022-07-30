@@ -1,4 +1,5 @@
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE RankNTypes #-}
 module Seq.Types
 ( Fun(..)
 , Cofun(..)
@@ -12,6 +13,10 @@ module Seq.Types
 , Copair(..)
 , inL
 , inR
+, Zero
+, Top(..)
+, Bottom(..)
+, One(..)
 ) where
 
 newtype Fun r a b = Fun { app :: (b -> r) -> (a -> r) }
@@ -48,3 +53,13 @@ inL a = Copair (\ f _ -> a f)
 
 inR :: ((b -> r) -> r) -> Copair r a b
 inR b = Copair (\ _ g -> b g)
+
+
+data Zero
+
+newtype Top r = Top { getTop :: r -> r }
+
+
+newtype Bottom r = Bottom { getBottom :: r }
+
+data One = One
