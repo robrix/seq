@@ -97,3 +97,7 @@ instance Not Term Coterm Command where
 instance Fun Term Coterm Command where
   funR f = pure (T.Fun (\ kb a -> runCommand (f (pure a) (Coterm kb))))
   funL a b = Coterm (\ f -> eval a (T.app f (coeval b)))
+
+instance Bottom Term Coterm Command where
+  bottomR = Term . const . runCommand
+  bottomL = Coterm T.getBottom
