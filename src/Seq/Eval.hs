@@ -78,6 +78,10 @@ instance Negate Term Coterm Command where
 instance Zero Coterm where
   zeroL = Coterm (\case)
 
+instance One Term Coterm Command where
+  oneR = pure T.One
+  oneL = Coterm . const . runCommand
+
 
 -- Negative
 
