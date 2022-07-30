@@ -10,7 +10,7 @@ module Seq.Eval
 import           Control.Monad (ap)
 import           Data.Coerce (coerce)
 import           Data.Functor.Contravariant (Contravariant(..))
-import           Seq.Class hiding (Command, Coterm, Term)
+import           Seq.Class hiding (Command)
 import qualified Seq.Class as SQ
 import qualified Seq.Types as T
 
@@ -77,10 +77,6 @@ instance Fun Term Coterm Command where
 instance Cofun Term Coterm Command where
   cofunR a b = (coeval b T.:>-) <$> a
   cofunL f = Coterm (\ (b T.:>- a) -> runCommand (f (pure a) (Coterm b)))
-
-instance SQ.Term Term Coterm Command where
-
-instance SQ.Coterm Term Coterm Command where
 
 instance SQ.Command Term Coterm Command where
   t .|. c = Command (eval t (coeval c))
