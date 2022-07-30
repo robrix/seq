@@ -28,7 +28,7 @@ class Term term coterm command | term -> coterm command, coterm -> term command,
   prdR :: term r a -> term r b -> term r (Prd r a b)
   coprdR1 :: term r a -> term r (Either a b)
   coprdR2 :: term r b -> term r (Either a b)
-  pairR :: term r a -> term r b -> term r (Pair r a b)
+  pairR :: term r a -> term r b -> term r (Pair a b)
   copairR :: term r (Either a b) -> term r (Copair r a b)
   notR :: coterm r a -> term r (Not r a)
   funR :: (term r a -> coterm r b -> command r) -> term r (Fun r a b)
@@ -39,7 +39,7 @@ class Coterm term coterm command | term -> coterm command, coterm -> term comman
   prdL1 :: coterm r a -> coterm r (Prd r a b)
   prdL2 :: coterm r b -> coterm r (Prd r a b)
   coprdL :: coterm r a -> coterm r b -> coterm r (Either a b)
-  pairL :: (term r a -> term r b -> command r) -> coterm r (Pair r a b)
+  pairL :: (term r a -> term r b -> command r) -> coterm r (Pair a b)
   copairL :: coterm r a -> coterm r b -> coterm r (Copair r a b)
   notL :: term r a -> coterm r (Not r a)
   funL :: term r a -> coterm r b -> coterm r (Fun r a b)
@@ -74,7 +74,7 @@ newtype Prd r a b = Prd { prd :: (((a -> r) -> r) -> ((b -> r) -> r) -> r) -> r 
 πR :: Prd r a b -> (b -> r) -> r
 πR (Prd r) k = r (\ _ kb -> kb k)
 
-newtype Pair r a b = Pair { pair :: (a -> b -> r) -> r }
+data Pair a b = Pair { pair1 :: !a, pair2 :: !b }
 
 newtype Copair r a b = Copair { copair :: (a -> r) -> (b -> r) -> r }
 
