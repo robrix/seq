@@ -69,6 +69,9 @@ instance Cofun Print Print (Print ()) where
   cofunR = flip (infix' Cofun (char '⤚'))
   cofunL f = prec Apply (str "coapp" <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
 
+instance Zero Print where
+  zeroL = str "µ̃" <> brackets mempty
+
 
 -- Negative
 
