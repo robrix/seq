@@ -81,7 +81,7 @@ instance Command Print Print (Print ()) where
   (.|.) = infix' Binder (surround pipe space space)
 
 
-($$) :: Print r a -> Print r b -> Print r c
+($$) :: Print r a -> Print s b -> Print t c
 ($$) = infixl' Apply space
 
 infixl 9 $$
