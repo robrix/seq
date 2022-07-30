@@ -6,18 +6,6 @@ module Seq.Class
 , Coterm(..)
 , Command(..)
 , (|>)
-, T.Fun(..)
-, T.Cofun(..)
-, T.Not(..)
-, T.Prd(..)
-, T.πL
-, T.πR
-, T.Coprd(..)
-, T.exlr
-, T.Pair(..)
-, T.Copair(..)
-, T.inL
-, T.inR
   -- * Library
 , identity
 , constant

@@ -13,7 +13,7 @@ module Seq.Print
 , printSeq
 ) where
 
-import Seq.Class hiding (Fun(..))
+import Seq.Class
 import Seq.Doc
 
 data Level

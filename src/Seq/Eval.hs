@@ -12,6 +12,7 @@ import           Data.Coerce (coerce)
 import           Data.Functor.Contravariant (Contravariant(..))
 import           Seq.Class hiding (Command, Coterm, Term)
 import qualified Seq.Class as SQ
+import qualified Seq.Types as T
 
 newtype Term r a = Term { eval :: (a -> r) -> r }
 
@@ -48,24 +49,24 @@ instance Mu Term Coterm Command where
   µL f = Coterm (runCommand . f . pure)
 
 instance SQ.Term Term Coterm Command where
-  prdR l r = Term (\ k -> k (Prd (\ k' -> k' (eval l) (eval r))))
-  coprdR1 = fmap InL
-  coprdR2 = fmap InR
-  notR = pure . Not . coeval
-  pairR (Term a) (Term b)  = Term (\ k -> a (\ a -> b (\ b -> k (Pair a b))))
-  copairR = either (\ a -> Term (\ k -> k (inL (eval a)))) (\ b -> Term (\ k -> k (inR (eval b))))
-  funR f = pure (Fun (\ kb a -> runCommand (f (pure a) (Coterm kb))))
-  cofunR a b = (coeval b :>-) <$> a
+  prdR l r = Term (\ k -> k (T.Prd (\ k' -> k' (eval l) (eval r))))
+  coprdR1 = fmap T.InL
+  coprdR2 = fmap T.InR
+  notR = pure . T.Not . coeval
+  pairR (Term a) (Term b)  = Term (\ k -> a (\ a -> b (\ b -> k (T.Pair a b))))
+  copairR = either (\ a -> Term (\ k -> k (T.inL (eval a)))) (\ b -> Term (\ k -> k (T.inR (eval b))))
+  funR f = pure (T.Fun (\ kb a -> runCommand (f (pure a) (Coterm kb))))
+  cofunR a b = (coeval b T.:>-) <$> a
 
 instance SQ.Coterm Term Coterm Command where
-  prdL1 k = Coterm (\ p -> πL p (coeval k))
-  prdL2 k = Coterm (\ p -> πR p (coeval k))
-  coprdL p q = Coterm (exlr (coeval p) (coeval q))
-  pairL f = Coterm (\ c -> runCommand (f (pure (pair1 c)) (pure (pair2 c))))
-  copairL a b = Coterm (\ c -> copair c (coeval a) (coeval b))
-  notL t = Coterm (eval t . runNot)
-  funL a b = Coterm (\ f -> eval a (app f (coeval b)))
-  cofunL f = Coterm (\ (b :>- a) -> runCommand (f (pure a) (Coterm b)))
+  prdL1 k = Coterm (\ p -> T.πL p (coeval k))
+  prdL2 k = Coterm (\ p -> T.πR p (coeval k))
+  coprdL p q = Coterm (T.exlr (coeval p) (coeval q))
+  pairL f = Coterm (\ c -> runCommand (f (pure (T.pair1 c)) (pure (T.pair2 c))))
+  copairL a b = Coterm (\ c -> T.copair c (coeval a) (coeval b))
+  notL t = Coterm (eval t . T.runNot)
+  funL a b = Coterm (\ f -> eval a (T.app f (coeval b)))
+  cofunL f = Coterm (\ (b T.:>- a) -> runCommand (f (pure a) (Coterm b)))
 
 instance SQ.Command Term Coterm Command where
   t .|. c = Command (eval t (coeval c))
