@@ -45,11 +45,11 @@ class Copair term coterm (command :: K.Type -> K.Type) | term -> coterm command,
   copairR :: Either (term r a) (term r b) -> term r (T.Copair r a b)
   copairL :: coterm r a -> coterm r b -> coterm r (T.Copair r a b)
 
-class Not term coterm (command :: K.Type -> K.Type) | term -> coterm command, coterm -> term command, command -> term coterm where
+class Not term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   notR :: (term r a -> command r) -> term r (T.Not r a)
   notL :: term r a -> coterm r (T.Not r a)
 
-class Negate term coterm (command :: K.Type -> K.Type) | term -> coterm command, coterm -> term command, command -> term coterm where
+class Negate term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   negateR :: coterm r a -> term r (T.Not r a)
   negateL :: (coterm r a -> command r) -> coterm r (T.Not r a)
 
