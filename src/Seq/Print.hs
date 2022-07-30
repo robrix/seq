@@ -65,6 +65,10 @@ instance Not Print Print (Print ()) where
   notR c = infixl' Prefix space (char '¬') c
   notL t = str "not" $$ brackets t
 
+instance Negate Print Print (Print ()) where
+  negateR c = infixl' Prefix space (char '¬') c
+  negateL t = str "negate" $$ brackets t
+
 instance Fun Print Print (Print ()) where
   funR f = prec Binder (char 'λ' <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
   funL = infixr' Apply dot
