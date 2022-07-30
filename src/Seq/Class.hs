@@ -8,6 +8,7 @@ module Seq.Class
 , Pair(..)
 , Copair(..)
 , Not(..)
+, Fun(..)
 , Term(..)
 , Coterm(..)
 , Command(..)
@@ -48,12 +49,14 @@ class Not term coterm (command :: K.Type -> K.Type) | term -> coterm command, co
   notR :: coterm r a -> term r (T.Not r a)
   notL :: term r a -> coterm r (T.Not r a)
 
-class Term term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
+class Fun term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   funR :: (term r a -> coterm r b -> command r) -> term r (T.Fun r a b)
+  funL :: term r a -> coterm r b -> coterm r (T.Fun r a b)
+
+class Term term coterm (command :: K.Type -> K.Type) | term -> coterm command, coterm -> term command, command -> term coterm where
   cofunR :: term r a -> coterm r b -> term r (T.Cofun r a b)
 
 class Coterm term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
-  funL :: term r a -> coterm r b -> coterm r (T.Fun r a b)
   cofunL :: (term r a -> coterm r b -> command r) -> coterm r (T.Cofun r a b)
 
 class Command term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
@@ -63,7 +66,7 @@ class Command term coterm command | term -> coterm command, coterm -> term comma
 
 
 -- | An infix synonym for 'funL'.
-(|>) :: Coterm term coterm command => term r a -> coterm r b -> coterm r (T.Fun r a b)
+(|>) :: Fun term coterm command => term r a -> coterm r b -> coterm r (T.Fun r a b)
 (|>) = funL
 
 infixr 9 |>
@@ -71,14 +74,14 @@ infixr 9 |>
 
 -- Library
 
-identity :: (Term t c d, Command t c d) => t r (T.Fun r a a)
+identity :: (Fun t c d, Command t c d) => t r (T.Fun r a a)
 identity = funR (.|.)
 
-constant :: (Term t c d, Command t c d) => t r (T.Fun r a (T.Fun r b a))
+constant :: (Fun t c d, Command t c d) => t r (T.Fun r a (T.Fun r b a))
 constant = funR $ \ a k -> funR (\ _ k -> a .|. k) .|. k
 
 
 -- Proofs
 
-funE :: (Mu term coterm command, Coterm term coterm command, Command term coterm command) => term r (T.Fun r a b) -> term r a -> term r b
+funE :: (Mu term coterm command, Fun term coterm command, Command term coterm command) => term r (T.Fun r a b) -> term r a -> term r b
 funE f a = µR (\ k -> f .|. a |> k)

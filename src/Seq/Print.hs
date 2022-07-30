@@ -65,12 +65,14 @@ instance Not Print Print (Print ()) where
   notR c = infixl' Prefix space (char '¬') c
   notL t = str "not" $$ brackets t
 
-instance Term Print Print (Print ()) where
+instance Fun Print Print (Print ()) where
   funR f = prec Binder (char 'λ' <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
+  funL = infixr' Apply dot
+
+instance Term Print Print (Print ()) where
   cofunR = flip (infix' Cofun (char '⤚'))
 
 instance Coterm Print Print (Print ()) where
-  funL = infixr' Apply dot
   cofunL f = prec Apply (str "coapp" <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
 
 instance Command Print Print (Print ()) where

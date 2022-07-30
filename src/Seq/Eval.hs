@@ -70,12 +70,14 @@ instance Not Term Coterm Command where
   notR = pure . T.Not . coeval
   notL t = Coterm (eval t . T.runNot)
 
-instance SQ.Term Term Coterm Command where
+instance Fun Term Coterm Command where
   funR f = pure (T.Fun (\ kb a -> runCommand (f (pure a) (Coterm kb))))
+  funL a b = Coterm (\ f -> eval a (T.app f (coeval b)))
+
+instance SQ.Term Term Coterm Command where
   cofunR a b = (coeval b T.:>-) <$> a
 
 instance SQ.Coterm Term Coterm Command where
-  funL a b = Coterm (\ f -> eval a (T.app f (coeval b)))
   cofunL f = Coterm (\ (b T.:>- a) -> runCommand (f (pure a) (Coterm b)))
 
 instance SQ.Command Term Coterm Command where
