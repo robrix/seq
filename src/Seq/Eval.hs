@@ -1,4 +1,6 @@
 {-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE EmptyCase #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE RankNTypes #-}
 module Seq.Eval
@@ -72,6 +74,9 @@ instance Cofun Term Coterm Command where
 instance Negate Term Coterm Command where
   negateR = pure . T.Not . coeval
   negateL f = Coterm (runCommand . f . Coterm . T.runNot)
+
+instance Zero Coterm where
+  zeroL = Coterm (\case)
 
 
 -- Negative
