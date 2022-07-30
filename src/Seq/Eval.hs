@@ -74,11 +74,13 @@ instance Fun Term Coterm Command where
   funR f = pure (T.Fun (\ kb a -> runCommand (f (pure a) (Coterm kb))))
   funL a b = Coterm (\ f -> eval a (T.app f (coeval b)))
 
-instance SQ.Term Term Coterm Command where
+instance Cofun Term Coterm Command where
   cofunR a b = (coeval b T.:>-) <$> a
+  cofunL f = Coterm (\ (b T.:>- a) -> runCommand (f (pure a) (Coterm b)))
+
+instance SQ.Term Term Coterm Command where
 
 instance SQ.Coterm Term Coterm Command where
-  cofunL f = Coterm (\ (b T.:>- a) -> runCommand (f (pure a) (Coterm b)))
 
 instance SQ.Command Term Coterm Command where
   t .|. c = Command (eval t (coeval c))

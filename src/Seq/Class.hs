@@ -9,8 +9,9 @@ module Seq.Class
 , Copair(..)
 , Not(..)
 , Fun(..)
-, Term(..)
-, Coterm(..)
+, Cofun(..)
+, Term
+, Coterm
 , Command(..)
 , (|>)
   -- * Library
@@ -53,11 +54,13 @@ class Fun term coterm command | term -> coterm command, coterm -> term command, 
   funR :: (term r a -> coterm r b -> command r) -> term r (T.Fun r a b)
   funL :: term r a -> coterm r b -> coterm r (T.Fun r a b)
 
-class Term term coterm (command :: K.Type -> K.Type) | term -> coterm command, coterm -> term command, command -> term coterm where
+class Cofun term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   cofunR :: term r a -> coterm r b -> term r (T.Cofun r a b)
-
-class Coterm term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   cofunL :: (term r a -> coterm r b -> command r) -> coterm r (T.Cofun r a b)
+
+class Term (term :: K.Type -> K.Type -> K.Type) (coterm :: K.Type -> K.Type -> K.Type) (command :: K.Type -> K.Type) | term -> coterm command, coterm -> term command, command -> term coterm where
+
+class Coterm (term :: K.Type -> K.Type -> K.Type) (coterm :: K.Type -> K.Type -> K.Type) (command :: K.Type -> K.Type) | term -> coterm command, coterm -> term command, command -> term coterm where
 
 class Command term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   (.|.) :: term r a -> coterm r a -> command r

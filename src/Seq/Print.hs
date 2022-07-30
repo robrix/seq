@@ -69,11 +69,13 @@ instance Fun Print Print (Print ()) where
   funR f = prec Binder (char 'λ' <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
   funL = infixr' Apply dot
 
-instance Term Print Print (Print ()) where
+instance Cofun Print Print (Print ()) where
   cofunR = flip (infix' Cofun (char '⤚'))
+  cofunL f = prec Apply (str "coapp" <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
+
+instance Term Print Print (Print ()) where
 
 instance Coterm Print Print (Print ()) where
-  cofunL f = prec Apply (str "coapp" <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
 
 instance Command Print Print (Print ()) where
   (.|.) = infix' Binder (surround pipe space space)
