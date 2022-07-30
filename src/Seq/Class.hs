@@ -1,9 +1,7 @@
-{-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE LambdaCase #-}
 module Seq.Class
-( Seq
-, Mu(..)
+( Mu(..)
 , Term(..)
 , Coterm(..)
 , Command(..)
@@ -26,8 +24,6 @@ module Seq.Class
   -- * Proofs
 , funE
 ) where
-
-type Seq term coterm command = (Term term coterm command, Coterm term coterm command, Command term coterm command)
 
 class Mu term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   µR :: (coterm r a -> command r) -> term r a
