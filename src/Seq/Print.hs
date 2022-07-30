@@ -92,6 +92,10 @@ instance Fun Print Print (Print ()) where
   funR f = prec Binder (char 'λ' <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
   funL = infixr' Apply dot
 
+instance Bottom Print Print (Print ()) where
+  bottomR b = prec Binder (char 'µ' <> brackets mempty <+> dot <+> resetPrec b)
+  bottomL = brackets mempty
+
 
 ($$) :: Print r a -> Print s b -> Print t c
 ($$) = infixl' Apply space
