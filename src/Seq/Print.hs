@@ -72,6 +72,10 @@ instance Cofun Print Print (Print ()) where
 instance Zero Print where
   zeroL = str "µ̃" <> brackets mempty
 
+instance One Print Print (Print ()) where
+  oneR = parens mempty
+  oneL b = prec Binder (str "µ̃" <> brackets (parens mempty <+> dot <+> resetPrec b))
+
 
 -- Negative
 
