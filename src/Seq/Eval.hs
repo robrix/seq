@@ -46,8 +46,8 @@ instance Monad Command where
 instance SQ.Term Term Coterm Command where
   µR f = Term (runCommand . f . Coterm)
   prdR l r = Term (\ k -> k (Prd (\ k' -> k' (eval l) (eval r))))
-  coprdR1 = fmap Left
-  coprdR2 = fmap Right
+  coprdR1 = fmap InL
+  coprdR2 = fmap InR
   notR = pure . Not . coeval
   pairR (Term a) (Term b)  = Term (\ k -> a (\ a -> b (\ b -> k (Pair a b))))
   copairR = either (\ a -> Term (\ k -> k (inL (eval a)))) (\ b -> Term (\ k -> k (inR (eval b))))
@@ -58,7 +58,7 @@ instance SQ.Coterm Term Coterm Command where
   µL f = Coterm (runCommand . f . pure)
   prdL1 k = Coterm (\ p -> πL p (coeval k))
   prdL2 k = Coterm (\ p -> πR p (coeval k))
-  coprdL p q = Coterm (either (coeval p) (coeval q))
+  coprdL p q = Coterm (exlr (coeval p) (coeval q))
   pairL f = Coterm (\ c -> runCommand (f (pure (pair1 c)) (pure (pair2 c))))
   copairL a b = Coterm (\ c -> copair c (coeval a) (coeval b))
   notL t = Coterm (eval t . runNot)

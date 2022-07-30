@@ -31,8 +31,8 @@ type Seq term coterm command = (Term term coterm command, Coterm term coterm com
 class Term term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   µR :: (coterm r a -> command r) -> term r a
   prdR :: term r a -> term r b -> term r (Prd r a b)
-  coprdR1 :: term r a -> term r (Either a b)
-  coprdR2 :: term r b -> term r (Either a b)
+  coprdR1 :: term r a -> term r (Coprd a b)
+  coprdR2 :: term r b -> term r (Coprd a b)
   pairR :: term r a -> term r b -> term r (Pair a b)
   copairR :: Either (term r a) (term r b) -> term r (Copair r a b)
   notR :: coterm r a -> term r (Not r a)
@@ -43,7 +43,7 @@ class Coterm term coterm command | term -> coterm command, coterm -> term comman
   µL :: (term r a -> command r) -> coterm r a
   prdL1 :: coterm r a -> coterm r (Prd r a b)
   prdL2 :: coterm r b -> coterm r (Prd r a b)
-  coprdL :: coterm r a -> coterm r b -> coterm r (Either a b)
+  coprdL :: coterm r a -> coterm r b -> coterm r (Coprd a b)
   pairL :: (term r a -> term r b -> command r) -> coterm r (Pair a b)
   copairL :: coterm r a -> coterm r b -> coterm r (Copair r a b)
   notL :: term r a -> coterm r (Not r a)
