@@ -70,6 +70,10 @@ instance Not Term Coterm Command where
   notR = pure . T.Not . coeval
   notL t = Coterm (eval t . T.runNot)
 
+instance Negate Term Coterm Command where
+  negateR = pure . T.Not . coeval
+  negateL t = Coterm (eval t . T.runNot)
+
 instance Fun Term Coterm Command where
   funR f = pure (T.Fun (\ kb a -> runCommand (f (pure a) (Coterm kb))))
   funL a b = Coterm (\ f -> eval a (T.app f (coeval b)))
