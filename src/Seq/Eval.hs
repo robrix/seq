@@ -7,7 +7,6 @@ module Seq.Eval
 , Command(..)
 ) where
 
-import           Control.Applicative (liftA2)
 import           Control.Monad (ap)
 import           Data.Coerce (coerce)
 import           Data.Functor.Contravariant (Contravariant(..))
@@ -46,7 +45,7 @@ instance Monad Command where
 
 instance SQ.Term Term Coterm Command where
   µR f = Term (runCommand . f . Coterm)
-  prdR = liftA2 (,)
+  prdR l r = Term (\ k -> k (Prd (\ k' -> k' (eval l) (eval r))))
   coprdR1 = fmap Left
   coprdR2 = fmap Right
   notR = pure . Not . coeval
@@ -57,8 +56,8 @@ instance SQ.Term Term Coterm Command where
 
 instance SQ.Coterm Term Coterm Command where
   µL f = Coterm (runCommand . f . pure)
-  prdL1 = contramap fst
-  prdL2 = contramap snd
+  prdL1 k = Coterm (\ p -> πL p (coeval k))
+  prdL2 k = Coterm (\ p -> πR p (coeval k))
   coprdL p q = Coterm (either (coeval p) (coeval q))
   pairL f = Coterm (\ c -> pair c (\ a b -> runCommand (f (pure a) (pure b))))
   copairL a b = Coterm (\ c -> copair c (coeval a) (coeval b))
