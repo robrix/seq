@@ -53,9 +53,12 @@ instance Prd Term Coterm Command where
   prdL1 k = Coterm (\ p -> T.πL p (coeval k))
   prdL2 k = Coterm (\ p -> T.πR p (coeval k))
 
-instance SQ.Term Term Coterm Command where
+instance Coprd Term Coterm Command where
   coprdR1 = fmap T.InL
   coprdR2 = fmap T.InR
+  coprdL p q = Coterm (T.exlr (coeval p) (coeval q))
+
+instance SQ.Term Term Coterm Command where
   notR = pure . T.Not . coeval
   pairR (Term a) (Term b)  = Term (\ k -> a (\ a -> b (\ b -> k (T.Pair a b))))
   copairR = either (\ a -> Term (\ k -> k (T.inL (eval a)))) (\ b -> Term (\ k -> k (T.inR (eval b))))
@@ -63,7 +66,6 @@ instance SQ.Term Term Coterm Command where
   cofunR a b = (coeval b T.:>-) <$> a
 
 instance SQ.Coterm Term Coterm Command where
-  coprdL p q = Coterm (T.exlr (coeval p) (coeval q))
   pairL f = Coterm (\ c -> runCommand (f (pure (T.pair1 c)) (pure (T.pair2 c))))
   copairL a b = Coterm (\ c -> T.copair c (coeval a) (coeval b))
   notL t = Coterm (eval t . T.runNot)

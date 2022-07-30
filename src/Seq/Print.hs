@@ -48,9 +48,12 @@ instance Prd Print Print (Print ()) where
   prdL1 f = str "exl" $$ f
   prdL2 f = str "exr" $$ f
 
-instance Term Print Print (Print ()) where
+instance Coprd Print Print (Print ()) where
   coprdR1 l = str "inl" $$ l
   coprdR2 r = str "inr" $$ r
+  coprdL l r = str "exlr" $$ l $$ r
+
+instance Term Print Print (Print ()) where
   pairR l r = atom (list [resetPrec l, resetPrec r])
   copairR = either (atom . brackets . resetPrec) (atom . brackets . resetPrec)
   notR c = infixl' Prefix space (char '¬') c
@@ -58,7 +61,6 @@ instance Term Print Print (Print ()) where
   cofunR = flip (infix' Cofun (char '⤚'))
 
 instance Coterm Print Print (Print ()) where
-  coprdL l r = str "exlr" $$ l $$ r
   pairL f = prec Binder (str "µ̃" <> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
   copairL a b = atom (list [resetPrec a, resetPrec b])
   notL t = str "not" $$ brackets t
