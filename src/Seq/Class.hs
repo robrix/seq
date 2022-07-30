@@ -48,6 +48,8 @@ class Not term coterm (command :: K.Type -> K.Type) | term -> coterm command, co
   notR :: coterm r a -> term r (T.Not r a)
   notL :: term r a -> coterm r (T.Not r a)
 
+-- FIXME: negate?
+
 class Fun term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   funR :: (term r a -> coterm r b -> command r) -> term r (T.Fun r a b)
   funL :: term r a -> coterm r b -> coterm r (T.Fun r a b)
