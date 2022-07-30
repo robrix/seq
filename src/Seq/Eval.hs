@@ -101,3 +101,6 @@ instance Fun Term Coterm Command where
 instance Bottom Term Coterm Command where
   bottomR = Term . const . runCommand
   bottomL = Coterm T.getBottom
+
+instance Top Term where
+  topR = pure (T.Top id)
