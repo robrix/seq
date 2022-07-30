@@ -43,8 +43,12 @@ instance Mu Print Print (Print ()) where
   µR f = prec Binder (char 'µ' <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
   µL f = prec Binder (str "µ̃" <+> bind (\ a -> list [var a] <+> dot <+> resetPrec (f (atom (var a)))))
 
-instance Term Print Print (Print ()) where
+instance Prd Print Print (Print ()) where
   prdR l r = atom (tupled [resetPrec l, resetPrec r])
+  prdL1 f = str "exl" $$ f
+  prdL2 f = str "exr" $$ f
+
+instance Term Print Print (Print ()) where
   coprdR1 l = str "inl" $$ l
   coprdR2 r = str "inr" $$ r
   pairR l r = atom (list [resetPrec l, resetPrec r])
@@ -54,8 +58,6 @@ instance Term Print Print (Print ()) where
   cofunR = flip (infix' Cofun (char '⤚'))
 
 instance Coterm Print Print (Print ()) where
-  prdL1 f = str "exl" $$ f
-  prdL2 f = str "exr" $$ f
   coprdL l r = str "exlr" $$ l $$ r
   pairL f = prec Binder (str "µ̃" <> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
   copairL a b = atom (list [resetPrec a, resetPrec b])
