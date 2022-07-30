@@ -1,5 +1,6 @@
 {-# LANGUAGE ConstraintKinds #-}
 {-# LANGUAGE FunctionalDependencies #-}
+{-# LANGUAGE LambdaCase #-}
 module Seq.Class
 ( Seq
 , Term(..)
@@ -17,6 +18,7 @@ module Seq.Class
 , Copair(..)
 , inL
 , inR
+, exlr
   -- * Library
 , identity
 , constant
@@ -80,6 +82,11 @@ newtype Prd r a b = Prd { prd :: (((a -> r) -> r) -> ((b -> r) -> r) -> r) -> r 
 data Coprd a b
   = InL !a
   | InR !b
+
+exlr :: (a -> r) -> (b -> r) -> Coprd a b -> r
+exlr l r = \case
+  InL a -> l a
+  InR b -> r b
 
 data Pair a b = Pair { pair1 :: !a, pair2 :: !b }
 
