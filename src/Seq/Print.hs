@@ -61,13 +61,15 @@ instance Copair Print Print (Print ()) where
   copairR = either (atom . brackets . resetPrec) (atom . brackets . resetPrec)
   copairL a b = atom (list [resetPrec a, resetPrec b])
 
-instance Term Print Print (Print ()) where
+instance Not Print Print (Print ()) where
   notR c = infixl' Prefix space (char '¬') c
+  notL t = str "not" $$ brackets t
+
+instance Term Print Print (Print ()) where
   funR f = prec Binder (char 'λ' <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
   cofunR = flip (infix' Cofun (char '⤚'))
 
 instance Coterm Print Print (Print ()) where
-  notL t = str "not" $$ brackets t
   funL = infixr' Apply dot
   cofunL f = prec Apply (str "coapp" <+> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
 
