@@ -13,11 +13,11 @@ module Seq.Class
 , T.πL
 , T.πR
 , T.Coprd(..)
+, T.exlr
 , T.Pair(..)
 , T.Copair(..)
 , T.inL
 , T.inR
-, T.exlr
   -- * Library
 , identity
 , constant
