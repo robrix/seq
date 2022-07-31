@@ -56,3 +56,6 @@ newtype C r = C { getC :: Command }
 instance SQ.Mu V K C where
   µR f = V (Mu   (getC . f . K))
   µL f = K (Comu (getC . f . V))
+
+instance SQ.Command V K C where
+  V v .|. K k = C (v :|: k) -- FIXME: this is wrong; it needs to normalize
