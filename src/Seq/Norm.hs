@@ -46,6 +46,8 @@ infixr 9 :$
 data Command
   = Value :|: Continuation
 
+infix 2 :|:
+
 
 -- Rules
 
