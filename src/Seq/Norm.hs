@@ -21,6 +21,7 @@ newtype Index = Index { getIndex :: Int }
 data Value
   = Var Level
   | Mu (Continuation -> Command)
+  | Lam (Value -> Continuation -> Command)
 
 
 -- Continuations
@@ -28,6 +29,9 @@ data Value
 data Continuation
   = Covar Level
   | Comu (Value -> Command)
+  | Value :$ Continuation
+
+infixr 9 :$
 
 
 -- Commands
