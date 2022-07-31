@@ -1,3 +1,4 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
 module Seq.Norm
 ( -- * De Bruijn names
   Level(..)
@@ -8,7 +9,13 @@ module Seq.Norm
 , Continuation(..)
   -- * Commands
 , Command(..)
+  -- * Rules
+, V(..)
+, K(..)
+, C(..)
 ) where
+
+import qualified Seq.Class as SQ
 
 -- De Bruijn names
 
@@ -38,3 +45,14 @@ infixr 9 :$
 
 data Command
   = Value :|: Continuation
+
+
+-- Rules
+
+newtype V r a = V { getV :: Value }
+newtype K r a = K { getK :: Continuation }
+newtype C r = C { getC :: Command }
+
+instance SQ.Mu V K C where
+  µR f = V (Mu   (getC . f . K))
+  µL f = K (Comu (getC . f . V))
