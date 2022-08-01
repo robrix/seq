@@ -1,10 +1,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 module Seq.Norm
-( -- * De Bruijn names
-  Level(..)
-, Index(..)
-  -- * Values
-, Value(..)
+( -- * Values
+  Value(..)
   -- * Continuations
 , Continuation(..)
   -- * Commands
@@ -16,12 +13,7 @@ module Seq.Norm
 ) where
 
 import qualified Seq.Class as SQ
-
--- De Bruijn names
-
-newtype Level = Level { getLevel :: Int }
-newtype Index = Index { getIndex :: Int }
-
+import           Seq.Name
 
 -- Values
 
