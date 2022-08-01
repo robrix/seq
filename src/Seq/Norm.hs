@@ -48,6 +48,7 @@ data Continuation
   | CoprdL (Value -> Command) (Value -> Command)
   | PairL (Value -> Value -> Command)
   | CofunL (Value -> Continuation -> Command)
+  | ZeroL
   -- Negative
   | PrdL1 (Value -> Command)
   | PrdL2 (Value -> Command)
@@ -91,6 +92,9 @@ instance SQ.Pair V K C where
 instance SQ.Cofun V K C where
   cofunR (V v) (K k) = V (CofunR v k)
   cofunL f = K (CofunL (\ v k -> getC (f (V v) (K k))))
+
+instance SQ.Zero K where
+  zeroL = K ZeroL
 
 
 -- Negative
