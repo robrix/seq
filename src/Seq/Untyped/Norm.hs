@@ -14,6 +14,7 @@ module Seq.Untyped.Norm
 
 import qualified Seq.Class as Typed
 import           Seq.Name
+import qualified Seq.Untyped.Class as Untyped
 
 -- Values
 
@@ -79,6 +80,14 @@ instance Typed.Command V K C where
   V v .|. K k = C (v :|: k) -- FIXME: this is wrong; it needs to normalize
 
 
+instance Untyped.Mu Value Continuation Command where
+  µR = MuR
+  µL = MuL
+
+instance Untyped.Command Value Continuation Command where
+  (.|.) = (:|:) -- FIXME: this is wrong; it needs to normalize
+
+
 -- Positive
 
 instance Typed.Coprd V K C where
@@ -106,6 +115,31 @@ instance Typed.Negate V K C where
   negateL f = K (NegateL (getC . f . K))
 
 
+instance Untyped.Coprd Value Continuation Command where
+  coprdR1 = CoprdR1
+  coprdR2 = CoprdR2
+  coprdL = CoprdL
+
+instance Untyped.Pair Value Continuation Command where
+  pairR = PairR
+  pairL = PairL
+
+instance Untyped.Cofun Value Continuation Command where
+  cofunR = CofunR
+  cofunL = CofunL
+
+instance Untyped.Zero Continuation where
+  zeroL = ZeroL
+
+instance Untyped.One Value Continuation Command where
+  oneR = OneR
+  oneL = OneL
+
+instance Untyped.Negate Value Continuation Command where
+  negateR = NegateR
+  negateL = NegateL
+
+
 -- Negative
 
 instance Typed.Prd V K C where
@@ -131,3 +165,28 @@ instance Typed.Bottom V K C where
 instance Typed.Not V K C where
   notR f = V (NotR (getC . f . V))
   notL (V v) = K (NotL v)
+
+
+instance Untyped.Prd Value Continuation Command where
+  prdR = PrdR
+  prdL1 = PrdL1
+  prdL2 = PrdL2
+
+instance Untyped.Copair Value Continuation Command where
+  copairR = CopairR
+  copairL = CopairL
+
+instance Untyped.Fun Value Continuation Command where
+  funR = FunR
+  funL = FunL
+
+instance Untyped.Top Value where
+  topR = TopR
+
+instance Untyped.Bottom Value Continuation Command where
+  bottomR = BottomR
+  bottomL = BottomL
+
+instance Untyped.Not Value Continuation Command where
+  notR = NotR
+  notL = NotL
