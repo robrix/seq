@@ -33,6 +33,7 @@ data Value
   | CoprdR2 Value
   | PairR !Value !Value
   | CofunR Value Continuation
+  | OneR
   -- Negative
   | PrdR (Continuation -> Command) (Continuation -> Command)
   | CopairR (Continuation -> Continuation -> Command)
@@ -55,6 +56,7 @@ data Continuation
   | PrdL2 (Value -> Command)
   | CopairL Continuation Continuation
   | FunL Value Continuation
+  | OneL Command
 
 
 -- Commands
@@ -96,6 +98,10 @@ instance SQ.Cofun V K C where
 
 instance SQ.Zero K where
   zeroL = K ZeroL
+
+instance SQ.One V K C where
+  oneR = V OneR
+  oneL = K . OneL . getC
 
 
 -- Negative
