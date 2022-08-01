@@ -95,3 +95,7 @@ instance SQ.Prd V K C where
 instance SQ.Copair V K C where
   copairR f = V (CopairR (\ l r -> getC (f (K l) (K r))))
   copairL (K l) (K r) = K (CopairL l r)
+
+instance SQ.Fun V K C where
+  funR f = V (Lam (\ v k -> getC (f (V v) (K k))))
+  funL (V v) (K k) = K (v :$ k)
