@@ -55,6 +55,7 @@ library
     Seq.Types
     Seq.Untyped.Class
     Seq.Untyped.Norm
+    Seq.Untyped.Polarized
     Seq.Untyped.Syntax
   build-depends:
     , base ^>=4.16.0.0
