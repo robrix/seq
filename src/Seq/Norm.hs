@@ -41,6 +41,7 @@ data Value
   | FunR (Value -> Continuation -> Command)
   | TopR
   | BottomR Command
+  | NotR (Value -> Command)
 
 
 -- Continuations
@@ -61,6 +62,7 @@ data Continuation
   | FunL Value Continuation
   | OneL Command
   | BottomL
+  | NotL Value
 
 
 -- Commands
@@ -133,3 +135,7 @@ instance SQ.Top V where
 instance SQ.Bottom V K C where
   bottomR = V . BottomR . getC
   bottomL = K BottomL
+
+instance SQ.Not V K C where
+  notR f = V (NotR (getC . f . V))
+  notL (V v) = K (NotL v)
