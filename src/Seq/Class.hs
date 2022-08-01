@@ -1,5 +1,4 @@
 {-# LANGUAGE FunctionalDependencies #-}
-{-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE LambdaCase #-}
 module Seq.Class
 ( -- * Rules
@@ -27,7 +26,6 @@ module Seq.Class
 , funE
 ) where
 
-import qualified Data.Kind as K
 import qualified Seq.Types as T
 
 -- Rules
@@ -46,7 +44,7 @@ class Command term coterm command | term -> coterm command, coterm -> term comma
 
 -- Positive
 
-class Coprd term coterm (command :: K.Type -> K.Type) | term -> coterm command, coterm -> term command, command -> term coterm where
+class Coprd term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   coprdR1 :: term r a -> term r (T.Coprd a b)
   coprdR2 :: term r b -> term r (T.Coprd a b)
   coprdL :: (term r a -> command r) -> (term r b -> command r) -> coterm r (T.Coprd a b)
@@ -73,12 +71,12 @@ class One term coterm command | term -> coterm command, coterm -> term command, 
 
 -- Negative
 
-class Prd term coterm (command :: K.Type -> K.Type) | term -> coterm command, coterm -> term command, command -> term coterm where
+class Prd term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   prdR :: (coterm r a -> command r) -> (coterm r b -> command r) -> term r (T.Prd r a b)
   prdL1 :: coterm r a -> coterm r (T.Prd r a b)
   prdL2 :: coterm r b -> coterm r (T.Prd r a b)
 
-class Copair term coterm (command :: K.Type -> K.Type) | term -> coterm command, coterm -> term command, command -> term coterm where
+class Copair term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   copairR :: (coterm r a -> coterm r b -> command r) -> term r (T.Copair r a b)
   copairL :: coterm r a -> coterm r b -> coterm r (T.Copair r a b)
 
