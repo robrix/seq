@@ -29,6 +29,8 @@ data Value
   = Var Level
   | Mu (Continuation -> Command)
   | Lam (Value -> Continuation -> Command)
+  | InL Value
+  | InR Value
 
 
 -- Continuations
@@ -36,6 +38,7 @@ data Value
 data Continuation
   = Covar Level
   | Comu (Value -> Command)
+  | Case (Value -> Command) (Value -> Command)
   | Value :$ Continuation
 
 infixr 9 :$
@@ -61,3 +64,11 @@ instance SQ.Mu V K C where
 
 instance SQ.Command V K C where
   V v .|. K k = C (v :|: k) -- FIXME: this is wrong; it needs to normalize
+
+
+-- Positive
+
+instance SQ.Coprd V K C where
+  coprdR1 = V . InL . getV
+  coprdR2 = V . InR . getV
+  coprdL (K l) (K r) = K (Case (:|: l) (:|: r))
