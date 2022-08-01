@@ -37,6 +37,7 @@ data Value
   | PrdR (Continuation -> Command) (Continuation -> Command)
   | CopairR (Continuation -> Continuation -> Command)
   | FunR (Value -> Continuation -> Command)
+  | TopR
 
 
 -- Continuations
@@ -111,3 +112,6 @@ instance SQ.Copair V K C where
 instance SQ.Fun V K C where
   funR f = V (FunR (\ v k -> getC (f (V v) (K k))))
   funL (V v) (K k) = K (FunL v k)
+
+instance SQ.Top V where
+  topR = V TopR
