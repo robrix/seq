@@ -39,6 +39,7 @@ data Value
   | CopairR (Continuation -> Continuation -> Command)
   | FunR (Value -> Continuation -> Command)
   | TopR
+  | BottomR Command
 
 
 -- Continuations
@@ -57,6 +58,7 @@ data Continuation
   | CopairL Continuation Continuation
   | FunL Value Continuation
   | OneL Command
+  | BottomL
 
 
 -- Commands
@@ -121,3 +123,7 @@ instance SQ.Fun V K C where
 
 instance SQ.Top V where
   topR = V TopR
+
+instance SQ.Bottom V K C where
+  bottomR = V . BottomR . getC
+  bottomL = K BottomL
