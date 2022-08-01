@@ -29,6 +29,7 @@ data Value p where
   -- Positive
   CoprdR1 :: Value P -> Value P
   CoprdR2 :: Value P -> Value P
+  PairR :: !(Value P) -> !(Value P) -> Value P
 
 
 -- Continuations
@@ -41,6 +42,7 @@ data Continuation p where
   PrdL2 :: Continuation N -> Continuation N
   -- Positive
   CoprdL :: (Value P -> Command) -> (Value P -> Command) -> Continuation P
+  PairL :: (Value P -> Value P -> Command) -> Continuation P
 
 
 -- Commands
