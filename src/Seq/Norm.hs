@@ -54,13 +54,13 @@ data Continuation
   | PairL (Value -> Value -> Command)
   | CofunL (Value -> Continuation -> Command)
   | ZeroL
+  | OneL Command
   | NegateL (Continuation -> Command)
   -- Negative
   | PrdL1 Continuation
   | PrdL2 Continuation
   | CopairL Continuation Continuation
   | FunL Value Continuation
-  | OneL Command
   | BottomL
   | NotL Value
 
