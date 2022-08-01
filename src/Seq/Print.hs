@@ -80,7 +80,7 @@ instance One Print Print (Print ()) where
 -- Negative
 
 instance Prd Print Print (Print ()) where
-  prdR l r = atom (tupled [resetPrec l, resetPrec r])
+  prdR l r = prec Binder (char 'µ' <> tupled [bind (\ a -> brackets (var a) <+> dot <+> resetPrec (l (atom (var a)))), bind (\ b -> brackets (var b) <+> dot <+> resetPrec (r (atom (var b))))])
   prdL1 f = str "exl" $$ f
   prdL2 f = str "exr" $$ f
 

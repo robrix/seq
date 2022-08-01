@@ -74,7 +74,7 @@ class One term coterm command | term -> coterm command, coterm -> term command, 
 -- Negative
 
 class Prd term coterm (command :: K.Type -> K.Type) | term -> coterm command, coterm -> term command, command -> term coterm where
-  prdR :: term r a -> term r b -> term r (T.Prd r a b)
+  prdR :: (coterm r a -> command r) -> (coterm r b -> command r) -> term r (T.Prd r a b)
   prdL1 :: coterm r a -> coterm r (T.Prd r a b)
   prdL2 :: coterm r b -> coterm r (T.Prd r a b)
 

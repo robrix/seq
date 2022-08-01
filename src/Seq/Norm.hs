@@ -31,7 +31,7 @@ data Value
   | Lam (Value -> Continuation -> Command)
   | InL Value
   | InR Value
-  | InLR Value Value
+  | InLR (Continuation -> Command) (Continuation -> Command)
   | Pair !Value !Value
 
 
@@ -86,6 +86,6 @@ instance SQ.Pair V K C where
 -- Negative
 
 instance SQ.Prd V K C where
-  prdR (V l) (V r) = V (InLR l r)
+  prdR l r = V (InLR (getC . l . K) (getC . r . K))
   prdL1 = K . PrjL . flip (:|:) . getK
   prdL2 = K . PrjR . flip (:|:) . getK

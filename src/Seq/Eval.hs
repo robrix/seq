@@ -87,7 +87,7 @@ instance One Term Coterm Command where
 -- Negative
 
 instance Prd Term Coterm Command where
-  prdR l r = Term (\ k -> k (T.Prd (\ k' -> k' (eval l) (eval r))))
+  prdR l r = pure (T.Prd (\ k' -> k' (runCommand . l . Coterm) (runCommand . r . Coterm)))
   prdL1 k = Coterm (\ p -> T.πL p (coeval k))
   prdL2 k = Coterm (\ p -> T.πR p (coeval k))
 
