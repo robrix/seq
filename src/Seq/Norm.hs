@@ -32,6 +32,7 @@ data Value
   | InL Value
   | InR Value
   | InLR Value Value
+  | Pair !Value !Value
 
 
 -- Continuations
@@ -42,6 +43,7 @@ data Continuation
   | Case (Value -> Command) (Value -> Command)
   | PrjL (Value -> Command)
   | PrjR (Value -> Command)
+  | PrjLR (Value -> Value -> Command)
   | Value :$ Continuation
 
 infixr 9 :$
@@ -75,6 +77,10 @@ instance SQ.Coprd V K C where
   coprdR1 = V . InL . getV
   coprdR2 = V . InR . getV
   coprdL l r = K (Case (getC . l . V) (getC . r . V))
+
+instance SQ.Pair V K C where
+  pairR (V a) (V b) = V (Pair a b)
+  pairL f = K (PrjLR (\ a b -> getC (f (V a) (V b))))
 
 
 -- Negative
