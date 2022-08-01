@@ -31,6 +31,7 @@ data Value
   | Lam (Value -> Continuation -> Command)
   | InL Value
   | InR Value
+  | InLR Value Value
 
 
 -- Continuations
@@ -39,6 +40,8 @@ data Continuation
   = Covar Level
   | Comu (Value -> Command)
   | Case (Value -> Command) (Value -> Command)
+  | PrjL (Value -> Command)
+  | PrjR (Value -> Command)
   | Value :$ Continuation
 
 infixr 9 :$
@@ -72,3 +75,11 @@ instance SQ.Coprd V K C where
   coprdR1 = V . InL . getV
   coprdR2 = V . InR . getV
   coprdL (K l) (K r) = K (Case (:|: l) (:|: r))
+
+
+-- Negative
+
+instance SQ.Prd V K C where
+  prdR (V l) (V r) = V (InLR l r)
+  prdL1 = K . PrjL . flip (:|:) . getK
+  prdL2 = K . PrjR . flip (:|:) . getK
