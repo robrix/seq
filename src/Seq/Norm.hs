@@ -26,7 +26,7 @@ newtype Index = Index { getIndex :: Int }
 -- Values
 
 data Value
-  = Var Level
+  = VarR Level
   | MuR (Continuation -> Command)
   -- Positive
   | CoprdR1 Value
@@ -47,7 +47,7 @@ data Value
 -- Continuations
 
 data Continuation
-  = Covar Level
+  = VarL Level
   | MuL (Value -> Command)
   -- Positive
   | CoprdL (Value -> Command) (Value -> Command)
