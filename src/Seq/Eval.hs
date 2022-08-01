@@ -11,6 +11,7 @@ module Seq.Eval
 
 import           Control.Monad (ap)
 import           Data.Coerce (coerce)
+import           Data.Function ((&))
 import           Data.Functor.Contravariant (Contravariant(..))
 import           Seq.Class hiding (Command)
 import qualified Seq.Class as SQ
@@ -91,7 +92,7 @@ instance Prd Term Coterm Command where
   prdL2 k = Coterm (\ p -> T.πR p (coeval k))
 
 instance Copair Term Coterm Command where
-  copairR = either (\ a -> Term (\ k -> k (T.inL (eval a)))) (\ b -> Term (\ k -> k (T.inR (eval b))))
+  copairR f = Term (\ k -> runCommand (f (Coterm (k . T.inL . (&))) (Coterm (k . T.inR . (&)))))
   copairL a b = Coterm (\ c -> T.copair c (coeval a) (coeval b))
 
 instance Not Term Coterm Command where

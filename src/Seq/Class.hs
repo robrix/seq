@@ -79,7 +79,7 @@ class Prd term coterm (command :: K.Type -> K.Type) | term -> coterm command, co
   prdL2 :: coterm r b -> coterm r (T.Prd r a b)
 
 class Copair term coterm (command :: K.Type -> K.Type) | term -> coterm command, coterm -> term command, command -> term coterm where
-  copairR :: Either (term r a) (term r b) -> term r (T.Copair r a b)
+  copairR :: (coterm r a -> coterm r b -> command r) -> term r (T.Copair r a b)
   copairL :: coterm r a -> coterm r b -> coterm r (T.Copair r a b)
 
 class Not term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where

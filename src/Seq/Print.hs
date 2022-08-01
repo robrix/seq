@@ -85,7 +85,7 @@ instance Prd Print Print (Print ()) where
   prdL2 f = str "exr" $$ f
 
 instance Copair Print Print (Print ()) where
-  copairR = either (atom . brackets . resetPrec) (atom . brackets . resetPrec)
+  copairR f = prec Binder (char 'µ' <> bind (\ a -> bind (\ b -> list [var a, var b] <+> dot <+> resetPrec (f (atom (var a)) (atom (var b))))))
   copairL a b = atom (list [resetPrec a, resetPrec b])
 
 instance Not Print Print (Print ()) where
