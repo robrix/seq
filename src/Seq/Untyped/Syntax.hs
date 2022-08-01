@@ -1,8 +1,10 @@
 module Seq.Untyped.Syntax
 ( -- * Terms
   Term(..)
+, µR
   -- * Coterms
 , Coterm(..)
+, µL
   -- * Commands
 , Command(..)
   -- * Scopes
@@ -28,11 +30,18 @@ data Term
   | MuR Scope
 
 
+µR :: Name -> Command -> Term
+µR n b = MuR (abstractL n b)
+
+
 -- Coterms
 
 data Coterm
   = VarL (Var Index)
   | MuL Scope
+
+µL :: Name -> Command -> Coterm
+µL n b = MuL (abstractR n b)
 
 
 -- Commands
