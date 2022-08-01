@@ -21,6 +21,8 @@ data NValue
 data PValue
   = PVarR Level
   | PMuR (PContinuation -> Command)
+  | PCoprdR1 PValue
+  | PCoprdR2 PValue
 
 
 -- Continuations
@@ -34,6 +36,7 @@ data NContinuation
 data PContinuation
   = PVarL Level
   | PMuL (PValue -> Command)
+  | PCoprdL (PValue -> Command) (PValue -> Command)
 
 
 -- Commands
