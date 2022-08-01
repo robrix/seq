@@ -34,6 +34,7 @@ data Value
   | PairR !Value !Value
   | CofunR Value Continuation
   | OneR
+  | NegateR Continuation
   -- Negative
   | PrdR (Continuation -> Command) (Continuation -> Command)
   | CopairR (Continuation -> Continuation -> Command)
@@ -52,6 +53,7 @@ data Continuation
   | PairL (Value -> Value -> Command)
   | CofunL (Value -> Continuation -> Command)
   | ZeroL
+  | NegateL (Continuation -> Command)
   -- Negative
   | PrdL1 (Value -> Command)
   | PrdL2 (Value -> Command)
@@ -104,6 +106,10 @@ instance SQ.Zero K where
 instance SQ.One V K C where
   oneR = V OneR
   oneL = K . OneL . getC
+
+instance SQ.Negate V K C where
+  negateR (K k) = V (NegateR k)
+  negateL f = K (NegateL (getC . f . K))
 
 
 -- Negative
