@@ -1,5 +1,5 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
-module Seq.Norm
+module Seq.Untyped.Norm
 ( -- * Values
   Value(..)
   -- * Continuations

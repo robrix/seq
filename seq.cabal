@@ -50,11 +50,11 @@ library
     Seq.Doc
     Seq.Eval
     Seq.Name
-    Seq.Norm
     Seq.Pattern
     Seq.Print
     Seq.Types
     Seq.Untyped.Class
+    Seq.Untyped.Norm
     Seq.Untyped.Syntax
   build-depends:
     , base ^>=4.16.0.0
