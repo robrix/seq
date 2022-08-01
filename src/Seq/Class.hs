@@ -49,7 +49,7 @@ class Command term coterm command | term -> coterm command, coterm -> term comma
 class Coprd term coterm (command :: K.Type -> K.Type) | term -> coterm command, coterm -> term command, command -> term coterm where
   coprdR1 :: term r a -> term r (T.Coprd a b)
   coprdR2 :: term r b -> term r (T.Coprd a b)
-  coprdL :: coterm r a -> coterm r b -> coterm r (T.Coprd a b)
+  coprdL :: (term r a -> command r) -> (term r b -> command r) -> coterm r (T.Coprd a b)
 
 class Pair term coterm command | term -> coterm command, coterm -> term command, command -> term coterm where
   pairR :: term r a -> term r b -> term r (T.Pair a b)

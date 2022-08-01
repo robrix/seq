@@ -61,7 +61,7 @@ instance SQ.Command Term Coterm Command where
 instance Coprd Term Coterm Command where
   coprdR1 = fmap T.InL
   coprdR2 = fmap T.InR
-  coprdL p q = Coterm (T.exlr (coeval p) (coeval q))
+  coprdL p q = Coterm (T.exlr (runCommand . p . pure) (runCommand . q . pure))
 
 instance Pair Term Coterm Command where
   pairR (Term a) (Term b)  = Term (\ k -> a (\ a -> b (\ b -> k (T.Pair a b))))

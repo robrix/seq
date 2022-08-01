@@ -55,7 +55,7 @@ instance Command Print Print (Print ()) where
 instance Coprd Print Print (Print ()) where
   coprdR1 l = str "inl" $$ l
   coprdR2 r = str "inr" $$ r
-  coprdL l r = str "exlr" $$ l $$ r
+  coprdL l r = prec Binder (str "µ̃" <> list [bind (\ a -> brackets (var a) <+> dot <+> resetPrec (l (atom (var a)))), bind (\ b -> brackets (var b) <+> dot <+> resetPrec (r (atom (var b))))])
 
 instance Pair Print Print (Print ()) where
   pairR l r = atom (list [resetPrec l, resetPrec r])

@@ -74,7 +74,7 @@ instance SQ.Command V K C where
 instance SQ.Coprd V K C where
   coprdR1 = V . InL . getV
   coprdR2 = V . InR . getV
-  coprdL (K l) (K r) = K (Case (:|: l) (:|: r))
+  coprdL l r = K (Case (getC . l . V) (getC . r . V))
 
 
 -- Negative
