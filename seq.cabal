@@ -55,6 +55,7 @@ library
     Seq.Print
     Seq.Types
     Seq.Untyped.Class
+    Seq.Untyped.Syntax
   build-depends:
     , base ^>=4.16.0.0
   hs-source-dirs:   src
