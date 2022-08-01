@@ -56,8 +56,8 @@ data Continuation
   | ZeroL
   | NegateL (Continuation -> Command)
   -- Negative
-  | PrdL1 (Value -> Command)
-  | PrdL2 (Value -> Command)
+  | PrdL1 Continuation
+  | PrdL2 Continuation
   | CopairL Continuation Continuation
   | FunL Value Continuation
   | OneL Command
@@ -118,8 +118,8 @@ instance SQ.Negate V K C where
 
 instance SQ.Prd V K C where
   prdR l r = V (PrdR (getC . l . K) (getC . r . K))
-  prdL1 = K . PrdL1 . flip (:|:) . getK
-  prdL2 = K . PrdL2 . flip (:|:) . getK
+  prdL1 = K . PrdL1 . getK
+  prdL2 = K . PrdL2 . getK
 
 instance SQ.Copair V K C where
   copairR f = V (CopairR (\ l r -> getC (f (K l) (K r))))
