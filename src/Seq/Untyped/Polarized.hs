@@ -28,10 +28,12 @@ data Value p where
   PrdR :: (Continuation N -> Command) -> (Continuation N -> Command) -> Value N
   CopairR :: (Continuation N -> Continuation N -> Command) -> Value N
   FunR :: (Value P -> Continuation N -> Command) -> Value N
+  UpR :: (Continuation P -> Command) -> Value N
   -- Positive
   CoprdR1 :: Value P -> Value P
   CoprdR2 :: Value P -> Value P
   PairR :: !(Value P) -> !(Value P) -> Value P
+  DownR :: Value N -> Value P
 
 
 -- Continuations
@@ -44,9 +46,11 @@ data Continuation p where
   PrdL2 :: Continuation N -> Continuation N
   CopairL :: Continuation N -> Continuation N -> Continuation N
   FunL :: Value P -> Continuation N -> Continuation N
+  UpL :: Continuation P -> Continuation N
   -- Positive
   CoprdL :: (Value P -> Command) -> (Value P -> Command) -> Continuation P
   PairL :: (Value P -> Value P -> Command) -> Continuation P
+  DownL :: (Value N -> Command) -> Continuation P
 
 
 -- Commands
