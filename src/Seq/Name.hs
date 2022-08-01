@@ -1,3 +1,4 @@
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Seq.Name
 ( -- * De Bruijn names
   Level(..)
@@ -11,7 +12,10 @@ module Seq.Name
 -- De Bruijn names
 
 newtype Level = Level { getLevel :: Int }
+  deriving (Enum, Eq, Num, Ord, Show)
+
 newtype Index = Index { getIndex :: Int }
+  deriving (Enum, Eq, Num, Ord, Show)
 
 
 -- Names

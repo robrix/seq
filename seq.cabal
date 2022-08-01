@@ -58,4 +58,5 @@ library
     Seq.Untyped.Syntax
   build-depends:
     , base ^>=4.16.0.0
+    , these
   hs-source-dirs:   src
