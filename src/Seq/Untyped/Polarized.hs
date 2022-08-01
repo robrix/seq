@@ -21,6 +21,8 @@ data P
 
 -- Values
 
+-- FIXME: quantifiers?
+
 data Value p where
   VarR :: Level -> Value p
   MuR :: (Continuation n -> Command) -> Value n
