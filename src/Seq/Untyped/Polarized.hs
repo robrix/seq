@@ -16,6 +16,7 @@ import Seq.Name
 data NValue
   = NVarR Level
   | NMuR (NContinuation -> Command)
+  | NPrdR (NContinuation -> Command) (NContinuation -> Command)
 
 data PValue
   = PVarR Level
@@ -27,6 +28,8 @@ data PValue
 data NContinuation
   = NVarL Level
   | NMuL (NValue -> Command)
+  | NPrdL1 NContinuation
+  | NPrdL2 NContinuation
 
 data PContinuation
   = PVarL Level
