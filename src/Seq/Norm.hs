@@ -32,6 +32,7 @@ data Value
   | CoprdR1 Value
   | CoprdR2 Value
   | PairR !Value !Value
+  | CofunR Value Continuation
   -- Negative
   | PrdR (Continuation -> Command) (Continuation -> Command)
   | CopairR (Continuation -> Continuation -> Command)
@@ -46,6 +47,7 @@ data Continuation
   -- Positive
   | CoprdL (Value -> Command) (Value -> Command)
   | PairL (Value -> Value -> Command)
+  | CofunL (Value -> Continuation -> Command)
   -- Negative
   | PrdL1 (Value -> Command)
   | PrdL2 (Value -> Command)
@@ -85,6 +87,10 @@ instance SQ.Coprd V K C where
 instance SQ.Pair V K C where
   pairR (V a) (V b) = V (PairR a b)
   pairL f = K (PairL (\ a b -> getC (f (V a) (V b))))
+
+instance SQ.Cofun V K C where
+  cofunR (V v) (K k) = V (CofunR v k)
+  cofunL f = K (CofunL (\ v k -> getC (f (V v) (K k))))
 
 
 -- Negative
