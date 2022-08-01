@@ -49,6 +49,7 @@ library
     Seq.Class
     Seq.Doc
     Seq.Eval
+    Seq.Name
     Seq.Norm
     Seq.Pattern
     Seq.Print
