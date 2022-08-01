@@ -1,5 +1,5 @@
 {-# LANGUAGE FunctionalDependencies #-}
-module Seq.Untyped.Syntax
+module Seq.Untyped.Class
 ( -- * Rules
   Mu(..)
 , Command(..)
