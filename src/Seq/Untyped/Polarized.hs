@@ -57,7 +57,7 @@ data Value p where
   FunR :: (Value P -> Continuation N -> Command) -> Value N
   NotR :: (Value P -> Command) -> Value N
   UpR :: (Continuation P -> Command) -> Value N
-  ForAllR :: (Type n -> Value N) -> Value N
+  ForAllR :: (Type n -> Continuation N -> Command) -> Value N
   -- Positive
   OneR :: Value P
   CoprdR1 :: Value P -> Value P
@@ -66,7 +66,7 @@ data Value p where
   CofunR :: Value P -> Continuation N -> Value P
   NegateR :: Continuation N -> Value P
   DownR :: Value N -> Value P
-  ExistsR :: (Type n -> Value P) -> Value P
+  ExistsR :: Type n -> Value P -> Value P
 
 
 -- Continuations
