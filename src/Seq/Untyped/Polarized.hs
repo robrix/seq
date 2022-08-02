@@ -27,14 +27,14 @@ data P
 
 data Term p where
   SVarR :: Index -> Term p
-  SMuR :: (Coterm p -> Command Term Coterm) -> Term p
+  SMuR :: Command Term Coterm -> Term p
 
 
 -- Coterms
 
 data Coterm p where
   SVarL :: Index -> Coterm p
-  SMuL :: (Term p -> Command Term Coterm) -> Coterm p
+  SMuL :: Command Term Coterm -> Coterm p
 
 
 -- Values
