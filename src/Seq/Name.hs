@@ -3,6 +3,8 @@ module Seq.Name
 ( -- * De Bruijn names
   Level(..)
 , Index(..)
+, toIndexed
+, toLeveled
   -- * Names
 , Name
   -- * Variables
@@ -16,6 +18,13 @@ newtype Level = Level { getLevel :: Int }
 
 newtype Index = Index { getIndex :: Int }
   deriving (Enum, Eq, Num, Ord, Show)
+
+
+toIndexed :: Level -> Level -> Index
+toIndexed (Level d) (Level level) = Index $ d - level - 1
+
+toLeveled :: Level -> Index -> Level
+toLeveled (Level d) (Index index) = Level $ d - index - 1
 
 
 -- Names
