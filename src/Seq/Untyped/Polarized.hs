@@ -82,6 +82,7 @@ data Continuation p where
   FunL :: Value P -> Continuation N -> Continuation N
   NotL :: Value P -> Continuation N
   UpL :: Continuation P -> Continuation N
+  ForAllL :: Type n -> Continuation N -> Continuation N
   -- Positive
   ZeroL :: Continuation P
   OneL :: Command -> Continuation P
@@ -90,6 +91,7 @@ data Continuation p where
   CofunL :: (Value P -> Continuation N -> Command) -> Continuation P
   NegateL :: (Continuation N -> Command) -> Continuation P
   DownL :: (Value N -> Command) -> Continuation P
+  ExistsL :: (Type n -> Continuation P -> Command) -> Continuation P
 
 
 -- Commands
