@@ -23,15 +23,15 @@ data P
 
 data Value p where
   VarR :: Level -> Value p
-  MuR :: (Continuation p -> Command) -> Value p
+  MuR :: (Continuation p -> Command Value Continuation) -> Value p
   -- Negative
-  BottomR :: Command -> Value N
+  BottomR :: Command Value Continuation -> Value N
   TopR :: Value N
-  PrdR :: (Continuation N -> Command) -> (Continuation N -> Command) -> Value N
-  CopairR :: (Continuation N -> Continuation N -> Command) -> Value N
-  FunR :: (Value P -> Continuation N -> Command) -> Value N
-  NotR :: (Value P -> Command) -> Value N
-  UpR :: (Continuation P -> Command) -> Value N
+  PrdR :: (Continuation N -> Command Value Continuation) -> (Continuation N -> Command Value Continuation) -> Value N
+  CopairR :: (Continuation N -> Continuation N -> Command Value Continuation) -> Value N
+  FunR :: (Value P -> Continuation N -> Command Value Continuation) -> Value N
+  NotR :: (Value P -> Command Value Continuation) -> Value N
+  UpR :: (Continuation P -> Command Value Continuation) -> Value N
   -- Positive
   OneR :: Value P
   CoprdR1 :: Value P -> Value P
@@ -46,7 +46,7 @@ data Value p where
 
 data Continuation p where
   VarL :: Level -> Continuation p
-  MuL :: (Value p -> Command) -> Continuation p
+  MuL :: (Value p -> Command Value Continuation) -> Continuation p
   -- Negative
   BottomL :: Continuation N
   PrdL1 :: Continuation N -> Continuation N
@@ -57,16 +57,16 @@ data Continuation p where
   UpL :: Continuation P -> Continuation N
   -- Positive
   ZeroL :: Continuation P
-  OneL :: Command -> Continuation P
-  CoprdL :: (Value P -> Command) -> (Value P -> Command) -> Continuation P
-  PairL :: (Value P -> Value P -> Command) -> Continuation P
-  CofunL :: (Value P -> Continuation N -> Command) -> Continuation P
-  NegateL :: (Continuation N -> Command) -> Continuation P
-  DownL :: (Value N -> Command) -> Continuation P
+  OneL :: Command Value Continuation -> Continuation P
+  CoprdL :: (Value P -> Command Value Continuation) -> (Value P -> Command Value Continuation) -> Continuation P
+  PairL :: (Value P -> Value P -> Command Value Continuation) -> Continuation P
+  CofunL :: (Value P -> Continuation N -> Command Value Continuation) -> Continuation P
+  NegateL :: (Continuation N -> Command Value Continuation) -> Continuation P
+  DownL :: (Value N -> Command Value Continuation) -> Continuation P
 
 
 -- Commands
 
-data Command
-  = Value N :|:- Continuation N
-  | Value P :|:+ Continuation P
+data Command v k
+  = v N :|:- k N
+  | v P :|:+ k P
