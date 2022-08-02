@@ -3,6 +3,10 @@ module Seq.Untyped.Polarized
 ( -- * Polarities
   N
 , P
+  -- * Terms
+, Term(..)
+  -- * Coterms
+, Coterm(..)
   -- * Values
 , Value(..)
   -- * Continuations
@@ -17,6 +21,20 @@ import Seq.Name
 
 data N
 data P
+
+
+-- Terms
+
+data Term p where
+  SVarR :: Index -> Term p
+  SMuR :: (Coterm p -> Command Term Coterm) -> Term p
+
+
+-- Coterms
+
+data Coterm p where
+  SVarL :: Index -> Coterm p
+  SMuL :: (Term p -> Command Term Coterm) -> Coterm p
 
 
 -- Values
