@@ -32,6 +32,7 @@ data Type n where
   (:→) :: Type P -> Type N -> Type N
   Not :: Type  P -> Type N
   Up :: Type P -> Type N
+  ForAll :: (Type n -> Type N) -> Type N
   -- Positive
   Zero :: Type P
   One :: Type P
@@ -40,6 +41,7 @@ data Type n where
   (:⤚) :: Type N -> Type P -> Type P
   Negate :: Type N -> Type P
   Down :: Type N -> Type P
+  Exists :: (Type n -> Type P) -> Type P
 
 
 -- Values
