@@ -23,7 +23,7 @@ data P
 
 data Value p where
   VarR :: Level -> Value p
-  MuR :: (Continuation n -> Command) -> Value n
+  MuR :: (Continuation p -> Command) -> Value p
   -- Negative
   BottomR :: Command -> Value N
   TopR :: Value N
