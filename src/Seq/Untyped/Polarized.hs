@@ -3,6 +3,8 @@ module Seq.Untyped.Polarized
 ( -- * Polarities
   N
 , P
+  -- * Types
+, Type(..)
   -- * Values
 , Value(..)
   -- * Continuations
@@ -17,6 +19,27 @@ import Seq.Name
 
 data N
 data P
+
+
+-- Types
+
+data Type
+  -- Negative
+  = Bottom
+  | Top
+  | Type :& Type
+  | Type :⅋ Type
+  | Type :→ Type
+  | Not Type
+  | Up Type
+  -- Positive
+  | Zero
+  | One
+  | Type :⊕ Type
+  | Type :⊗ Type
+  | Type :⤚ Type
+  | Negate Type
+  | Down Type
 
 
 -- Values
