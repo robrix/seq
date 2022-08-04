@@ -63,6 +63,7 @@ evalCoterm :: [Value] -> [Continuation] -> Coterm -> Continuation
 evalCoterm _Γ _Δ = \case
   SVarL i      -> _Δ !! getIndex i
   SMuL b       -> MuL (\ v -> evalCommand (v:_Γ) _Δ b)
+  -- Negative
   SBottomL b   -> BottomL (evalCoterm _Γ _Δ b)
   SPrdL1 k     -> PrdL1 (evalCoterm _Γ _Δ k)
   SPrdL2 k     -> PrdL2 (evalCoterm _Γ _Δ k)
