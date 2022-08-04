@@ -24,6 +24,7 @@ data Term
   | SMuR (Command Term Coterm)
   -- Negative
   | SBottomR (Command Term Coterm)
+  | STopR
 
 evalTerm :: [Value] -> [Continuation] -> Term -> Value
 evalTerm _Γ _Δ = \case
@@ -31,6 +32,7 @@ evalTerm _Γ _Δ = \case
   SMuR b     -> MuR (\ k -> evalCommand _Γ (k:_Δ) b)
   -- Negative
   SBottomR b -> BottomR (evalCommand _Γ _Δ b)
+  STopR      -> TopR
 
 
 -- Coterms
