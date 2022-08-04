@@ -58,6 +58,8 @@ data Coterm
   | SFunL Term Coterm
   | SNotL Term
   | SUpL Coterm
+  -- Positive
+  | SZeroL Coterm
 
 evalCoterm :: [Value] -> [Continuation] -> Coterm -> Continuation
 evalCoterm _Γ _Δ = \case
@@ -71,6 +73,8 @@ evalCoterm _Γ _Δ = \case
   SFunL a k    -> FunL (evalTerm _Γ _Δ a) (evalCoterm _Γ _Δ k)
   SNotL a      -> NotL (evalTerm _Γ _Δ a)
   SUpL k       -> UpL (evalCoterm _Γ _Δ k)
+  -- Positive
+  SZeroL k     -> ZeroL (evalCoterm _Γ _Δ k)
 
 
 -- Values
