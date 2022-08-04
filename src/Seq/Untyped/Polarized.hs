@@ -1,14 +1,18 @@
+{-# LANGUAGE LambdaCase #-}
 module Seq.Untyped.Polarized
 ( -- * Terms
   Term(..)
+, evalTerm
   -- * Coterms
 , Coterm(..)
+, evalCoterm
   -- * Values
 , Value(..)
   -- * Continuations
 , Continuation(..)
   -- * Commands
 , Command(..)
+, evalCommand
 ) where
 
 import Seq.Name
@@ -19,12 +23,22 @@ data Term
   = SVarR Index
   | SMuR (Command Term Coterm)
 
+evalTerm :: [Value] -> [Continuation] -> Term -> Value
+evalTerm _Γ _Δ = \case
+  SVarR i -> _Γ !! getIndex i
+  SMuR b  -> MuR (\ k -> evalCommand _Γ (k:_Δ) b)
+
 
 -- Coterms
 
 data Coterm
   = SVarL Index
   | SMuL (Command Term Coterm)
+
+evalCoterm :: [Value] -> [Continuation] -> Coterm -> Continuation
+evalCoterm _Γ _Δ = \case
+  SVarL i -> _Δ !! getIndex i
+  SMuL b  -> MuL (\ v -> evalCommand (v:_Γ) _Δ b)
 
 
 -- Values
@@ -78,3 +92,8 @@ data Continuation
 data Command v k
   = v :|:- k
   | v :|:+ k
+
+evalCommand :: [Value] -> [Continuation] -> Command Term Coterm -> Command Value Continuation
+evalCommand _Γ _Δ = \case
+  t :|:- c -> evalTerm _Γ _Δ t :|:- evalCoterm _Γ _Δ c
+  t :|:+ c -> evalTerm _Γ _Δ t :|:+ evalCoterm _Γ _Δ c
