@@ -29,6 +29,7 @@ data Term
   | SCopairR (Command Term Coterm)
   | SFunR (Command Term Coterm)
   | SNotR (Command Term Coterm)
+  | SUpR (Command Term Coterm)
 
 evalTerm :: [Value] -> [Continuation] -> Term -> Value
 evalTerm _Γ _Δ = \case
@@ -41,6 +42,7 @@ evalTerm _Γ _Δ = \case
   SCopairR b -> CopairR (\ l r -> evalCommand _Γ (l:r:_Δ) b)
   SFunR b    -> FunR (\ a k -> evalCommand (a:_Γ) (k:_Δ) b)
   SNotR b    -> NotR (\ v -> evalCommand (v:_Γ) _Δ b)
+  SUpR b     -> UpR (\ k -> evalCommand _Γ (k:_Δ) b)
 
 
 -- Coterms
@@ -55,6 +57,7 @@ data Coterm
   | SCopairL Coterm Coterm
   | SFunL Term Coterm
   | SNotL Term
+  | SUpL Coterm
 
 evalCoterm :: [Value] -> [Continuation] -> Coterm -> Continuation
 evalCoterm _Γ _Δ = \case
@@ -66,6 +69,7 @@ evalCoterm _Γ _Δ = \case
   SCopairL l r -> CopairL (evalCoterm _Γ _Δ l) (evalCoterm _Γ _Δ r)
   SFunL a k    -> FunL (evalTerm _Γ _Δ a) (evalCoterm _Γ _Δ k)
   SNotL a      -> NotL (evalTerm _Γ _Δ a)
+  SUpL k       -> UpL (evalCoterm _Γ _Δ k)
 
 
 -- Values
