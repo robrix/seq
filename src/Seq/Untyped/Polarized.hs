@@ -1,10 +1,6 @@
-{-# LANGUAGE GADTs #-}
 module Seq.Untyped.Polarized
-( -- * Polarities
-  N
-, P
-  -- * Terms
-, Term(..)
+( -- * Terms
+  Term(..)
   -- * Coterms
 , Coterm(..)
   -- * Values
@@ -17,74 +13,68 @@ module Seq.Untyped.Polarized
 
 import Seq.Name
 
--- Polarities
-
-data N
-data P
-
-
 -- Terms
 
-data Term p where
-  SVarR :: Index -> Term p
-  SMuR :: Command Term Coterm -> Term p
+data Term
+  = SVarR Index
+  | SMuR (Command Term Coterm)
 
 
 -- Coterms
 
-data Coterm p where
-  SVarL :: Index -> Coterm p
-  SMuL :: Command Term Coterm -> Coterm p
+data Coterm
+  = SVarL Index
+  | SMuL (Command Term Coterm)
 
 
 -- Values
 
-data Value p where
-  VarR :: Level -> Value p
-  MuR :: (Continuation p -> Command Value Continuation) -> Value p
+data Value
+  = VarR Level
+  | MuR (Continuation -> Command Value Continuation)
   -- Negative
-  BottomR :: Command Value Continuation -> Value N
-  TopR :: Value N
-  PrdR :: (Continuation N -> Command Value Continuation) -> (Continuation N -> Command Value Continuation) -> Value N
-  CopairR :: (Continuation N -> Continuation N -> Command Value Continuation) -> Value N
-  FunR :: (Value P -> Continuation N -> Command Value Continuation) -> Value N
-  NotR :: (Value P -> Command Value Continuation) -> Value N
-  UpR :: (Continuation P -> Command Value Continuation) -> Value N
+  | BottomR (Command Value Continuation)
+  | TopR
+  | PrdR (Continuation -> Command Value Continuation) (Continuation -> Command Value Continuation)
+  | CopairR (Continuation -> Continuation -> Command Value Continuation)
+  | FunR (Value -> Continuation -> Command Value Continuation)
+  | NotR (Value -> Command Value Continuation)
+  | UpR (Continuation -> Command Value Continuation)
   -- Positive
-  OneR :: Value P
-  CoprdR1 :: Value P -> Value P
-  CoprdR2 :: Value P -> Value P
-  PairR :: !(Value P) -> !(Value P) -> Value P
-  CofunR :: Value P -> Continuation N -> Value P
-  NegateR :: Continuation N -> Value P
-  DownR :: Value N -> Value P
+  | OneR
+  | CoprdR1 Value
+  | CoprdR2 Value
+  | PairR !(Value) !(Value)
+  | CofunR Value Continuation
+  | NegateR Continuation
+  | DownR Value
 
 
 -- Continuations
 
-data Continuation p where
-  VarL :: Level -> Continuation p
-  MuL :: (Value p -> Command Value Continuation) -> Continuation p
+data Continuation
+  = VarL Level
+  | MuL (Value -> Command Value Continuation)
   -- Negative
-  BottomL :: Continuation N
-  PrdL1 :: Continuation N -> Continuation N
-  PrdL2 :: Continuation N -> Continuation N
-  CopairL :: Continuation N -> Continuation N -> Continuation N
-  FunL :: Value P -> Continuation N -> Continuation N
-  NotL :: Value P -> Continuation N
-  UpL :: Continuation P -> Continuation N
+  | BottomL Continuation
+  | PrdL1 Continuation
+  | PrdL2 Continuation
+  | CopairL Continuation Continuation
+  | FunL Value Continuation
+  | NotL Value
+  | UpL Continuation
   -- Positive
-  ZeroL :: Continuation P
-  OneL :: Command Value Continuation -> Continuation P
-  CoprdL :: (Value P -> Command Value Continuation) -> (Value P -> Command Value Continuation) -> Continuation P
-  PairL :: (Value P -> Value P -> Command Value Continuation) -> Continuation P
-  CofunL :: (Value P -> Continuation N -> Command Value Continuation) -> Continuation P
-  NegateL :: (Continuation N -> Command Value Continuation) -> Continuation P
-  DownL :: (Value N -> Command Value Continuation) -> Continuation P
+  | ZeroL Continuation
+  | OneL (Command Value Continuation)
+  | CoprdL (Value -> Command Value Continuation) (Value -> Command Value Continuation)
+  | PairL (Value -> Value -> Command Value Continuation)
+  | CofunL (Value -> Continuation -> Command Value Continuation)
+  | NegateL (Continuation -> Command Value Continuation)
+  | DownL (Value -> Command Value Continuation)
 
 
 -- Commands
 
 data Command v k
-  = v N :|:- k N
-  | v P :|:+ k P
+  = v :|:- k
+  | v :|:+ k
