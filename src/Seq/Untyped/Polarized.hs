@@ -22,11 +22,15 @@ import Seq.Name
 data Term
   = SVarR Index
   | SMuR (Command Term Coterm)
+  -- Negative
+  | SBottomR (Command Term Coterm)
 
 evalTerm :: [Value] -> [Continuation] -> Term -> Value
 evalTerm _Γ _Δ = \case
-  SVarR i -> _Γ !! getIndex i
-  SMuR b  -> MuR (\ k -> evalCommand _Γ (k:_Δ) b)
+  SVarR i    -> _Γ !! getIndex i
+  SMuR b     -> MuR (\ k -> evalCommand _Γ (k:_Δ) b)
+  -- Negative
+  SBottomR b -> BottomR (evalCommand _Γ _Δ b)
 
 
 -- Coterms
@@ -34,11 +38,14 @@ evalTerm _Γ _Δ = \case
 data Coterm
   = SVarL Index
   | SMuL (Command Term Coterm)
+  -- Negative
+  | SBottomL Coterm
 
 evalCoterm :: [Value] -> [Continuation] -> Coterm -> Continuation
 evalCoterm _Γ _Δ = \case
-  SVarL i -> _Δ !! getIndex i
-  SMuL b  -> MuL (\ v -> evalCommand (v:_Γ) _Δ b)
+  SVarL i    -> _Δ !! getIndex i
+  SMuL b     -> MuL (\ v -> evalCommand (v:_Γ) _Δ b)
+  SBottomL b -> BottomL (evalCoterm _Γ _Δ b)
 
 
 -- Values
