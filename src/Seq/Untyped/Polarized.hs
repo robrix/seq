@@ -26,6 +26,7 @@ data Term
   | SBottomR (Command Term Coterm)
   | STopR
   | SPrdR (Command Term Coterm) (Command Term Coterm)
+  | SCopairR (Command Term Coterm)
 
 evalTerm :: [Value] -> [Continuation] -> Term -> Value
 evalTerm _Γ _Δ = \case
@@ -35,6 +36,7 @@ evalTerm _Γ _Δ = \case
   SBottomR b -> BottomR (evalCommand _Γ _Δ b)
   STopR      -> TopR
   SPrdR l r  -> PrdR (\ k -> evalCommand _Γ (k:_Δ) l) (\ k -> evalCommand _Γ (k:_Δ) r)
+  SCopairR b -> CopairR (\ l r -> evalCommand _Γ (l:r:_Δ) b)
 
 
 -- Coterms
@@ -46,14 +48,16 @@ data Coterm
   | SBottomL Coterm
   | SPrdL1 Coterm
   | SPrdL2 Coterm
+  | SCopairL Coterm Coterm
 
 evalCoterm :: [Value] -> [Continuation] -> Coterm -> Continuation
 evalCoterm _Γ _Δ = \case
-  SVarL i    -> _Δ !! getIndex i
-  SMuL b     -> MuL (\ v -> evalCommand (v:_Γ) _Δ b)
-  SBottomL b -> BottomL (evalCoterm _Γ _Δ b)
-  SPrdL1 k   -> PrdL1 (evalCoterm _Γ _Δ k)
-  SPrdL2 k   -> PrdL2 (evalCoterm _Γ _Δ k)
+  SVarL i      -> _Δ !! getIndex i
+  SMuL b       -> MuL (\ v -> evalCommand (v:_Γ) _Δ b)
+  SBottomL b   -> BottomL (evalCoterm _Γ _Δ b)
+  SPrdL1 k     -> PrdL1 (evalCoterm _Γ _Δ k)
+  SPrdL2 k     -> PrdL2 (evalCoterm _Γ _Δ k)
+  SCopairL l r -> CopairL (evalCoterm _Γ _Δ l) (evalCoterm _Γ _Δ r)
 
 
 -- Values
