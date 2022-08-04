@@ -25,6 +25,7 @@ data Term
   -- Negative
   | SBottomR (Command Term Coterm)
   | STopR
+  | SPrdR (Command Term Coterm) (Command Term Coterm)
 
 evalTerm :: [Value] -> [Continuation] -> Term -> Value
 evalTerm _Γ _Δ = \case
@@ -33,6 +34,7 @@ evalTerm _Γ _Δ = \case
   -- Negative
   SBottomR b -> BottomR (evalCommand _Γ _Δ b)
   STopR      -> TopR
+  SPrdR l r  -> PrdR (\ k -> evalCommand _Γ (k:_Δ) l) (\ k -> evalCommand _Γ (k:_Δ) r)
 
 
 -- Coterms
@@ -42,12 +44,16 @@ data Coterm
   | SMuL (Command Term Coterm)
   -- Negative
   | SBottomL Coterm
+  | SPrdL1 Coterm
+  | SPrdL2 Coterm
 
 evalCoterm :: [Value] -> [Continuation] -> Coterm -> Continuation
 evalCoterm _Γ _Δ = \case
   SVarL i    -> _Δ !! getIndex i
   SMuL b     -> MuL (\ v -> evalCommand (v:_Γ) _Δ b)
   SBottomL b -> BottomL (evalCoterm _Γ _Δ b)
+  SPrdL1 k   -> PrdL1 (evalCoterm _Γ _Δ k)
+  SPrdL2 k   -> PrdL2 (evalCoterm _Γ _Δ k)
 
 
 -- Values
